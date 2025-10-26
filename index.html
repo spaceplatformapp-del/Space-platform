@@ -16,41 +16,52 @@
   <meta name="apple-mobile-web-app-title" content="Space">
 
   <style>
-    :root{--bg:#ffffff;--card:#ffffff;--text:#0b1220;--muted:#6b7280;--accent:#2563eb}
-    .dark{--bg:#0b1220;--card:#0f1724;--text:#f8fafc;--muted:#9ca3af;--accent:#3b82f6}
-    html,body,#root{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
-    .container{max-width:960px;margin:0 auto;padding:16px}
-    .card{background:var(--card);border-radius:8px;padding:12px;box-shadow:0 1px 4px rgba(2,6,23,0.06);margin-bottom:12px}
-    .row{display:flex;gap:8px;align-items:center}
-    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:6px;border:none;cursor:pointer}
-    .btn-ghost{background:transparent;border:1px solid #ddd;padding:6px 10px;border-radius:6px;cursor:pointer;color:var(--text)}
-    input,textarea,select{padding:8px;border:1px solid #e5e7eb;border-radius:6px;width:100%;background:transparent;color:var(--text)}
-    textarea{min-height:80px;resize:vertical}
-    .small{font-size:13px;color:var(--muted)}
-    .avatar{width:48px;height:48px;border-radius:999px;object-fit:cover}
-    .story{width:64px;height:64px;border-radius:999px;object-fit:cover;border:2px solid var(--accent);cursor:pointer}
-    .hidden{display:none}
-    .mt{margin-top:12px}
-    .mb{margin-bottom:12px}
-    .badge{background:#e6f0ff;color:#08306b;padding:4px 8px;border-radius:999px;font-size:12px;display:inline-block;margin-left:6px}
-    .danger{background:#fee2e2;color:#7f1d1d}
-    .flex{display:flex}
-    .col{display:flex;flex-direction:column}
-    .space-x{gap:8px}
-    a{color:var(--accent);text-decoration:none}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-    .search-input{width:280px}
-    .post-media{max-width:100%;max-height:380px;border-radius:8px}
-    .cover{height:160px;background:#ccc;border-radius:8px 8px 0 0;object-fit:cover;width:100%}
-    .center{text-align:center}
-    .splash{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
-    .splash .logo{font-size:48px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .msg-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;border-radius:999px;width:18px;height:18px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700}
-    .like-btn{cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:4px}
-    .comment-box{margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb}
-    @media (max-width:640px){.search-input{width:140px}}
-    #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:10px;background:#ffeedd;border:2px solid #ff7a45;z-index:99999;font-family:Arial,Helvetica,sans-serif;display:none}
-  </style>
+  :root{
+    --bg:#f9fafb;--card:#ffffff;--text:#0f172a;--muted:#64748b;
+    --primary:#6366f1;--secondary:#ec4899;--accent:#8b5cf6;
+    --gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  }
+  .dark{
+    --bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;
+    --primary:#818cf8;--secondary:#f472b6;--accent:#a78bfa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body,#root{height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);transition:background 0.3s}
+  .container{max-width:680px;margin:0 auto;padding:16px 16px 80px;min-height:100vh}
+  .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:16px}
+  .row{display:flex;gap:12px;align-items:center}
+  .col{display:flex;flex-direction:column;gap:12px}
+  .btn{background:var(--primary);color:#fff;padding:10px 20px;border-radius:24px;border:none;cursor:pointer;font-weight:600;transition:all 0.2s}
+  .btn:hover{transform:scale(1.05)}
+  .btn-ghost{background:transparent;border:2px solid var(--muted);color:var(--text);padding:8px 16px;border-radius:20px;cursor:pointer}
+  input,textarea,select{padding:12px;border:2px solid #e2e8f0;border-radius:12px;width:100%;background:var(--card);color:var(--text)}
+  input:focus,textarea:focus{outline:none;border-color:var(--primary)}
+  textarea{min-height:100px;resize:vertical}
+  .small{font-size:13px;color:var(--muted)}
+  .avatar{width:48px;height:48px;border-radius:50%;object-fit:cover}
+  .story{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);cursor:pointer;padding:3px;background:linear-gradient(45deg,#f093fb,#f5576c)}
+  .badge{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;display:inline-block;margin-left:6px}
+  .notif-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .post-media{max-width:100%;max-height:500px;border-radius:12px;margin-top:12px}
+  .cover{height:200px;background:var(--gradient);border-radius:12px 12px 0 0;object-fit:cover;width:100%}
+  .splash{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
+  .splash .logo{font-size:64px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .topbar{position:sticky;top:0;background:var(--card);border-bottom:1px solid #e2e8f0;padding:12px 16px;display:flex;align-items:center;gap:16px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+  .topbar-logo{font-size:28px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+  .search-box{flex:1;max-width:400px;position:relative}
+  .bottomnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:8px 0;z-index:100}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px;font-size:11px}
+  .nav-item.active{color:var(--primary)}
+  .nav-icon{font-size:24px}
+  .like-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:8px;border-radius:20px;transition:all 0.2s}
+  .like-btn:hover{background:rgba(99,102,241,0.1)}
+  .tabs{display:flex;gap:8px;border-bottom:2px solid #e2e8f0;margin-bottom:16px}
+  .tab{padding:12px 20px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:3px solid transparent}
+  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .modal-content{background:var(--card);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+  #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;z-index:99999;display:none}
+</style>
 
   <!-- Firebase & Cloudinary Config -->
 
@@ -870,9 +881,10 @@
     );
   }
 
-  function SettingsPage({ lang, setLang }) {
-    return React.createElement('div', { className: 'card' },
-      React.createElement('h3', null, 'Settings'),
+  function SettingsPage({ lang, setLang, theme, setTheme, t }) {
+  return React.createElement('div', null,
+    React.createElement('div', { className: 'card' },
+      React.createElement('h3', { style: { marginBottom:20 } }, 'Settings'),
       React.createElement('div', { className: 'col' },
         React.createElement('label', { className: 'small' }, 'Language'),
         React.createElement('select', { value: lang, onChange: e => setLang(e.target.value) }, 
@@ -880,13 +892,20 @@
           React.createElement('option', { value: 'yo' }, 'Yoruba'), 
           React.createElement('option', { value: 'pt' }, 'Portuguese')
         ),
-        React.createElement('div', { className: 'mt' }, 
-          React.createElement('h4', null, 'Help & Support'), 
-          React.createElement('p', { className: 'small' }, 'If you need help, contact support at: ', React.createElement('a', { href: 'mailto:myspacesocialapp@gmail.com' }, 'myspacesocialapp@gmail.com'))
-        )
+        React.createElement('div', { className: 'row', style: { alignItems:'center', justifyContent:'space-between', marginTop:16 } },
+          React.createElement('span', null, 'Dark Mode'),
+          React.createElement('button', { className: 'btn-ghost', onClick: () => setTheme(theme === 'light' ? 'dark' : 'light') }, theme === 'light' ? '🌞 Light' : '🌙 Dark')
+        ),
+        React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20 } }, 'Logout')
       )
-    );
-  }
+    ),
+    React.createElement('div', { className: 'card' },
+      React.createElement('h4', null, 'Help & Support'),
+      React.createElement('p', { className: 'small' }, 'Need help? Contact us at:'),
+      React.createElement('a', { href: 'mailto:spaceplatformapp@gmail.com', style: { color:'var(--primary)', fontWeight:600 } }, 'spaceplatformapp@gmail.com')
+    )
+  );
+}
 
   function AdminPage() {
     const [users, setUsers] = useState([]);
