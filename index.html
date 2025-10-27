@@ -5,6 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Space</title>
+  <!-- This file is now required -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-512.png">
   <meta name="theme-color" content="#6366f1">
@@ -76,7 +77,6 @@
     .nav-item.active .nav-icon{border-bottom:3px solid var(--primary)}
     .nav-icon{font-size:24px;padding:4px 0}
     .nav-label{font-size:12px;font-weight:500}
-    /* Tweak notif-badge for bottom nav */
     .nav-item .notif-badge{top:0px;right:15px;min-width:18px;height:18px;font-size:11px}
     .composer-trigger{background:var(--hover);padding:12px 16px;border-radius:50px;color:var(--muted);cursor:pointer;width:100%;text-align:left;border:none;font-size:15px}
     .composer-trigger:hover{background:#e4e6eb}
@@ -114,6 +114,40 @@
     .chat-menu-item{padding:10px 16px;cursor:pointer;border-radius:6px;font-size:14px}
     .chat-menu-item:hover{background:var(--hover)}
     /* End Chat Page Styles */
+    
+    /* NEW: Install Banner Styles */
+    .install-banner {
+      position: fixed;
+      bottom: 70px; /* Above the nav bar */
+      left: 12px;
+      right: 12px;
+      background: var(--card);
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .install-banner-text {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .install-banner-buttons {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .install-banner-buttons .btn-ghost {
+      padding: 8px 12px;
+    }
+    .install-banner-buttons .btn {
+      padding: 8px 16px;
+    }
+    /* End Install Banner Styles */
+
     #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fff3cd;border:2px solid #ffc107;border-radius:8px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
   </style>
 
@@ -169,7 +203,6 @@
   <div id="root" style="visibility:hidden"></div>
 
   <script type="module">
-  // ADDED `increment` to firebase/firestore import
   import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
   import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
@@ -251,7 +284,10 @@
       typeMessage: 'Type a message...',
       changeBg: 'Change Background',
       clearBg: 'Clear Background',
-      relevantComments: 'Showing relevant comments'
+      relevantComments: 'Showing relevant comments',
+      installBanner: 'Add Space to your Home Screen!', // NEW
+      install: 'Install', // NEW
+      dismiss: 'Dismiss' // NEW
     },
     es: {
       loading: 'Cargando...',
@@ -325,7 +361,10 @@
       typeMessage: 'Escribe un mensaje...',
       changeBg: 'Cambiar fondo',
       clearBg: 'Quitar fondo',
-      relevantComments: 'Mostrando comentarios relevantes'
+      relevantComments: 'Mostrando comentarios relevantes',
+      installBanner: '¡Añade Space a tu pantalla de inicio!', // NEW
+      install: 'Instalar', // NEW
+      dismiss: 'Omitir' // NEW
     },
     yo: {
       loading: 'Nṣiṣẹ...',
@@ -399,7 +438,10 @@
       typeMessage: 'Tẹ ifiranṣẹ...',
       changeBg: 'Yi abẹlẹ pada',
       clearBg: 'Pa abẹlẹ rẹ',
-      relevantComments: 'Nfi awọn asọye to wulo han'
+      relevantComments: 'Nfi awọn asọye to wulo han',
+      installBanner: 'Fi Space kun Iboju Ile rẹ!', // NEW
+      install: 'Fi sori ẹrọ', // NEW
+      dismiss: 'Kọ' // NEW
     },
     it: {
       loading: 'Caricamento...',
@@ -473,7 +515,10 @@
       typeMessage: 'Scrivi un messaggio...',
       changeBg: 'Cambia sfondo',
       clearBg: 'Cancella sfondo',
-      relevantComments: 'Mostrando commenti pertinenti'
+      relevantComments: 'Mostrando commenti pertinenti',
+      installBanner: 'Aggiungi Space alla tua Home!', // NEW
+      install: 'Installa', // NEW
+      dismiss: 'Ignora' // NEW
     },
     fr: {
       loading: 'Chargement...',
@@ -547,7 +592,10 @@
       typeMessage: 'Écrire un message...',
       changeBg: 'Changer le fond',
       clearBg: 'Effacer le fond',
-      relevantComments: 'Affichage des commentaires pertinents'
+      relevantComments: 'Affichage des commentaires pertinents',
+      installBanner: "Ajoutez Space à votre écran d'accueil !", // NEW
+      install: 'Installer', // NEW
+      dismiss: 'Rejeter' // NEW
     },
     de: {
       loading: 'Wird geladen...',
@@ -621,7 +669,10 @@
       typeMessage: 'Nachricht eingeben...',
       changeBg: 'Hintergrund ändern',
       clearBg: 'Hintergrund löschen',
-      relevantComments: 'Relevante Kommentare werden angezeigt'
+      relevantComments: 'Relevante Kommentare werden angezeigt',
+      installBanner: 'Space zum Startbildschirm hinzufügen!', // NEW
+      install: 'Installieren', // NEW
+      dismiss: 'Schließen' // NEW
     }
   };
   // --- END I18N ---
@@ -777,19 +828,18 @@
       participants: chatId.split('_'), 
       lastMessage: lastMessage, 
       updatedAt: serverTimestamp(),
-      [targetUnreadKey]: increment(1) // Increment unread count for the receiver
+      [targetUnreadKey]: increment(1)
     }, { merge: true });
     
     await addDoc(collection(db, `chats/${chatId}/messages`), { 
       from, 
       text: text || null, 
       media: media || null, 
-      read: false, // This `read` is now just for reference
+      read: false, 
       createdAt: serverTimestamp() 
     }); 
   }
   
-  // NEW: Function to clear unread count when chat is opened
   async function clearUnreadCount(chatId, uid) {
     const key = `unreadCount_${uid}`;
     await setDoc(doc(db, 'chats', chatId), {
@@ -819,6 +869,17 @@
     } catch { return ''; }
   }
   
+  // NEW: InstallBanner Component
+  function InstallBanner({ t, onInstall, onDismiss }) {
+    return React.createElement('div', { className: 'install-banner' },
+      React.createElement('div', { className: 'install-banner-text' }, t('installBanner')),
+      React.createElement('div', { className: 'install-banner-buttons' },
+        React.createElement('button', { className: 'btn-ghost', onClick: onDismiss }, t('dismiss')),
+        React.createElement('button', { className: 'btn', onClick: onInstall }, t('install'))
+      )
+    );
+  }
+
   function App() {
     const [user, setUser] = useState(null);
     const [page, setPage] = useState('loading');
@@ -833,8 +894,12 @@
     const [showComposer, setShowComposer] = useState(false);
     const [showForgot, setShowForgot] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [totalUnread, setTotalUnread] = useState(0); // NEW: Total unread messages
-    const [chatUnreadMap, setChatUnreadMap] = useState({}); // NEW: Unread count per chat
+    const [totalUnread, setTotalUnread] = useState(0);
+    const [chatUnreadMap, setChatUnreadMap] = useState({});
+    
+    // NEW: Install Prompt State
+    const [installPromptEvent, setInstallPromptEvent] = useState(null);
+    const [showInstallBanner, setShowInstallBanner] = useState(false);
 
     const t = (key, params = {}) => {
       let text = translations[lang]?.[key] || translations['en'][key] || key;
@@ -859,7 +924,36 @@
       localStorage.setItem('lang', newLang);
     };
     
-    // NEW: Listener for unread messages
+    // NEW: Install Prompt Logic
+    useEffect(() => {
+      const handler = (e) => {
+        e.preventDefault(); // Prevent the mini-infobar
+        setInstallPromptEvent(e);
+        // Show banner only if not already installed
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+          setShowInstallBanner(true);
+        }
+      };
+      window.addEventListener('beforeinstallprompt', handler);
+      return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    const handleInstallClick = async () => {
+      if (!installPromptEvent) return;
+      installPromptEvent.prompt(); // Show the browser install dialog
+      const { outcome } = await installPromptEvent.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      }
+      setShowInstallBanner(false);
+      setInstallPromptEvent(null);
+    };
+
+    const handleDismissClick = () => {
+      setShowInstallBanner(false);
+    };
+    // --- End Install Logic ---
+
     useEffect(() => {
       if (!user) return;
       const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid));
@@ -930,6 +1024,12 @@
     }
 
     return React.createElement('div', null,
+      // NEW: Render Install Banner
+      showInstallBanner && React.createElement(InstallBanner, {
+        t,
+        onInstall: handleInstallClick,
+        onDismiss: handleDismissClick
+      }),
       React.createElement(TopBar, { t, user, userProfile, searchTerm, setSearchTerm, searchResults, page: page, onNav: navTo, onOpenProfile: navToProfile, unreadCount: totalUnread }),
       React.createElement('div', { className: 'container' },
         page === 'loading' && React.createElement('div', { className: 'card' }, t('loading')),
@@ -964,7 +1064,7 @@
                   title: 'Verified', 
                   style: { marginLeft: 6, verticalAlign: 'middle' }, 
                   dangerouslySetInnerHTML: { 
-                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
                   }
                 })
               )
@@ -973,7 +1073,6 @@
         )
       ),
       user && React.createElement('div', { className: 'topbar-icons' },
-        // UPDATED: Bell icon now shows badge and goes to messages
         React.createElement('div', { className: 'icon-btn', onClick: () => onNav('messages'), title: t('notifications') }, 
           '🔔',
           unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
@@ -994,7 +1093,6 @@
         React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
           React.createElement('div', { className: 'nav-icon' }, icons[p]),
           React.createElement('div', { className: 'nav-label' }, t(p)),
-          // UPDATED: Messages icon now shows badge
           p === 'messages' && unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
         )
       )
@@ -1342,7 +1440,7 @@
                 title: 'Verified', 
                 style: { marginLeft: 6, verticalAlign: 'middle' }, 
                 dangerouslySetInnerHTML: { 
-                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
                 }
               })
             ),
@@ -1606,12 +1704,11 @@
                 title: 'Verified', 
                 style: { marginLeft: 6, verticalAlign: 'middle', flexShrink: 0 }, 
                 dangerouslySetInnerHTML: { 
-                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
                 }
               }),
               profile.followerCount && React.createElement('span', { className: 'followers-badge' }, profile.followerCount)
             ),
-            // FIXED: Email is removed from here
             profile.status && React.createElement('div', { style: { marginTop:12, padding:12, background:'var(--hover)', borderRadius:8, fontStyle:'italic' }}, profile.status)
           )
         ),
@@ -1709,7 +1806,6 @@
     const mediaInputRef = useRef(null);
     const bgInputRef = useRef(null);
 
-    // NEW: Clear unread count on mount
     useEffect(() => {
       clearUnreadCount(chatId, currentUser.uid);
       
@@ -1929,7 +2025,7 @@
                   title: 'Verified', 
                   style: { marginLeft: 6, verticalAlign: 'middle' }, 
                   dangerouslySetInnerHTML: { 
-                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
                   }
                 }),
                 u.followerCount && React.createElement('span', { className: 'followers-badge' }, u.followerCount)
@@ -2013,6 +2109,7 @@
   const container = document.getElementById('root');
   createRoot(container).render(React.createElement(App));
 
+  // This is now required for the install prompt
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW failed', err));
@@ -2021,5 +2118,4 @@
   </script>
 </body>
 </html>
-
 
