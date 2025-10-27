@@ -1,4 +1,4 @@
-// This is a basic service worker to make the app installable (PWA)
+// This is a smarter service worker to make the app installable (PWA)
 
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Install');
@@ -12,9 +12,15 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-// A simple fetch handler
-// This just fetches from the network, but it's required by most browsers
-// to trigger the "Add to Home Screen" prompt.
 self.addEventListener('fetch', (event) => {
-  event.respondWith(fetch(event.request));
+  // We only want to intercept *navigation* requests (the HTML page itself).
+  if (event.request.mode === 'navigate') {
+    // Fetch the page from the network.
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // For all other requests (JavaScript, images, API calls, Firebase),
+  // we do *nothing*. This lets the browser handle them normally.
+  return;
 });
