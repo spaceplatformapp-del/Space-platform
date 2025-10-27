@@ -5,65 +5,89 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Space</title>
-
-  <!-- PWA + iOS support -->
-
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-512.png">
-  <meta name="theme-color" content="#0d1117">
+  <meta name="theme-color" content="#6366f1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Space">
 
   <style>
-  :root{
-    --bg:#f9fafb;--card:#ffffff;--text:#0f172a;--muted:#64748b;
-    --primary:#6366f1;--secondary:#ec4899;--accent:#8b5cf6;
-    --gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-  }
-  .dark{
-    --bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;
-    --primary:#818cf8;--secondary:#f472b6;--accent:#a78bfa;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body,#root{height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);transition:background 0.3s}
-  .container{max-width:680px;margin:0 auto;padding:16px 16px 80px;min-height:100vh}
-  .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:16px}
-  .row{display:flex;gap:12px;align-items:center}
-  .col{display:flex;flex-direction:column;gap:12px}
-  .btn{background:var(--primary);color:#fff;padding:10px 20px;border-radius:24px;border:none;cursor:pointer;font-weight:600;transition:all 0.2s}
-  .btn:hover{transform:scale(1.05)}
-  .btn-ghost{background:transparent;border:2px solid var(--muted);color:var(--text);padding:8px 16px;border-radius:20px;cursor:pointer}
-  input,textarea,select{padding:12px;border:2px solid #e2e8f0;border-radius:12px;width:100%;background:var(--card);color:var(--text)}
-  input:focus,textarea:focus{outline:none;border-color:var(--primary)}
-  textarea{min-height:100px;resize:vertical}
-  .small{font-size:13px;color:var(--muted)}
-  .avatar{width:48px;height:48px;border-radius:50%;object-fit:cover}
-  .story{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);cursor:pointer;padding:3px;background:linear-gradient(45deg,#f093fb,#f5576c)}
-  .badge{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;display:inline-block;margin-left:6px}
-  .notif-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700}
-  .post-media{max-width:100%;max-height:500px;border-radius:12px;margin-top:12px}
-  .cover{height:200px;background:var(--gradient);border-radius:12px 12px 0 0;object-fit:cover;width:100%}
-  .splash{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
-  .splash .logo{font-size:64px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .topbar{position:sticky;top:0;background:var(--card);border-bottom:1px solid #e2e8f0;padding:12px 16px;display:flex;align-items:center;gap:16px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-  .topbar-logo{font-size:28px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
-  .search-box{flex:1;max-width:400px;position:relative}
-  .bottomnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:8px 0;z-index:100}
-  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px;font-size:11px}
-  .nav-item.active{color:var(--primary)}
-  .nav-icon{font-size:24px}
-  .like-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:8px;border-radius:20px;transition:all 0.2s}
-  .like-btn:hover{background:rgba(99,102,241,0.1)}
-  .tabs{display:flex;gap:8px;border-bottom:2px solid #e2e8f0;margin-bottom:16px}
-  .tab{padding:12px 20px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:3px solid transparent}
-  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
-  .modal-content{background:var(--card);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
-  #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;z-index:99999;display:none}
-</style>
-
-  <!-- Firebase & Cloudinary Config -->
+    :root{
+      --bg:#f0f2f5;--card:#ffffff;--text:#050505;--muted:#65676b;
+      --primary:#1b74e4;--secondary:#e4405f;--accent:#8b5cf6;
+      --gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      --hover:#f2f3f5;
+    }
+    .dark{
+      --bg:#18191a;--card:#242526;--text:#e4e6eb;--muted:#b0b3b8;
+      --primary:#2d88ff;--secondary:#ff6b9d;--hover:#3a3b3c;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body,#root{height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .container{max-width:680px;margin:0 auto;padding:12px 12px 80px}
+    .card{background:var(--card);border-radius:8px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,0.2);margin-bottom:12px}
+    .card-lg{padding:20px}
+    .row{display:flex;gap:12px;align-items:center}
+    .col{display:flex;flex-direction:column;gap:12px}
+    .btn{background:var(--primary);color:#fff;padding:10px 24px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:15px}
+    .btn:hover{opacity:0.9}
+    .btn-secondary{background:var(--hover);color:var(--text)}
+    .btn-ghost{background:var(--hover);color:var(--text);padding:8px 16px;border-radius:6px;cursor:pointer;border:none;font-weight:600}
+    input,textarea,select{padding:12px;border:1px solid #ccd0d5;border-radius:6px;width:100%;background:var(--card);color:var(--text);font-size:15px}
+    input:focus,textarea:focus{outline:none;border-color:var(--primary)}
+    textarea{min-height:80px;resize:vertical;font-family:inherit}
+    .small{font-size:13px;color:var(--muted)}
+    .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover}
+    .avatar-lg{width:48px;height:48px}
+    .story-circle{width:110px;min-width:110px;height:150px;border-radius:12px;overflow:hidden;cursor:pointer;position:relative;border:3px solid var(--card);box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+    .story-circle img{width:100%;height:100%;object-fit:cover}
+    .story-avatar{position:absolute;top:8px;left:8px;width:40px;height:40px;border-radius:50%;border:4px solid var(--primary)}
+    .story-label{position:absolute;bottom:8px;left:8px;right:8px;color:#fff;font-weight:600;font-size:13px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+    .badge{background:var(--gradient);color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:6px}
+    .notif-badge{position:absolute;top:-4px;right:-4px;background:#fa3e3e;color:#fff;border-radius:50%;min-width:20px;height:20px;padding:0 6px;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid var(--card)}
+    .post-media{width:100%;max-height:600px;border-radius:8px;margin-top:12px;object-fit:cover}
+    .cover{height:200px;background:var(--gradient);border-radius:8px 8px 0 0;object-fit:cover;width:100%}
+    .splash{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
+    .splash .logo{font-size:72px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .topbar{position:sticky;top:0;background:var(--card);border-bottom:1px solid #ccd0d5;padding:8px 16px;display:flex;align-items:center;gap:12px;z-index:100;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+    .topbar-logo{font-size:32px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;width:40px}
+    .search-box{flex:1;max-width:240px;position:relative}
+    .search-input{padding:10px 16px;border-radius:50px;background:var(--hover);border:none;font-size:15px}
+    .search-results{position:absolute;top:100%;left:0;right:0;background:var(--card);border-radius:8px;margin-top:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);max-height:400px;overflow-y:auto;z-index:200}
+    .search-item{padding:12px;cursor:pointer;border-bottom:1px solid var(--hover)}
+    .search-item:hover{background:var(--hover)}
+    .topbar-icons{display:flex;gap:8px}
+    .icon-btn{width:40px;height:40px;border-radius:50%;background:var(--hover);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:20px}
+    .icon-btn:hover{background:#e4e6eb}
+    .dark .icon-btn:hover{background:#4a4b4d}
+    .bottomnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid #ccd0d5;display:flex;justify-content:space-around;padding:6px 0;z-index:100;box-shadow:0 -2px 4px rgba(0,0,0,0.1)}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:8px;border-radius:8px;margin:0 4px}
+    .nav-item:hover{background:var(--hover)}
+    .nav-item.active{color:var(--primary)}
+    .nav-item.active .nav-icon{border-bottom:3px solid var(--primary)}
+    .nav-icon{font-size:24px;padding:4px 0}
+    .nav-label{font-size:12px;font-weight:500}
+    .composer-trigger{background:var(--hover);padding:12px 16px;border-radius:50px;color:var(--muted);cursor:pointer;width:100%;text-align:left;border:none;font-size:15px}
+    .composer-trigger:hover{background:#e4e6eb}
+    .dark .composer-trigger:hover{background:#3a3b3c}
+    .like-btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;border-radius:6px;transition:all 0.2s;font-weight:600;color:var(--muted)}
+    .like-btn:hover{background:var(--hover)}
+    .like-btn.liked{color:#e4405f}
+    .comment-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--hover)}
+    .comment-item{background:var(--hover);padding:10px 12px;border-radius:16px;margin-bottom:8px}
+    .comment-author{font-weight:600;font-size:13px;margin-bottom:4px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal-content{background:var(--card);border-radius:12px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+    .tabs{display:flex;border-bottom:1px solid var(--hover);margin-bottom:16px}
+    .tab{padding:14px 20px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:3px solid transparent}
+    .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+    .friend-card{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:8px;margin-bottom:8px}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+    .empty-icon{font-size:64px;margin-bottom:16px;opacity:0.5}
+    #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fff3cd;border:2px solid #ffc107;border-radius:8px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+  </style>
 
   <script>
   window.SPACE_CONFIG = {
@@ -81,14 +105,14 @@
     },
     ADMIN_EMAIL: "spaceplatformapp@gmail.com"
   };
-</script>
+  </script>
+
 </head>
 <body>
-  <!-- Diagnostic box -->
   <div id="space-diagnostics">
-    <b>Space — diagnostic</b>
-    <div id="space-diagnostics-msg" style="margin-top:6px;font-size:13px;color:#333">Waiting...</div>
-    <button id="space-diagnostics-clear" style="margin-top:8px;padding:6px 8px;border:none;background:#2563eb;color:white;border-radius:6px;cursor:pointer">Hide</button>
+    <b>⚠️ Space Diagnostic</b>
+    <div id="space-diagnostics-msg" style="margin-top:8px;font-size:13px"></div>
+    <button id="space-diagnostics-clear" style="margin-top:8px;padding:6px 12px;border:none;background:#1b74e4;color:white;border-radius:6px;cursor:pointer">Hide</button>
   </div>
   <script>
     (function(){
@@ -98,52 +122,39 @@
       btn.onclick = ()=> box.style.display='none';
       function showError(e){
         box.style.display = 'block';
-        const text = (typeof e === 'string') ? e : (e && (e.message || e.stack || JSON.stringify(e))) || 'Unknown error';
+        const text = (typeof e === 'string') ? e : (e && (e.message || e.stack)) || 'Unknown error';
         msg.innerText = text;
         console.error('Space diagnostic:', e);
       }
-      window.addEventListener('error', (ev)=> { showError(ev.error || ev.message || 'Script error'); });
-      window.addEventListener('unhandledrejection', (ev)=> { showError('Unhandled promise rejection: ' + (ev.reason && (ev.reason.message || ev.reason))); });
-      window.SPACE_APP_OK = ()=> { box.style.display='block'; msg.innerText='App mounted successfully ✔'; setTimeout(()=> box.style.display='none', 2200); };
-      window.addEventListener('load', ()=>{
-        const c = window.SPACE_CONFIG && window.SPACE_CONFIG.firebaseConfig;
-        if (!c || !c.apiKey || c.apiKey.includes('YOUR_')) showError('Firebase config placeholders not replaced. Replace placeholders near top of index.html.');
-        const cl = window.SPACE_CONFIG && window.SPACE_CONFIG.cloudinary;
-        if (!cl || !cl.cloudName || !cl.uploadPreset) showError('Cloudinary config missing.');
-      });
+      window.addEventListener('error', (ev)=> { showError(ev.error || ev.message); });
+      window.addEventListener('unhandledrejection', (ev)=> { showError('Promise rejection: ' + (ev.reason?.message || ev.reason)); });
+      window.SPACE_APP_OK = ()=> { box.style.display='block'; msg.innerText='✅ App loaded!'; setTimeout(()=> box.style.display='none', 2000); };
     })();
   </script>
 
-  <!-- Splash screen -->
-
   <div id="splash" class="splash">
     <div class="logo">S</div>
-    <div style="font-size:24px;font-weight:700;margin-top:8px">Space</div>
-    <div class="small">Welcome — loading Space…</div>
+    <div style="font-size:28px;font-weight:700;margin-top:12px">Space</div>
+    <div class="small" style="margin-top:8px">Loading...</div>
   </div>
 
-  <div id="root" class="container" style="visibility:hidden"></div>
-
-  <!-- App code -->
+  <div id="root" style="visibility:hidden"></div>
 
   <script type="module">
   import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
   import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
   import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
   const CONFIG = window.SPACE_CONFIG || {};
-  const firebaseConfig = CONFIG.firebaseConfig || {};
-  const CLOUDINARY_CLOUD = (CONFIG.cloudinary && CONFIG.cloudinary.cloudName) || "";
-  const CLOUDINARY_UPLOAD_PRESET = (CONFIG.cloudinary && CONFIG.cloudinary.uploadPreset) || "";
-  const ADMIN_EMAIL = CONFIG.ADMIN_EMAIL || "";
-
-  const app = initializeApp(firebaseConfig);
+  const app = initializeApp(CONFIG.firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const storage = getStorage(app);
+  const CLOUDINARY_CLOUD = CONFIG.cloudinary?.cloudName || "";
+  const CLOUDINARY_UPLOAD_PRESET = CONFIG.cloudinary?.uploadPreset || "";
+  const ADMIN_EMAIL = CONFIG.ADMIN_EMAIL || "";
 
   async function uploadToCloudinary(file) {
     if (!CLOUDINARY_CLOUD || !CLOUDINARY_UPLOAD_PRESET) throw new Error('Cloudinary not configured');
@@ -156,27 +167,21 @@
     return res.json();
   }
 
-  const usersDoc = (uid) => doc(db, 'users', uid);
-  const postsCol = () => collection(db, 'posts');
-  const storiesCol = () => collection(db, 'stories');
-  const followsCol = () => collection(db, 'follows');
-  const chatMessages = (chatId) => collection(db, `chats/${chatId}/messages`);
-
   async function createUserProfile(uid, profile) {
-    await setDoc(usersDoc(uid), { ...profile, createdAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', uid), { ...profile, bio: '', status: '', createdAt: serverTimestamp() });
   }
   async function getUserProfile(uid) {
-    const d = await getDoc(usersDoc(uid));
+    const d = await getDoc(doc(db, 'users', uid));
     return d.exists() ? { id: d.id, ...d.data() } : null;
   }
   async function searchUsers(term) {
     if (!term || term.length < 2) return [];
-    const q = query(collection(db, 'users'), where('displayNameLower', '>=', term.toLowerCase()), orderBy('displayNameLower'));
+    const q = query(collection(db, 'users'), where('displayNameLower', '>=', term.toLowerCase()), orderBy('displayNameLower'), limit(10));
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
 
-  async function createPost(post) { return addDoc(postsCol(), { ...post, likes: [], comments: [], createdAt: serverTimestamp() }); }
+  async function createPost(post) { return addDoc(collection(db, 'posts'), { ...post, likes: [], comments: [], createdAt: serverTimestamp() }); }
   function subscribeFeed(cb) { const q = query(collection(db, 'posts'), orderBy('createdAt','desc')); return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); }
   async function updatePost(postId, data) { return updateDoc(doc(db,'posts',postId), data); }
   async function deletePost(postId) { return deleteDoc(doc(db,'posts',postId)); }
@@ -193,17 +198,15 @@
   }
   async function addComment(postId, uid, text) {
     const postRef = doc(db, 'posts', postId);
-    await updateDoc(postRef, { 
-      comments: arrayUnion({ uid, text, createdAt: new Date().toISOString() }) 
-    });
+    await updateDoc(postRef, { comments: arrayUnion({ uid, text, createdAt: new Date().toISOString() }) });
   }
 
   async function createStory(uid, mediaUrl, mediaType) { 
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    return addDoc(storiesCol(), { uid, mediaUrl, mediaType, createdAt: serverTimestamp(), expiresAt: expiresAt.toISOString() }); 
+    return addDoc(collection(db, 'stories'), { uid, mediaUrl, mediaType, createdAt: serverTimestamp(), expiresAt: expiresAt.toISOString() }); 
   }
   function subscribeStories(cb) { 
-    const q = query(storiesCol(), orderBy('createdAt','desc')); 
+    const q = query(collection(db, 'stories'), orderBy('createdAt','desc')); 
     return onSnapshot(q, snap => {
       const now = new Date();
       const active = snap.docs.map(d=>({ id: d.id, ...d.data() })).filter(s => {
@@ -214,13 +217,20 @@
     }); 
   }
 
-  async function followUser(fromUid, toUid) { 
-    const id = `${fromUid}_${toUid}`; 
-    await setDoc(doc(db, 'follows', id), { follower: fromUid, following: toUid, createdAt: serverTimestamp() }); 
+  async function sendFriendRequest(from, to) { 
+    const id = `${from}_${to}`;
+    await setDoc(doc(db, 'friends', id), { requester: from, target: to, status: 'pending', createdAt: serverTimestamp() });
   }
-  async function addFriend(requester, target) { 
-    const id = `${requester}_${target}`; 
-    await setDoc(doc(db, 'friends', id), { requester, target, status: 'pending', createdAt: serverTimestamp() }); 
+  async function acceptFriendRequest(requestId) {
+    await updateDoc(doc(db, 'friends', requestId), { status: 'accepted' });
+  }
+  async function declineFriendRequest(requestId) {
+    await deleteDoc(doc(db, 'friends', requestId));
+  }
+  async function getFriendRequests(uid) {
+    const q = query(collection(db, 'friends'), where('target', '==', uid), where('status', '==', 'pending'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
   async function getFriends(uid) {
     const q = query(collection(db, 'friends'), where('status', '==', 'accepted'));
@@ -229,31 +239,26 @@
   }
 
   async function sendMessage(chatId, from, text, media=null) { 
-    await addDoc(chatMessages(chatId), { from, text, media, read: false, createdAt: serverTimestamp() }); 
+    await addDoc(collection(db, `chats/${chatId}/messages`), { from, text, media, read: false, createdAt: serverTimestamp() }); 
     await setDoc(doc(db, 'chats', chatId), { participants: chatId.split('_'), lastMessage: text, updatedAt: serverTimestamp() }, { merge: true });
   }
   function subscribeMessages(chatId, cb) { 
-    const q = query(chatMessages(chatId), orderBy('createdAt','asc')); 
+    const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','asc')); 
     return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); 
-  }
-  async function getUnreadCount(uid) {
-    const chatsSnap = await getDocs(query(collection(db, 'chats'), where('participants', 'array-contains', uid)));
-    let count = 0;
-    for (const chatDoc of chatsSnap.docs) {
-      const msgsSnap = await getDocs(query(chatMessages(chatDoc.id), where('read', '==', false), where('from', '!=', uid)));
-      count += msgsSnap.size;
-    }
-    return count;
   }
 
   function fmtDate(ts) {
     if (!ts) return '';
-    try { 
-      if (ts.seconds) return new Date(ts.seconds*1000).toLocaleString(); 
-      return new Date(ts).toLocaleString(); 
+    try {
+      const date = ts.seconds ? new Date(ts.seconds*1000) : new Date(ts);
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000);
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return `${Math.floor(diff/60)}m`;
+      if (diff < 86400) return `${Math.floor(diff/3600)}h`;
+      return date.toLocaleDateString();
     } catch { return ''; }
   }
-
   function App() {
     const [user, setUser] = useState(null);
     const [page, setPage] = useState('loading');
@@ -264,8 +269,9 @@
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [selectedProfile, setSelectedProfile] = useState(null);
-    const [unreadMsgs, setUnreadMsgs] = useState(0);
     const [userProfile, setUserProfile] = useState(null);
+    const [showComposer, setShowComposer] = useState(false);
+    const [showForgot, setShowForgot] = useState(false);
 
     useEffect(()=> {
       const splash = document.getElementById('splash');
@@ -275,11 +281,7 @@
           const prof = await getUserProfile(u.uid);
           setUserProfile(prof);
           if (!prof) setPage('register'); 
-          else {
-            setPage('home');
-            const count = await getUnreadCount(u.uid);
-            setUnreadMsgs(count);
-          }
+          else setPage('home');
         } else {
           setPage('login');
         }
@@ -289,7 +291,8 @@
       setTimeout(()=> {
         if (splash) splash.style.display = 'none';
         document.getElementById('root').style.visibility = 'visible';
-      }, 700);
+        if (window.SPACE_APP_OK) window.SPACE_APP_OK();
+      }, 800);
       return ()=> { unsubFeed(); unsubStories(); };
     }, []);
 
@@ -298,138 +301,117 @@
       localStorage.setItem('theme', theme); 
     }, [theme]);
     
-    useEffect(()=> { localStorage.setItem('lang', lang); }, [lang]);
-
     useEffect(()=> {
-      const t = setTimeout(async ()=> {
+      const timeout = setTimeout(async ()=> {
         if (searchTerm.length >= 2) { 
           const r = await searchUsers(searchTerm); 
           setSearchResults(r); 
         } else setSearchResults([]);
       }, 300);
-      return ()=> clearTimeout(t);
+      return ()=> clearTimeout(timeout);
     }, [searchTerm]);
 
+    if (!user && (page === 'login' || page === 'register')) {
+      return React.createElement('div', { className: 'container' },
+        page === 'login' && React.createElement(LoginPage, { onSuccess: () => setPage('home'), onSwitch: () => setPage('register'), onForgot: () => setShowForgot(true) }),
+        page === 'register' && React.createElement(RegisterPage, { onSuccess: () => setPage('home'), onSwitch: () => setPage('login') }),
+        showForgot && React.createElement(ForgotModal, { onClose: () => setShowForgot(false) })
+      );
+    }
+
     return React.createElement('div', null,
-      React.createElement(TopBar, { 
-        user, 
-        userProfile,
-        onNav: setPage, 
-        theme, 
-        setTheme, 
-        lang, 
-        setLang, 
-        searchTerm, 
-        setSearchTerm, 
-        searchResults, 
-        unreadMsgs,
-        onOpenProfile: uid => { setSelectedProfile(uid); setPage('profile'); } 
-      }),
-      React.createElement('div', { style: { minHeight: '60vh' } },
+      React.createElement(TopBar, { user, userProfile, searchTerm, setSearchTerm, searchResults, onNav: setPage, onOpenProfile: uid => { setSelectedProfile(uid); setPage('profile'); }}),
+      React.createElement('div', { className: 'container' },
         page === 'loading' && React.createElement('div', { className: 'card' }, 'Loading...'),
-        page === 'login' && React.createElement(LoginPage, { onSuccess: () => setPage('home') }),
-        page === 'register' && React.createElement(RegisterPage, { onSuccess: () => setPage('home') }),
-        page === 'home' && React.createElement(HomePage, { user, feed, stories }),
-        page === 'profile' && React.createElement(ProfilePage, { uid: selectedProfile || (user && user.uid) }),
-        page === 'settings' && React.createElement(SettingsPage, { lang, setLang }),
-        page === 'messages' && React.createElement(MessagesPage, { currentUser: user, onMsgRead: () => setUnreadMsgs(0) }),
-        page === 'admin' && React.createElement(AdminPage, null)
+        page === 'home' && React.createElement(HomePage, { user, feed, stories, showComposer, setShowComposer }),
+        page === 'friends' && React.createElement(FriendsPage, { user }),
+        page === 'profile' && React.createElement(ProfilePage, { uid: selectedProfile || (user && user.uid), currentUser: user }),
+        page === 'messages' && React.createElement(MessagesPage, { currentUser: user }),
+        page === 'settings' && React.createElement(SettingsPage, { lang, setLang, theme, setTheme }),
+        page === 'admin' && userProfile && userProfile.verified && React.createElement(AdminPage, null)
       ),
-      React.createElement(Footer, null)
+      user && React.createElement(BottomNav, { page, setPage, userProfile })
     );
   }
 
-  function TopBar({ user, userProfile, onNav, theme, setTheme, lang, setLang, searchTerm, setSearchTerm, searchResults, unreadMsgs, onOpenProfile }) {
+  function TopBar({ user, userProfile, searchTerm, setSearchTerm, searchResults, onNav, onOpenProfile }) {
     return React.createElement('div', { className: 'topbar' },
-      React.createElement('div', { className: 'row' },
-        React.createElement('div', { style: { fontWeight:800, fontSize:24, background:'linear-gradient(135deg,#667eea,#764ba2)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' } }, 'S'),
-        React.createElement('div', { style: { fontWeight:700, fontSize:20, marginLeft:4 } }, 'Space'),
-        React.createElement('div', { className: 'card row', style: { position:'relative' } },
-          React.createElement('input', { className: 'search-input', placeholder: 'Search friends...', value: searchTerm, onInput: e => setSearchTerm(e.target.value) }),
-          (searchResults && searchResults.length > 0) && React.createElement('div', { className: 'card', style: { position:'absolute', marginTop:56, zIndex:20, maxHeight:200, overflow:'auto' } },
-            searchResults.map(s => React.createElement('div', { key: s.id, style: { padding:'6px', cursor:'pointer' }, onClick: () => { onOpenProfile(s.id); setSearchTerm(''); } }, 
-              s.displayName || s.email,
-              s.verified && React.createElement('span', { className: 'badge' }, '✔')
-            ))
-          )
+      React.createElement('div', { className: 'topbar-logo', onClick: () => onNav('home') }, 'S'),
+      user && React.createElement('div', { className: 'search-box' },
+        React.createElement('input', { className: 'search-input', placeholder: '🔍 Search...', value: searchTerm, onInput: e => setSearchTerm(e.target.value) }),
+        searchResults.length > 0 && React.createElement('div', { className: 'search-results' },
+          searchResults.map(s => React.createElement('div', { key: s.id, className: 'search-item', onClick: () => { onOpenProfile(s.id); setSearchTerm(''); }},
+            React.createElement('div', { className: 'row' },
+              s.avatarUrl && React.createElement('img', { src: s.avatarUrl, className: 'avatar' }),
+              React.createElement('div', null,
+                React.createElement('div', { style: { fontWeight:600 } }, s.displayName),
+                s.verified && React.createElement('span', { className: 'badge' }, '✔')
+              )
+            )
+          ))
         )
       ),
-      React.createElement('div', { className: 'row' },
-        React.createElement('select', { value: lang, onChange: e => setLang(e.target.value), className: 'small' },
-          React.createElement('option', { value: 'en' }, 'EN'),
-          React.createElement('option', { value: 'yo' }, 'YO'),
-          React.createElement('option', { value: 'pt' }, 'PT')
-        ),
-        React.createElement('button', { className: 'btn-ghost', onClick: () => setTheme(theme === 'light' ? 'dark' : 'light') }, theme === 'light' ? '🌞' : '🌙'),
-        user ? React.createElement(React.Fragment, null,
-          React.createElement('button', { className: 'btn', onClick: () => onNav('home') }, 'Home'),
-          React.createElement('button', { className: 'btn-ghost', onClick: () => onNav('profile') }, 'Profile'),
-          React.createElement('div', { style: { position:'relative' } },
-            React.createElement('button', { className: 'btn-ghost', onClick: () => onNav('messages') }, '💬'),
-            unreadMsgs > 0 && React.createElement('span', { className: 'msg-badge' }, unreadMsgs)
+      user && React.createElement('div', { className: 'topbar-icons' },
+        React.createElement('div', { className: 'icon-btn', onClick: () => onNav('notifications') }, '🔔'),
+        userProfile?.avatarUrl && React.createElement('img', { src: userProfile.avatarUrl, className: 'avatar', onClick: () => onNav('profile'), style: { cursor:'pointer' }})
+      )
+    );
+  }
+
+  function BottomNav({ page, setPage, userProfile }) {
+    return React.createElement('div', { className: 'bottomnav' },
+      ['home','friends','messages','profile','settings'].map(p => 
+        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
+          React.createElement('div', { className: 'nav-icon' }, 
+            p === 'home' ? '🏠' : p === 'friends' ? '👥' : p === 'messages' ? '💬' : p === 'profile' ? '👤' : '⚙️'
           ),
-          React.createElement('button', { className: 'btn-ghost', onClick: () => onNav('settings') }, 'Settings'),
-          userProfile && userProfile.verified && React.createElement('button', { className: 'btn-ghost', onClick: () => onNav('admin') }, 'Admin'),
-          React.createElement('button', { className: 'btn-ghost', onClick: async () => { await signOut(auth); window.location.reload(); } }, 'Logout')
-        ) : React.createElement(React.Fragment, null,
-          React.createElement('button', { className: 'btn', onClick: () => onNav('login') }, 'Login'),
-          React.createElement('button', { className: 'btn-ghost', onClick: () => onNav('register') }, 'Sign up')
+          React.createElement('div', { className: 'nav-label' }, p.charAt(0).toUpperCase() + p.slice(1))
         )
       )
     );
   }
 
-  function LoginPage({ onSuccess }) {
+  function LoginPage({ onSuccess, onSwitch, onForgot }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
     async function submit(e) {
-      e && e.preventDefault();
+      e?.preventDefault();
       setMsg('');
       try { 
         await signInWithEmailAndPassword(auth, email, password); 
-        onSuccess && onSuccess(); 
+        onSuccess();
       } catch (err) { 
-        console.error(err); 
-        setMsg(err.message || 'Login failed'); 
+        setMsg(err.message);
       }
     }
-    async function forgot() {
-      if (!email) return alert('Enter your email then press Forgot password');
-      try { 
-        await sendPasswordResetEmail(auth, email); 
-        alert('Reset email sent'); 
-      } catch (err) { 
-        alert(err.message || 'Failed'); 
-      }
-    }
-    return React.createElement('div', { className: 'card' },
-      React.createElement('h3', null, 'Login'),
+    return React.createElement('div', { className: 'card card-lg', style: { maxWidth:400, margin:'60px auto' }},
+      React.createElement('h1', { style: { textAlign:'center', background:'var(--gradient)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', marginBottom:24 }}, 'Space'),
       React.createElement('form', { onSubmit: submit, className: 'col' },
-        React.createElement('input', { placeholder: 'Email', value: email, onInput: e => setEmail(e.target.value) }),
-        React.createElement('input', { placeholder: 'Password', type: 'password', value: password, onInput: e => setPassword(e.target.value) }),
-        React.createElement('div', { className: 'row' },
-          React.createElement('button', { className: 'btn', type: 'submit' }, 'Login'),
-          React.createElement('button', { type: 'button', className: 'btn-ghost', onClick: forgot }, 'Forgot password?')
-        ),
-        msg && React.createElement('div', { className: 'small danger' }, msg)
+        React.createElement('input', { placeholder: 'Email', type: 'email', value: email, onInput: e => setEmail(e.target.value), required: true }),
+        React.createElement('input', { placeholder: 'Password', type: 'password', value: password, onInput: e => setPassword(e.target.value), required: true }),
+        React.createElement('button', { className: 'btn', type: 'submit', style: { width:'100%' }}, 'Log In'),
+        React.createElement('a', { href: '#', onClick: e => { e.preventDefault(); onForgot(); }, style: { textAlign:'center', fontSize:14, color:'var(--primary)' }}, 'Forgot password?'),
+        msg && React.createElement('div', { style: { color:'#fa3e3e', fontSize:14, textAlign:'center' }}, msg)
+      ),
+      React.createElement('div', { style: { textAlign:'center', marginTop:20, paddingTop:20, borderTop:'1px solid var(--hover)' }},
+        React.createElement('button', { className: 'btn-secondary', onClick: onSwitch, style: { padding:'10px 24px', borderRadius:6 }}, 'Create Account')
       )
     );
   }
 
-  function RegisterPage({ onSuccess }) {
+  function RegisterPage({ onSuccess, onSwitch }) {
     const [form, setForm] = useState({ name:'', dob:'', gender:'', email:'', password:'' });
     const [error, setError] = useState('');
     async function submit(e) {
-      e && e.preventDefault();
+      e?.preventDefault();
       setError('');
       try {
         const cred = await createUserWithEmailAndPassword(auth, form.email, form.password);
-        const uid = cred.user.uid;
-        const isAdmin = (form.email && form.email.toLowerCase() === (ADMIN_EMAIL || '').toLowerCase());
-        await createUserProfile(uid, {
+        const isAdmin = form.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        await createUserProfile(cred.user.uid, {
           displayName: form.name,
-          displayNameLower: (form.name || '').toLowerCase(),
+          displayNameLower: form.name.toLowerCase(),
           dob: form.dob,
           gender: form.gender,
           email: form.email,
@@ -437,66 +419,132 @@
           coverUrl: null,
           verified: isAdmin
         });
-        if (ADMIN_EMAIL && form.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-          try {
-            const q = query(collection(db,'users'), where('email','==',ADMIN_EMAIL));
-            const snap = await getDocs(q);
-            if (!snap.empty) {
-              const adminUid = snap.docs[0].id;
-              await followUser(uid, adminUid);
-            }
-          } catch(e){}
+        if (ADMIN_EMAIL && !isAdmin) {
+          const q = query(collection(db,'users'), where('email','==',ADMIN_EMAIL));
+          const snap = await getDocs(q);
+          if (!snap.empty) await sendFriendRequest(cred.user.uid, snap.docs[0].id);
         }
         try { await sendEmailVerification(cred.user); } catch(e){}
-        alert('Registered. Verification email sent. Please verify your email.');
-        onSuccess && onSuccess();
+        alert('✅ Account created!');
+        onSuccess();
       } catch (err) { 
-        console.error(err); 
-        setError(err.message || 'Failed to register'); 
+        setError(err.message);
       }
     }
-    return React.createElement('div', { className: 'card' },
-      React.createElement('h3', null, 'Sign up'),
+    return React.createElement('div', { className: 'card card-lg', style: { maxWidth:400, margin:'40px auto' }},
+      React.createElement('h2', { style: { textAlign:'center', marginBottom:24 }}, 'Sign Up'),
       React.createElement('form', { onSubmit: submit, className: 'col' },
         React.createElement('input', { placeholder: 'Full name', value: form.name, onInput: e => setForm({...form, name: e.target.value}), required: true }),
-        React.createElement('label', { className: 'small' }, 'Date of birth'),
         React.createElement('input', { type: 'date', value: form.dob, onInput: e => setForm({...form, dob: e.target.value}), required: true }),
         React.createElement('select', { value: form.gender, onChange: e => setForm({...form, gender: e.target.value}), required: true },
-          React.createElement('option', { value: '' }, 'Select gender'),
+          React.createElement('option', { value: '' }, 'Gender'),
           React.createElement('option', { value: 'male' }, 'Male'),
           React.createElement('option', { value: 'female' }, 'Female'),
           React.createElement('option', { value: 'other' }, 'Other')
         ),
-        React.createElement('input', { placeholder: 'Email', value: form.email, onInput: e => setForm({...form, email: e.target.value}), required: true }),
+        React.createElement('input', { placeholder: 'Email', type: 'email', value: form.email, onInput: e => setForm({...form, email: e.target.value}), required: true }),
         React.createElement('input', { placeholder: 'Password', type: 'password', value: form.password, onInput: e => setForm({...form, password: e.target.value}), required: true }),
-        React.createElement('div', { className: 'row' }, React.createElement('button', { className: 'btn', type: 'submit' }, 'Create account')),
-        error && React.createElement('div', { className: 'small danger' }, error)
+        React.createElement('button', { className: 'btn', type: 'submit', style: { width:'100%' }}, 'Sign Up'),
+        error && React.createElement('div', { style: { color:'#fa3e3e', fontSize:14, textAlign:'center' }}, error)
+      ),
+      React.createElement('div', { style: { textAlign:'center', marginTop:20 }},
+        React.createElement('a', { href: '#', onClick: e => { e.preventDefault(); onSwitch(); }, style: { color:'var(--primary)' }}, 'Already have an account?')
       )
     );
   }
 
-  function HomePage({ user, feed, stories }) {
-    return React.createElement('div', null,
-      React.createElement('div', { className: 'card row' }, React.createElement('div', { style: { display:'flex', flexDirection:'column', flex:1 } }, React.createElement(Composer, null))),
-      React.createElement('div', { className: 'card' },
-        React.createElement('h4', null, 'Stories'),
-        React.createElement('div', { className: 'row', style: { overflowX:'auto' } },
-          React.createElement(StoryComposer, null),
-          stories.map(s => React.createElement('div', { key: s.id, style: { marginLeft:8 } }, React.createElement('img', { src: s.mediaUrl, className: 'story', onClick: () => window.open(s.mediaUrl, '_blank') })))
+  function ForgotModal({ onClose }) {
+    const [email, setEmail] = useState('');
+    const [msg, setMsg] = useState('');
+    async function submit(e) {
+      e?.preventDefault();
+      try {
+        await sendPasswordResetEmail(auth, email);
+        setMsg('✅ Reset link sent!');
+        setTimeout(onClose, 2000);
+      } catch (err) {
+        setMsg('❌ ' + err.message);
+      }
+    }
+    return React.createElement('div', { className: 'modal', onClick: onClose },
+      React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
+        React.createElement('h3', { style: { marginBottom:20 }}, 'Reset Password'),
+        React.createElement('form', { onSubmit: submit, className: 'col' },
+          React.createElement('input', { placeholder: 'Enter email', type: 'email', value: email, onInput: e => setEmail(e.target.value), required: true }),
+          React.createElement('div', { className: 'row', style: { gap:12 }},
+            React.createElement('button', { className: 'btn', type: 'submit', style: { flex:1 }}, 'Send'),
+            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, 'Cancel')
+          ),
+          msg && React.createElement('div', { style: { textAlign:'center', marginTop:12 }}, msg)
         )
-      ),
-      React.createElement('div', null, feed.map(p => React.createElement(PostCard, { key: p.id, post: p, currentUser: user })))
+      )
     );
   }
 
-  function Composer() {
+  function HomePage({ user, feed, stories, showComposer, setShowComposer }) {
+    return React.createElement('div', null,
+      React.createElement('div', { className: 'card' },
+        React.createElement('div', { className: 'row', style: { alignItems:'flex-start', gap:16 }},
+          React.createElement('div', { className: 'avatar-lg', style: { background:'var(--gradient)', flexShrink:0 }}),
+          React.createElement('button', { className: 'composer-trigger', onClick: () => setShowComposer(true), style: { flex:1 }}, "What's on your mind?")
+        )
+      ),
+      React.createElement('div', { className: 'card', style: { padding:'16px 12px' }},
+        React.createElement('div', { className: 'row', style: { overflowX:'auto', gap:12, paddingBottom:8 }},
+          React.createElement(StoryComposer, { user }),
+          stories.slice(0,5).map(s => React.createElement(StoryCard, { key: s.id, story: s }))
+        )
+      ),
+      showComposer && React.createElement(ComposerModal, { user, onClose: () => setShowComposer(false) }),
+      feed.length === 0 && React.createElement('div', { className: 'empty-state' },
+        React.createElement('div', { className: 'empty-icon' }, '📝'),
+        React.createElement('div', null, 'No posts yet')
+      ),
+      feed.map(p => React.createElement(PostCard, { key: p.id, post: p, currentUser: user }))
+    );
+  }
+
+  function StoryComposer({ user }) {
+    const fileInput = useRef(null);
+    const [loading, setLoading] = useState(false);
+    async function handleFile(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      setLoading(true);
+      try {
+        const res = await uploadToCloudinary(file);
+        await createStory(user.uid, res.secure_url, res.resource_type || 'image');
+      } catch { alert('❌ Upload failed'); } finally { setLoading(false); }
+    }
+    return React.createElement('div', { className: 'story-circle', onClick: () => fileInput.current?.click(), style: { background:'var(--hover)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column' }},
+      React.createElement('input', { ref: fileInput, type: 'file', accept: 'image/*,video/*', onChange: handleFile, style: { display:'none' }}),
+      React.createElement('div', { style: { fontSize:32 }}, loading ? '⏳' : '➕'),
+      React.createElement('div', { style: { fontSize:13, fontWeight:600, marginTop:8 }}, 'Create')
+    );
+  }
+
+  function StoryCard({ story }) {
+    const [author, setAuthor] = useState(null);
+    useEffect(() => {
+      (async () => {
+        const prof = await getUserProfile(story.uid);
+        setAuthor(prof);
+      })();
+    }, [story.uid]);
+    return React.createElement('div', { className: 'story-circle', onClick: () => window.open(story.mediaUrl, '_blank') },
+      React.createElement('img', { src: story.mediaUrl }),
+      author?.avatarUrl && React.createElement('img', { src: author.avatarUrl, className: 'story-avatar' }),
+      React.createElement('div', { className: 'story-label' }, author?.displayName || 'User')
+    );
+  }
+
+  function ComposerModal({ user, onClose }) {
     const [text, setText] = useState('');
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
-    const me = auth.currentUser;
     async function submit(e) {
-      e && e.preventDefault();
-      if (!me) return alert('Login first');
+      e?.preventDefault();
+      if (!text && !file) return;
       setLoading(true);
       try {
         let media = null;
@@ -504,476 +552,291 @@
           const res = await uploadToCloudinary(file);
           media = { url: res.secure_url, type: res.resource_type || 'image' };
         }
-        await createPost({ authorId: me.uid, content: text, media, likes: [], comments: [], createdAt: serverTimestamp() });
-        setText(''); setFile(null);
-      } catch (err) { console.error(err); alert('Failed to post'); } finally { setLoading(false); }
+        await createPost({ authorId: user.uid, content: text, media });
+        onClose();
+      } catch { alert('❌ Failed'); } finally { setLoading(false); }
     }
-    return React.createElement('form', { onSubmit: submit, className: 'col' },
-      React.createElement('textarea', { placeholder: "What's happening?", value: text, onInput: e => setText(e.target.value) }),
-      React.createElement('input', { type: 'file', accept: 'image/*,video/*', onChange: e => setFile(e.target.files[0]) }),
-      React.createElement('div', { className: 'row' }, React.createElement('button', { className: 'btn', type: 'submit', disabled: loading }, loading ? 'Posting...' : 'Post'))
-    );
-  }
-
-  function StoryComposer() {
-    const [file, setFile] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const me = auth.currentUser;
-    async function submit(e) {
-      e && e.preventDefault();
-      if (!me) return alert('Login to add a story');
-      if (!file) return alert('Pick a file');
-      setLoading(true);
-      try {
-        const res = await uploadToCloudinary(file);
-        await createStory(me.uid, res.secure_url, res.resource_type || 'image');
-        setFile(null);
-      } catch (err) { console.error(err); alert('Story upload failed'); } finally { setLoading(false); }
-    }
-    return React.createElement('form', { onSubmit: submit, className: 'col', style: { minWidth:120 } },
-      React.createElement('input', { type: 'file', accept: 'image/*,video/*', onChange: e => setFile(e.target.files[0]) }),
-      React.createElement('button', { className: 'btn-ghost', type: 'submit', disabled: loading }, loading ? 'Uploading...' : 'Add Story')
+    return React.createElement('div', { className: 'modal', onClick: onClose },
+      React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
+        React.createElement('h3', { style: { marginBottom:20 }}, 'Create Post'),
+        React.createElement('form', { onSubmit: submit, className: 'col' },
+          React.createElement('textarea', { placeholder: "What's on your mind?", value: text, onInput: e => setText(e.target.value), style: { minHeight:120 }}),
+          React.createElement('input', { type: 'file', accept: 'image/*,video/*', onChange: e => setFile(e.target.files?.[0]) }),
+          React.createElement('div', { className: 'row', style: { gap:12 }},
+            React.createElement('button', { className: 'btn', type: 'submit', disabled: loading, style: { flex:1 }}, loading ? 'Posting...' : 'Post'),
+            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, 'Cancel')
+          )
+        )
+      )
     );
   }
 
   function PostCard({ post, currentUser }) {
-    const me = currentUser;
-    const isMine = me && me.uid === post.authorId;
-    const [editing, setEditing] = useState(false);
-    const [text, setText] = useState(post.content || '');
+    const [author, setAuthor] = useState(null);
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
-    const [authorProfile, setAuthorProfile] = useState(null);
-    const liked = me && post.likes && post.likes.includes(me.uid);
+    const liked = post.likes?.includes(currentUser?.uid);
+    const isMine = currentUser?.uid === post.authorId;
 
     useEffect(() => {
       (async () => {
-        if (post.authorId) {
-          const prof = await getUserProfile(post.authorId);
-          setAuthorProfile(prof);
-        }
+        const prof = await getUserProfile(post.authorId);
+        setAuthor(prof);
       })();
     }, [post.authorId]);
 
-    async function save() { 
-      try { 
-        await updatePost(post.id, { content: text }); 
-        setEditing(false); 
-      } catch (err) { 
-        alert('Failed'); 
-      } 
-    }
-    
-    async function remove() { 
-      if (!confirm('Delete post?')) return; 
-      try { 
-        await deletePost(post.id); 
-      } catch (e) { 
-        alert('Failed to delete'); 
-      } 
-    }
-
     async function handleLike() {
-      if (!me) return alert('Login to like');
-      try {
-        await toggleLike(post.id, me.uid);
-      } catch (err) {
-        console.error(err);
-      }
+      if (!currentUser) return;
+      await toggleLike(post.id, currentUser.uid);
     }
 
     async function submitComment() {
-      if (!me) return alert('Login to comment');
       if (!commentText.trim()) return;
-      try {
-        await addComment(post.id, me.uid, commentText);
-        setCommentText('');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to add comment');
-      }
+      await addComment(post.id, currentUser.uid, commentText);
+      setCommentText('');
+    }
+
+    async function handleDelete() {
+      if (!confirm('Delete?')) return;
+      await deletePost(post.id);
     }
 
     return React.createElement('div', { className: 'card' },
-      React.createElement('div', { className: 'row', style: { justifyContent:'space-between' } },
+      React.createElement('div', { className: 'row', style: { justifyContent:'space-between', marginBottom:12 }},
         React.createElement('div', { className: 'row' },
-          authorProfile && authorProfile.avatarUrl && React.createElement('img', { src: authorProfile.avatarUrl, className: 'avatar', style: { width:32, height:32 } }),
-          React.createElement('div', null, 
-            React.createElement('strong', null, authorProfile ? authorProfile.displayName : post.authorId),
-            authorProfile && authorProfile.verified && React.createElement('span', { className: 'badge' }, '✔'),
+          React.createElement('img', { src: author?.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
+          React.createElement('div', null,
+            React.createElement('div', { style: { fontWeight:600, fontSize:15 }}, 
+              author?.displayName || 'User',
+              author?.verified && React.createElement('span', { className: 'badge' }, '✔')
+            ),
             React.createElement('div', { className: 'small' }, fmtDate(post.createdAt))
           )
         ),
-        isMine && React.createElement('div', { className: 'row space-x' }, 
-          React.createElement('button', { className: 'btn-ghost', onClick: () => setEditing(!editing) }, 'Edit'), 
-          React.createElement('button', { className: 'btn-ghost danger', onClick: remove }, 'Delete')
+        isMine && React.createElement('button', { className: 'btn-ghost', onClick: handleDelete, style: { padding:'6px 12px', color:'#fa3e3e' }}, '🗑️')
+      ),
+      post.content && React.createElement('p', { style: { margin:'12px 0', fontSize:15, lineHeight:1.4 }}, post.content),
+      post.media && (post.media.type?.startsWith('video') ? 
+        React.createElement('video', { src: post.media.url, controls: true, className: 'post-media' }) :
+        React.createElement('img', { src: post.media.url, className: 'post-media' })
+      ),
+      React.createElement('div', { style: { display:'flex', gap:8, marginTop:12, paddingTop:12, borderTop:'1px solid var(--hover)' }},
+        React.createElement('div', { className: `like-btn ${liked ? 'liked' : ''}`, onClick: handleLike },
+          React.createElement('span', { style: { fontSize:20 }}, liked ? '❤️' : '🤍'),
+          React.createElement('span', null, post.likes?.length || 0)
+        ),
+        React.createElement('div', { className: 'like-btn', onClick: () => setShowComments(!showComments) },
+          React.createElement('span', { style: { fontSize:20 }}, '💬'),
+          React.createElement('span', null, post.comments?.length || 0)
         )
       ),
-      editing ? React.createElement('div', { className: 'mt' }, 
-        React.createElement('textarea', { value: text, onInput: e => setText(e.target.value) }), 
-        React.createElement('button', { className: 'btn', onClick: save }, 'Save')
-      ) : React.createElement('div', null, 
-        React.createElement('p', null, post.content), 
-        post.media && React.createElement('div', null, 
-          post.media.type && post.media.type.startsWith('video') ? 
-            React.createElement('video', { src: post.media.url, controls: true, className: 'post-media' }) : 
-            React.createElement('img', { src: post.media.url, className: 'post-media' })
-        ),
-        React.createElement('div', { className: 'row mt', style: { gap: 16 } },
-          React.createElement('div', { className: 'like-btn', onClick: handleLike },
-            React.createElement('span', null, liked ? '❤️' : '🤍'),
-            React.createElement('span', { className: 'small' }, (post.likes && post.likes.length) || 0)
-          ),
-          React.createElement('div', { className: 'like-btn', onClick: () => setShowComments(!showComments) },
-            React.createElement('span', null, '💬'),
-            React.createElement('span', { className: 'small' }, (post.comments && post.comments.length) || 0)
-          )
-        ),
-        showComments && React.createElement('div', { className: 'comment-box' },
-          post.comments && post.comments.map((c, i) => React.createElement('div', { key: i, style: { marginBottom: 8, padding: 8, background: 'var(--card)', borderRadius: 6 } },
-            React.createElement('div', { className: 'small' }, React.createElement('strong', null, c.uid)),
-            React.createElement('div', null, c.text)
-          )),
-          React.createElement('div', { className: 'row mt' },
-            React.createElement('input', { placeholder: 'Write a comment...', value: commentText, onInput: e => setCommentText(e.target.value) }),
-            React.createElement('button', { className: 'btn', onClick: submitComment }, 'Post')
-          )
+      showComments && React.createElement('div', { className: 'comment-section' },
+        post.comments?.map((c, i) => React.createElement('div', { key: i, className: 'comment-item' },
+          React.createElement('div', { className: 'comment-author' }, c.uid),
+          React.createElement('div', null, c.text)
+        )),
+        React.createElement('div', { className: 'row', style: { marginTop:12 }},
+          React.createElement('input', { placeholder: 'Comment...', value: commentText, onInput: e => setCommentText(e.target.value), onKeyPress: e => e.key === 'Enter' && submitComment() }),
+          React.createElement('button', { className: 'btn', onClick: submitComment, style: { padding:'8px 16px' }}, '➤')
         )
       )
     );
   }
 
-  function ProfilePage({ uid }) {
-    const [profile, setProfile] = useState(null);
-    const [editing, setEditing] = useState(false);
-    const [name, setName] = useState('');
-    const [avatarFile, setAvatarFile] = useState(null);
-    const [coverFile, setCoverFile] = useState(null);
+  function FriendsPage({ user }) {
+    const [requests, setRequests] = useState([]);
     const [friends, setFriends] = useState([]);
-    const me = auth.currentUser;
-    const owner = !uid || (me && uid === me.uid);
-    const viewUid = uid || (me && me.uid);
 
-    useEffect(()=> {
-      if (!viewUid) return;
-      let mounted = true;
-      (async ()=> {
-        const p = await getUserProfile(viewUid);
-        if (mounted) { 
-          setProfile(p); 
-          setName(p?.displayName || ''); 
-        }
-        const friendsList = await getFriends(viewUid);
-        if (mounted) setFriends(friendsList);
+    useEffect(() => {
+      (async () => {
+        const reqs = await getFriendRequests(user.uid);
+        const frds = await getFriends(user.uid);
+        setRequests(reqs);
+        setFriends(frds);
       })();
-      return ()=> mounted = false;
-    }, [viewUid]);
+    }, [user.uid]);
 
-    async function save() {
-      if (!viewUid) return;
-      try {
-        let avatarUrl = profile?.avatarUrl || null;
-        let coverUrl = profile?.coverUrl || null;
-        
-        if (avatarFile) {
-          const r = await uploadToCloudinary(avatarFile);
-          avatarUrl = r.secure_url;
-        }
-        if (coverFile) {
-          const r = await uploadToCloudinary(coverFile);
-          coverUrl = r.secure_url;
-        }
-        
-        await updateDoc(doc(db, 'users', viewUid), { 
-          displayName: name, 
-          displayNameLower: name.toLowerCase(),
-          avatarUrl,
-          coverUrl 
-        });
-        const p = await getUserProfile(viewUid);
+    async function accept(req) {
+      await acceptFriendRequest(req.id);
+      setRequests(requests.filter(r => r.id !== req.id));
+      const frds = await getFriends(user.uid);
+      setFriends(frds);
+    }
+
+    async function decline(req) {
+      await declineFriendRequest(req.id);
+      setRequests(requests.filter(r => r.id !== req.id));
+    }
+
+    return React.createElement('div', null,
+      React.createElement('div', { className: 'card' },
+        React.createElement('h3', { style: { marginBottom:16 }}, `Requests (${requests.length})`),
+        requests.length === 0 && React.createElement('div', { className: 'small' }, 'No requests'),
+        requests.map(req => React.createElement(FriendRequestCard, { key: req.id, request: req, onAccept: () => accept(req), onDecline: () => decline(req) }))
+      ),
+      React.createElement('div', { className: 'card' },
+        React.createElement('h3', { style: { marginBottom:16 }}, `Friends (${friends.length})`),
+        friends.length === 0 && React.createElement('div', { className: 'empty-state' },
+          React.createElement('div', { className: 'empty-icon' }, '👥'),
+          React.createElement('div', null, 'No friends yet')
+        )
+      )
+    );
+  }
+
+  function FriendRequestCard({ request, onAccept, onDecline }) {
+    const [requester, setRequester] = useState(null);
+    useEffect(() => {
+      (async () => {
+        const prof = await getUserProfile(request.requester);
+        setRequester(prof);
+      })();
+    }, [request.requester]);
+
+    if (!requester) return null;
+
+    return React.createElement('div', { className: 'friend-card' },
+      React.createElement('div', { className: 'row' },
+        React.createElement('img', { src: requester.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
+        React.createElement('div', null,
+          React.createElement('div', { style: { fontWeight:600 }}, requester.displayName),
+          React.createElement('div', { className: 'small' }, requester.email)
+        )
+      ),
+      React.createElement('div', { className: 'row', style: { gap:8 }},
+        React.createElement('button', { className: 'btn', onClick: onAccept }, 'Accept'),
+        React.createElement('button', { className: 'btn-ghost', onClick: onDecline }, 'Decline')
+      )
+    );
+  }
+
+  function ProfilePage({ uid, currentUser }) {
+    const [profile, setProfile] = useState(null);
+    const [tab, setTab] = useState('posts');
+    const owner = !uid || (currentUser && uid === currentUser.uid);
+
+    useEffect(() => {
+      (async () => {
+        const p = await getUserProfile(uid || currentUser?.uid);
         setProfile(p);
-        setEditing(false);
-        setAvatarFile(null);
-        setCoverFile(null);
-      } catch (err) { 
-        console.error(err); 
-        alert('Failed'); 
-      }
-    }
+      })();
+    }, [uid, currentUser]);
 
-    async function follow() { 
-      if (!me) return alert('Login'); 
-      try { 
-        await followUser(me.uid, viewUid); 
-        alert('Followed'); 
-      } catch(e){ 
-        alert('Failed to follow'); 
-      } 
-    }
-    
-    async function addFr() { 
-      if (!me) return alert('Login'); 
-      try { 
-        await addFriend(me.uid, viewUid); 
-        alert('Friend request sent'); 
-      } catch(e){ 
-        alert('Failed'); 
-      } 
+    async function sendRequest() {
+      if (!currentUser) return;
+      await sendFriendRequest(currentUser.uid, uid);
+      alert('✅ Request sent!');
     }
 
     if (!profile) return React.createElement('div', { className: 'card' }, 'Loading...');
-    
+
     return React.createElement('div', null,
-      React.createElement('div', { className: 'card' },
-        profile.coverUrl ? 
-          React.createElement('img', { src: profile.coverUrl, alt: 'cover', className: 'cover' }) :
-          React.createElement('div', { className: 'cover', style: { background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' } }),
-        React.createElement('div', { style: { marginTop:-40, display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' } },
-          React.createElement('img', { src: profile.avatarUrl || 'https://via.placeholder.com/150', className: 'avatar', style: { border:'4px solid var(--bg)' } }),
-          React.createElement('div', null, 
-            React.createElement('div', { style: { fontSize:18, fontWeight:600 } }, profile.displayName),
-            React.createElement('div', { className: 'small' }, 
-              profile.email,
-              profile.verified && React.createElement('span', { className: 'badge' }, '✔ Verified')
-            )
+      React.createElement('div', { className: 'card', style: { padding:0, overflow:'hidden' }},
+        profile.coverUrl ? React.createElement('img', { src: profile.coverUrl, className: 'cover' }) : React.createElement('div', { className: 'cover' }),
+        React.createElement('div', { style: { padding:20, marginTop:-50 }},
+          React.createElement('div', { className: 'row', style: { justifyContent:'space-between', alignItems:'flex-end' }},
+            React.createElement('img', { src: profile.avatarUrl || 'https://via.placeholder.com/150', className: 'avatar-lg', style: { width:80, height:80, border:'5px solid var(--card)' }}),
+            owner ? React.createElement('button', { className: 'btn-ghost' }, 'Edit') : React.createElement('button', { className: 'btn', onClick: sendRequest }, 'Add Friend')
           ),
-          React.createElement('div', { style: { marginLeft:'auto' }, className: 'row' },
-            !owner && React.createElement('button', { className: 'btn', onClick: follow }, 'Follow'),
-            !owner && React.createElement('button', { className: 'btn-ghost', onClick: addFr }, 'Add Friend'),
-            owner && React.createElement('button', { className: 'btn-ghost', onClick: () => setEditing(!editing) }, editing ? 'Cancel' : 'Edit profile')
+          React.createElement('div', { style: { marginTop:16 }},
+            React.createElement('h2', null, profile.displayName, profile.verified && React.createElement('span', { className: 'badge' }, '✔')),
+            React.createElement('div', { className: 'small' }, profile.email),
+            profile.status && React.createElement('div', { style: { marginTop:12, padding:12, background:'var(--hover)', borderRadius:8, fontStyle:'italic' }}, profile.status)
           )
         ),
-        editing && React.createElement('div', { className: 'mt col' },
-          React.createElement('label', { className: 'small' }, 'Display name'),
-          React.createElement('input', { placeholder: 'Display name', value: name, onInput: e => setName(e.target.value) }),
-          React.createElement('label', { className: 'small mt' }, 'Profile picture'),
-          React.createElement('input', { type: 'file', accept: 'image/*', onChange: e => setAvatarFile(e.target.files[0]) }),
-          React.createElement('label', { className: 'small mt' }, 'Cover photo'),
-          React.createElement('input', { type: 'file', accept: 'image/*', onChange: e => setCoverFile(e.target.files[0]) }),
-          React.createElement('div', { className: 'row mt' }, React.createElement('button', { className: 'btn', onClick: save }, 'Save changes'))
-        ),
-        React.createElement('div', { className: 'mt' },
-          React.createElement('h4', null, 'Friends (', friends.length, ')'),
-          friends.length === 0 && React.createElement('div', { className: 'small' }, 'No friends yet')
+        React.createElement('div', { className: 'tabs' },
+          React.createElement('div', { className: `tab ${tab === 'posts' ? 'active' : ''}`, onClick: () => setTab('posts') }, 'Posts'),
+          React.createElement('div', { className: `tab ${tab === 'about' ? 'active' : ''}`, onClick: () => setTab('about') }, 'About')
         )
+      ),
+      tab === 'posts' && React.createElement('div', { className: 'empty-state' },
+        React.createElement('div', { className: 'empty-icon' }, '📝'),
+        React.createElement('div', null, 'No posts')
+      ),
+      tab === 'about' && React.createElement('div', { className: 'card' },
+        React.createElement('h4', null, 'About'),
+        React.createElement('div', { className: 'small' }, 'Email: ', profile.email)
       )
     );
   }
 
-  function MessagesPage({ currentUser, onMsgRead }) {
-    const [chats, setChats] = useState([]);
-    const [chatId, setChatId] = useState('');
-    const [msgs, setMsgs] = useState([]);
-    const [text, setText] = useState('');
-    const [file, setFile] = useState(null);
-    const messagesEndRef = useRef(null);
-
-    useEffect(() => {
-      if (!currentUser) return;
-      const q = query(collection(db, 'chats'), where('participants', 'array-contains', currentUser.uid), orderBy('updatedAt', 'desc'));
-      const unsub = onSnapshot(q, snap => {
-        setChats(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-      });
-      return () => unsub();
-    }, [currentUser]);
-
-    useEffect(()=> {
-      if (!chatId) return;
-      const unsub = subscribeMessages(chatId, setMsgs);
-      if (onMsgRead) onMsgRead();
-      return ()=> unsub();
-    }, [chatId]);
-
-    useEffect(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [msgs]);
-
-    async function openChatWith() {
-      const other = prompt('Enter other user UID to chat with');
-      if (!other) return;
-      const id = [currentUser.uid, other].sort().join('_');
-      try { 
-        await setDoc(doc(db,'chats',id), { 
-          participants: [currentUser.uid, other], 
-          updatedAt: serverTimestamp() 
-        }, { merge: true }); 
-      } catch(e){}
-      setChatId(id);
-    }
-
-    async function send() {
-      if (!chatId) return alert('Open a chat first');
-      let media = null;
-      if (file) {
-        try { 
-          const r = await uploadToCloudinary(file); 
-          media = { url: r.secure_url, type: r.resource_type || 'image' }; 
-        } catch(e){ 
-          console.error(e); 
-          alert('Upload failed'); 
-          return; 
-        }
-      }
-      if (!text && !media) return;
-      await sendMessage(chatId, currentUser.uid, text, media);
-      setText(''); 
-      setFile(null);
-    }
-
+  function MessagesPage() {
     return React.createElement('div', { className: 'card' },
       React.createElement('h3', null, 'Messages'),
-      React.createElement('div', { className: 'row', style: { gap: 12 } },
-        React.createElement('div', { style: { width: 200, borderRight: '1px solid #e5e7eb', paddingRight: 12 } },
-          React.createElement('button', { className: 'btn mb', onClick: openChatWith }, 'New Chat'),
-          chats.map(c => React.createElement('div', { 
-            key: c.id, 
-            className: 'card', 
-            style: { 
-              cursor: 'pointer', 
-              background: chatId === c.id ? 'var(--accent)' : 'var(--card)',
-              color: chatId === c.id ? '#fff' : 'var(--text)'
-            },
-            onClick: () => setChatId(c.id) 
-          },
-            React.createElement('div', { className: 'small' }, c.participants.filter(p => p !== currentUser.uid)[0] || 'Unknown'),
-            React.createElement('div', { className: 'small', style: { fontSize: 11 } }, c.lastMessage || 'No messages')
-          ))
-        ),
-        React.createElement('div', { style: { flex: 1 } },
-          !chatId && React.createElement('div', { className: 'center small' }, 'Select a chat or start a new one'),
-          chatId && React.createElement('div', null,
-            React.createElement('div', { className: 'card', style: { height:400, overflow:'auto', marginBottom: 12 } }, 
-              msgs.map(m => React.createElement('div', { 
-                key: m.id, 
-                style: { 
-                  padding:'8px 12px', 
-                  background: m.from === currentUser.uid ? '#dbeafe' : '#f3f4f6', 
-                  borderRadius:12, 
-                  marginBottom:8,
-                  maxWidth: '70%',
-                  marginLeft: m.from === currentUser.uid ? 'auto' : 0,
-                  marginRight: m.from === currentUser.uid ? 0 : 'auto'
-                } 
-              },
-                React.createElement('div', { className: 'small', style: { fontWeight: 600, marginBottom: 4 } }, 
-                  m.from === currentUser.uid ? 'You' : m.from
-                ),
-                React.createElement('div', null, m.text),
-                m.media && React.createElement('div', { style: { marginTop: 8 } }, 
-                  m.media.type && m.media.type.startsWith('video') ? 
-                    React.createElement('video', { src: m.media.url, controls: true, style: { maxWidth: '100%', borderRadius: 8 } }) : 
-                    React.createElement('img', { src: m.media.url, style: { maxWidth: '100%', borderRadius: 8 } })
-                ),
-                React.createElement('div', { className: 'small', style: { fontSize: 10, marginTop: 4, opacity: 0.7 } }, 
-                  fmtDate(m.createdAt)
-                )
-              )),
-              React.createElement('div', { ref: messagesEndRef })
-            ),
-            React.createElement('div', { className: 'row' },
-              React.createElement('input', { placeholder: 'Type a message', value: text, onInput: e => setText(e.target.value), onKeyPress: e => e.key === 'Enter' && send() }),
-              React.createElement('input', { type: 'file', accept: 'image/*,video/*', onChange: e => setFile(e.target.files[0]), style: { width: 'auto' } }),
-              React.createElement('button', { className: 'btn', onClick: send }, 'Send')
-            )
-          )
-        )
+      React.createElement('div', { className: 'empty-state' },
+        React.createElement('div', { className: 'empty-icon' }, '💬'),
+        React.createElement('div', null, 'No messages')
       )
     );
   }
 
-  function SettingsPage({ lang, setLang, theme, setTheme, t }) {
-  return React.createElement('div', null,
-    React.createElement('div', { className: 'card' },
-      React.createElement('h3', { style: { marginBottom:20 } }, 'Settings'),
-      React.createElement('div', { className: 'col' },
-        React.createElement('label', { className: 'small' }, 'Language'),
-        React.createElement('select', { value: lang, onChange: e => setLang(e.target.value) }, 
-          React.createElement('option', { value: 'en' }, 'English'), 
-          React.createElement('option', { value: 'yo' }, 'Yoruba'), 
-          React.createElement('option', { value: 'pt' }, 'Portuguese')
+  function SettingsPage({ lang, setLang, theme, setTheme }) {
+    return React.createElement('div', null,
+      React.createElement('div', { className: 'card' },
+        React.createElement('h3', { style: { marginBottom:20 }}, 'Settings'),
+        React.createElement('div', { className: 'col' },
+          React.createElement('label', { className: 'small' }, 'Language'),
+          React.createElement('select', { value: lang, onChange: e => setLang(e.target.value) },
+            React.createElement('option', { value: 'en' }, 'English'),
+            React.createElement('option', { value: 'yo' }, 'Yoruba'),
+            React.createElement('option', { value: 'pt' }, 'Portuguese')
         ),
         React.createElement('div', { className: 'row', style: { alignItems:'center', justifyContent:'space-between', marginTop:16 } },
           React.createElement('span', null, 'Dark Mode'),
           React.createElement('button', { className: 'btn-ghost', onClick: () => setTheme(theme === 'light' ? 'dark' : 'light') }, theme === 'light' ? '🌞 Light' : '🌙 Dark')
         ),
-        React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20 } }, 'Logout')
+        React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20, background:'#fa3e3e' }}, 'Logout')
+        )
+      ),
+      React.createElement('div', { className: 'card' },
+        React.createElement('h4', null, 'Help & Support'),
+        React.createElement('p', { className: 'small', style: { marginTop:12 }}, 'Contact us:'),
+        React.createElement('a', { href: 'mailto:spaceplatformapp@gmail.com', style: { color:'var(--primary)', fontWeight:600, fontSize:15 }}, 'spaceplatformapp@gmail.com')
       )
-    ),
-    React.createElement('div', { className: 'card' },
-      React.createElement('h4', null, 'Help & Support'),
-      React.createElement('p', { className: 'small' }, 'Need help? Contact us at:'),
-      React.createElement('a', { href: 'mailto:spaceplatformapp@gmail.com', style: { color:'var(--primary)', fontWeight:600 } }, 'spaceplatformapp@gmail.com')
-    )
-  );
-}
+    );
+  }
 
   function AdminPage() {
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
     
-    useEffect(()=> {
-      (async ()=> {
-        try {
-          const q = query(collection(db,'users'), orderBy('createdAt','desc'));
-          const snap = await getDocs(q);
-          setUsers(snap.docs.map(d=>({ id: d.id, ...d.data() })));
-        } catch (err) {
-          console.error(err);
-          alert('Failed to load users');
-        } finally {
-          setLoading(false);
-        }
+    useEffect(() => {
+      (async () => {
+        const q = query(collection(db,'users'), orderBy('createdAt','desc'));
+        const snap = await getDocs(q);
+        setUsers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
       })();
     }, []);
     
     async function toggleVerified(uid, current) {
-      try {
-        await updateDoc(doc(db,'users',uid), { verified: !current });
-        const p = await getUserProfile(uid);
-        setUsers(u => u.map(x => x.id === uid ? p : x));
-      } catch (err) {
-        console.error(err);
-        alert('Failed to update verification');
-      }
+      await updateDoc(doc(db,'users',uid), { verified: !current });
+      const p = await getUserProfile(uid);
+      setUsers(u => u.map(x => x.id === uid ? p : x));
     }
     
     return React.createElement('div', { className: 'card' },
-      React.createElement('h3', null, 'Admin Panel'),
-      React.createElement('p', { className: 'small mb' }, 'Manage user verification badges'),
-      loading ? React.createElement('div', null, 'Loading users...') : 
-        users.map(u => React.createElement('div', { key: u.id, className: 'row', style: { justifyContent:'space-between', marginBottom:12, padding: 8, background: 'var(--card)', borderRadius: 6 } }, 
-          React.createElement('div', { className: 'row' },
-            u.avatarUrl && React.createElement('img', { src: u.avatarUrl, className: 'avatar', style: { width: 32, height: 32 } }),
-            React.createElement('div', null, 
-              React.createElement('strong', null, u.displayName),
-              u.verified && React.createElement('span', { className: 'badge' }, '✔'),
-              React.createElement('div', { className: 'small' }, u.email)
-            )
-          ), 
-          React.createElement('button', { className: u.verified ? 'btn-ghost danger' : 'btn', onClick: () => toggleVerified(u.id, u.verified) }, 
-            u.verified ? 'Remove Verification' : 'Verify User'
+      React.createElement('h3', { style: { marginBottom:20 }}, 'Admin Panel'),
+      React.createElement('p', { className: 'small', style: { marginBottom:16 }}, 'Manage verifications'),
+      users.map(u => React.createElement('div', { key: u.id, className: 'friend-card' },
+        React.createElement('div', { className: 'row' },
+          u.avatarUrl && React.createElement('img', { src: u.avatarUrl, className: 'avatar' }),
+          React.createElement('div', null,
+            React.createElement('div', { style: { fontWeight:600 }}, u.displayName, u.verified && React.createElement('span', { className: 'badge' }, '✔')),
+            React.createElement('div', { className: 'small' }, u.email)
           )
-        ))
-    );
-  }
-
-  function Footer() {
-    return React.createElement('div', { className: 'center small mt', style: { paddingTop: 24, paddingBottom: 24, borderTop: '1px solid #e5e7eb' } }, 
-      React.createElement('div', null, '© 2025 Space • Social Media PWA'),
-      React.createElement('div', { style: { marginTop: 4 } }, 'Replace Firebase & Cloudinary credentials before deployment')
+        ),
+        React.createElement('button', { className: u.verified ? 'btn-ghost' : 'btn', onClick: () => toggleVerified(u.id, u.verified), style: u.verified ? { color:'#fa3e3e' } : {}}, u.verified ? 'Remove ✔' : 'Verify')
+      ))
     );
   }
 
   const container = document.getElementById('root');
   createRoot(container).render(React.createElement(App));
-  if (window.SPACE_APP_OK) window.SPACE_APP_OK();
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then(() => console.log('Service Worker registered')).catch((err) => console.log('Service Worker failed', err));
+      navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW failed', err));
     });
   }
   </script>
-
 </body>
 </html>
