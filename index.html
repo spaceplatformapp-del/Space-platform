@@ -32,6 +32,7 @@
     .col{display:flex;flex-direction:column;gap:12px}
     .btn{background:var(--primary);color:#fff;padding:10px 24px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:15px}
     .btn:hover{opacity:0.9}
+    .btn:disabled{background:var(--muted);cursor:not-allowed}
     .btn-secondary{background:var(--hover);color:var(--text)}
     .btn-ghost{background:var(--hover);color:var(--text);padding:8px 16px;border-radius:6px;cursor:pointer;border:none;font-weight:600}
     input,textarea,select{padding:12px;border:1px solid #ccd0d5;border-radius:6px;width:100%;background:var(--card);color:var(--text);font-size:15px}
@@ -45,6 +46,7 @@
     .story-avatar{position:absolute;top:8px;left:8px;width:40px;height:40px;border-radius:50%;border:4px solid var(--primary)}
     .story-label{position:absolute;bottom:8px;left:8px;right:8px;color:#fff;font-weight:600;font-size:13px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
     .badge{background:var(--gradient);color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:6px}
+    .followers-badge{background:var(--hover);color:var(--muted);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:8px}
     .notif-badge{position:absolute;top:-4px;right:-4px;background:#fa3e3e;color:#fff;border-radius:50%;min-width:20px;height:20px;padding:0 6px;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid var(--card)}
     .post-media{width:100%;max-height:600px;border-radius:8px;margin-top:12px;object-fit:cover}
     .cover{height:200px;background:var(--gradient);border-radius:8px 8px 0 0;object-fit:cover;width:100%}
@@ -77,13 +79,16 @@
     .like-btn.liked{color:#e4405f}
     .comment-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--hover)}
     .comment-item{background:var(--hover);padding:10px 12px;border-radius:16px;margin-bottom:8px}
-    .comment-author{font-weight:600;font-size:13px;margin-bottom:4px}
+    .comment-author{font-weight:600;font-size:13px;margin-bottom:4px;cursor:pointer}
+    .comment-author:hover{text-decoration:underline}
     .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
     .modal-content{background:var(--card);border-radius:12px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
     .tabs{display:flex;border-bottom:1px solid var(--hover);margin-bottom:16px}
     .tab{padding:14px 20px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:3px solid transparent}
     .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
     .friend-card{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:8px;margin-bottom:8px}
+    .friend-item-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;cursor:pointer}
+    .friend-item-card:hover{background:var(--hover)}
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-icon{font-size:64px;margin-bottom:16px;opacity:0.5}
     #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fff3cd;border:2px solid #ffc107;border-radius:8px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
@@ -144,6 +149,7 @@
   import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
   import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  // *** FIXED THE TYPO IN THE NEXT TWO LINES ***
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
   import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
@@ -168,9 +174,10 @@
   }
 
   async function createUserProfile(uid, profile) {
-    await setDoc(doc(db, 'users', uid), { ...profile, bio: '', status: '', createdAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', uid), { ...profile, bio: '', status: '', followerCount: '', createdAt: serverTimestamp() });
   }
   async function getUserProfile(uid) {
+    if (!uid) return null;
     const d = await getDoc(doc(db, 'users', uid));
     return d.exists() ? { id: d.id, ...d.data() } : null;
   }
@@ -219,6 +226,16 @@
 
   async function sendFriendRequest(from, to) { 
     const id = `${from}_${to}`;
+    // Check if reverse request exists
+    const reverseId = `${to}_${from}`;
+    const reverseSnap = await getDoc(doc(db, 'friends', reverseId));
+    if (reverseSnap.exists()) {
+      // If reverse request is pending, accept it
+      if (reverseSnap.data().status === 'pending') {
+        await acceptFriendRequest(reverseId);
+        return;
+      }
+    }
     await setDoc(doc(db, 'friends', id), { requester: from, target: to, status: 'pending', createdAt: serverTimestamp() });
   }
   async function acceptFriendRequest(requestId) {
@@ -233,10 +250,30 @@
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
   async function getFriends(uid) {
-    const q = query(collection(db, 'friends'), where('status', '==', 'accepted'));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => d.data()).filter(f => f.requester === uid || f.target === uid);
+    const q1 = query(collection(db, 'friends'), where('status', '==', 'accepted'), where('requester', '==', uid));
+    const q2 = query(collection(db, 'friends'), where('status', '==', 'accepted'), where('target', '==', uid));
+    const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+    const friendsData = [
+      ...snap1.docs.map(d => d.data()),
+      ...snap2.docs.map(d => d.data())
+    ];
+    // Get the other user's ID
+    const friendIds = friendsData.map(f => f.requester === uid ? f.target : f.requester);
+    return friendIds;
   }
+  async function getFriendStatus(uid1, uid2) {
+    if (!uid1 || !uid2) return null;
+    const id1 = `${uid1}_${uid2}`;
+    const id2 = `${uid2}_${uid1}`;
+    const [snap1, snap2] = await Promise.all([
+      getDoc(doc(db, 'friends', id1)),
+      getDoc(doc(db, 'friends', id2))
+    ]);
+    if (snap1.exists()) return snap1.data().status;
+    if (snap2.exists()) return snap2.data().status;
+    return null;
+  }
+
 
   async function sendMessage(chatId, from, text, media=null) { 
     await addDoc(collection(db, `chats/${chatId}/messages`), { from, text, media, read: false, createdAt: serverTimestamp() }); 
@@ -272,6 +309,11 @@
     const [userProfile, setUserProfile] = useState(null);
     const [showComposer, setShowComposer] = useState(false);
     const [showForgot, setShowForgot] = useState(false);
+
+    const navToProfile = (uid) => {
+      setSelectedProfile(uid);
+      setPage('profile');
+    };
 
     useEffect(()=> {
       const splash = document.getElementById('splash');
@@ -320,13 +362,13 @@
     }
 
     return React.createElement('div', null,
-      React.createElement(TopBar, { user, userProfile, searchTerm, setSearchTerm, searchResults, onNav: setPage, onOpenProfile: uid => { setSelectedProfile(uid); setPage('profile'); }}),
+      React.createElement(TopBar, { user, userProfile, searchTerm, setSearchTerm, searchResults, onNav: setPage, onOpenProfile: navToProfile }),
       React.createElement('div', { className: 'container' },
         page === 'loading' && React.createElement('div', { className: 'card' }, 'Loading...'),
-        page === 'home' && React.createElement(HomePage, { user, feed, stories, showComposer, setShowComposer }),
+        page === 'home' && React.createElement(HomePage, { user, feed, stories, showComposer, setShowComposer, onNavToProfile: navToProfile }),
         page === 'friends' && React.createElement(FriendsPage, { user }),
-        page === 'profile' && React.createElement(ProfilePage, { uid: selectedProfile || (user && user.uid), currentUser: user }),
-        page === 'messages' && React.createElement(MessagesPage, { currentUser: user }),
+        page === 'profile' && React.createElement(ProfilePage, { uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
+        page === 'messages' && React.createElement(MessagesPage, { currentUser: user, onNavToProfile: navToProfile }),
         page === 'settings' && React.createElement(SettingsPage, { lang, setLang, theme, setTheme }),
         page === 'admin' && userProfile && userProfile.verified && React.createElement(AdminPage, null)
       ),
@@ -365,9 +407,19 @@
   }
 
   function BottomNav({ page, setPage, userProfile }) {
+    const navTo = (p) => {
+      // Special case for profile: clear selectedProfile to show *my* profile
+      if (p === 'profile' && page === 'profile') {
+        // If already on profile page, clicking again should force *my* profile
+        setPage('loading'); // Force re-render
+        setTimeout(() => setPage('profile'), 0);
+      }
+      setPage(p);
+    }
+    
     return React.createElement('div', { className: 'bottomnav' },
       ['home','friends','messages','profile','settings'].map(p => 
-        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
+        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => navTo(p) },
           React.createElement('div', { className: 'nav-icon' }, 
             p === 'home' ? '🏠' : p === 'friends' ? '👥' : p === 'messages' ? '💬' : p === 'profile' ? '👤' : '⚙️'
           ),
@@ -423,7 +475,10 @@
           email: form.email,
           avatarUrl: null,
           coverUrl: null,
-          verified: isAdmin
+          verified: isAdmin,
+          bio: '',
+          status: '',
+          followerCount: ''
         });
         if (ADMIN_EMAIL && !isAdmin) {
           const q = query(collection(db,'users'), where('email','==',ADMIN_EMAIL));
@@ -487,7 +542,7 @@
     );
   }
 
-  function HomePage({ user, feed, stories, showComposer, setShowComposer }) {
+  function HomePage({ user, feed, stories, showComposer, setShowComposer, onNavToProfile }) {
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
         React.createElement('div', { className: 'row', style: { alignItems:'flex-start', gap:16 }},
@@ -506,7 +561,7 @@
         React.createElement('div', { className: 'empty-icon' }, '📝'),
         React.createElement('div', null, 'No posts yet')
       ),
-      feed.map(p => React.createElement(PostCard, { key: p.id, post: p, currentUser: user }))
+      feed.map(p => React.createElement(PostCard, { key: p.id, post: p, currentUser: user, onNavToProfile: onNavToProfile }))
     );
   }
 
@@ -577,10 +632,69 @@
     );
   }
 
-  function PostCard({ post, currentUser }) {
+  // New Modal for Editing Profile
+  function EditProfileModal({ profile, onClose }) {
+    const [form, setForm] = useState({
+      displayName: profile?.displayName || '',
+      bio: profile?.bio || '',
+      status: profile?.status || ''
+    });
+    const [loading, setLoading] = useState(false);
+
+    async function submit(e) {
+      e.preventDefault();
+      setLoading(true);
+      try {
+        await updateDoc(doc(db, 'users', profile.id), {
+          ...form,
+          displayNameLower: form.displayName.toLowerCase()
+        });
+        onClose(true); // Pass true to signal successful update
+      } catch (err) {
+        console.error("Failed to update profile", err);
+        alert('❌ Update failed');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    return React.createElement('div', { className: 'modal', onClick: onClose },
+      React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
+        React.createElement('h3', { style: { marginBottom:20 }}, 'Edit Profile'),
+        React.createElement('form', { onSubmit: submit, className: 'col' },
+          React.createElement('label', { className: 'small' }, 'Name'),
+          React.createElement('input', { 
+            value: form.displayName, 
+            onInput: e => setForm(f => ({ ...f, displayName: e.target.value })), 
+            required: true 
+          }),
+          React.createElement('label', { className: 'small' }, 'Bio / About'),
+          React.createElement('textarea', { 
+            placeholder: 'Tell us about yourself...',
+            value: form.bio, 
+            onInput: e => setForm(f => ({ ...f, bio: e.target.value }))
+          }),
+          React.createElement('label', { className: 'small' }, 'Status'),
+          React.createElement('input', { 
+            placeholder: 'What are you up to?',
+            value: form.status, 
+            onInput: e => setForm(f => ({ ...f, status: e.target.value }))
+          }),
+          React.createElement('div', { className: 'row', style: { gap:12, marginTop: 12 }},
+            React.createElement('button', { className: 'btn', type: 'submit', disabled: loading, style: { flex:1 }}, loading ? 'Saving...' : 'Save'),
+            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, 'Cancel')
+          )
+        )
+      )
+    );
+  }
+
+
+  function PostCard({ post, currentUser, onNavToProfile }) {
     const [author, setAuthor] = useState(null);
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
+    const [commentsWithAuthors, setCommentsWithAuthors] = useState([]);
     const liked = post.likes?.includes(currentUser?.uid);
     const isMine = currentUser?.uid === post.authorId;
 
@@ -590,6 +704,22 @@
         setAuthor(prof);
       })();
     }, [post.authorId]);
+    
+    // Fetch comment authors
+    useEffect(() => {
+      if (showComments && post.comments?.length > 0) {
+        (async () => {
+          const authors = {};
+          const comments = await Promise.all(post.comments.map(async c => {
+            if (!authors[c.uid]) {
+              authors[c.uid] = await getUserProfile(c.uid);
+            }
+            return { ...c, author: authors[c.uid] };
+          }));
+          setCommentsWithAuthors(comments.reverse()); // Show newest first
+        })();
+      }
+    }, [showComments, post.comments]);
 
     async function handleLike() {
       if (!currentUser) return;
@@ -597,19 +727,33 @@
     }
 
     async function submitComment() {
-      if (!commentText.trim()) return;
+      if (!commentText.trim() || !currentUser) return;
       await addComment(post.id, currentUser.uid, commentText);
+      // Optimistically add comment to UI
+      setCommentsWithAuthors([
+        { uid: currentUser.uid, text: commentText, author: await getUserProfile(currentUser.uid), createdAt: new Date().toISOString() },
+        ...commentsWithAuthors
+      ]);
       setCommentText('');
     }
 
     async function handleDelete() {
       if (!confirm('Delete?')) return;
-      await deletePost(post.id);
+      try {
+        await deletePost(post.id);
+      } catch (err) {
+        console.error('Delete failed', err);
+        alert('❌ ' + err.message);
+      }
     }
 
     return React.createElement('div', { className: 'card' },
       React.createElement('div', { className: 'row', style: { justifyContent:'space-between', marginBottom:12 }},
-        React.createElement('div', { className: 'row' },
+        React.createElement('div', { 
+          className: 'row', 
+          onClick: () => onNavToProfile(post.authorId), 
+          style: { cursor: 'pointer' } 
+        },
           React.createElement('img', { src: author?.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
           React.createElement('div', null,
             React.createElement('div', { style: { fontWeight:600, fontSize:15 }}, 
@@ -643,14 +787,14 @@
         )
       ),
       showComments && React.createElement('div', { className: 'comment-section' },
-        post.comments?.map((c, i) => React.createElement('div', { key: i, className: 'comment-item' },
-          React.createElement('div', { className: 'comment-author' }, c.uid),
-          React.createElement('div', null, c.text)
-        )),
-        React.createElement('div', { className: 'row', style: { marginTop:12 }},
+        React.createElement('div', { className: 'row', style: { marginBottom:12 }},
           React.createElement('input', { placeholder: 'Comment...', value: commentText, onInput: e => setCommentText(e.target.value), onKeyPress: e => e.key === 'Enter' && submitComment() }),
           React.createElement('button', { className: 'btn', onClick: submitComment, style: { padding:'8px 16px' }}, '➤')
-        )
+        ),
+        commentsWithAuthors?.map((c, i) => React.createElement('div', { key: c.createdAt + i, className: 'comment-item' },
+          React.createElement('div', { className: 'comment-author', onClick: () => onNavToProfile(c.uid) }, c.author?.displayName || 'User'),
+          React.createElement('div', null, c.text)
+        ))
       )
     );
   }
@@ -662,17 +806,23 @@
     useEffect(() => {
       (async () => {
         const reqs = await getFriendRequests(user.uid);
-        const frds = await getFriends(user.uid);
         setRequests(reqs);
-        setFriends(frds);
       })();
     }, [user.uid]);
+    
+    // Re-fetch friends when requests change
+    useEffect(() => {
+      (async () => {
+        const frdIds = await getFriends(user.uid);
+        const friendProfiles = await Promise.all(frdIds.map(id => getUserProfile(id)));
+        setFriends(friendProfiles.filter(Boolean)); // Filter out null profiles
+      })();
+    }, [user.uid, requests]);
+
 
     async function accept(req) {
       await acceptFriendRequest(req.id);
       setRequests(requests.filter(r => r.id !== req.id));
-      const frds = await getFriends(user.uid);
-      setFriends(frds);
     }
 
     async function decline(req) {
@@ -691,7 +841,16 @@
         friends.length === 0 && React.createElement('div', { className: 'empty-state' },
           React.createElement('div', { className: 'empty-icon' }, '👥'),
           React.createElement('div', null, 'No friends yet')
-        )
+        ),
+        friends.map(f => React.createElement('div', { key: f.id, className: 'friend-card' },
+          React.createElement('div', { className: 'row' },
+            React.createElement('img', { src: f.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
+            React.createElement('div', null,
+              React.createElement('div', { style: { fontWeight:600 }}, f.displayName),
+              React.createElement('div', { className: 'small' }, f.email)
+            )
+          )
+        ))
       )
     );
   }
@@ -709,7 +868,7 @@
 
     return React.createElement('div', { className: 'friend-card' },
       React.createElement('div', { className: 'row' },
-        React.createElement('img', { src: requester.avatarUrl || 'https.via.placeholder.com/40', className: 'avatar-lg' }),
+        React.createElement('img', { src: requester.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
         React.createElement('div', null,
           React.createElement('div', { style: { fontWeight:600 }}, requester.displayName),
           React.createElement('div', { className: 'small' }, requester.email)
@@ -723,25 +882,50 @@
   }
 
   // MODIFIED ProfilePage function
-  function ProfilePage({ uid, currentUser }) {
+  function ProfilePage({ uid, currentUser, userProfile, onNavToProfile }) {
     const [profile, setProfile] = useState(null);
     const [tab, setTab] = useState('posts');
     const [isUploading, setIsUploading] = useState(false);
-    const owner = !uid || (currentUser && uid === currentUser.uid);
-    const avatarInputRef = useRef(null);
-    const coverInputRef = useRef(null);
+    const [friendStatus, setFriendStatus] = useState(null); // 'pending', 'accepted', null
+    const [showEditModal, setShowEditModal] = useState(false);
+
+    const profileId = uid || currentUser?.uid; // Determine whose profile to show
+    const owner = currentUser && profileId === currentUser.uid;
 
     useEffect(() => {
       (async () => {
-        const p = await getUserProfile(uid || currentUser?.uid);
-        setProfile(p);
+        if (profileId) {
+          // If we are viewing our own profile, use the already-loaded userProfile
+          if (owner) {
+            setProfile(userProfile);
+          } else {
+            const p = await getUserProfile(profileId);
+            setProfile(p);
+          }
+          // Check friend status
+          if (!owner && currentUser) {
+            const status = await getFriendStatus(currentUser.uid, profileId);
+            setFriendStatus(status);
+          }
+        }
       })();
-    }, [uid, currentUser]);
+    }, [profileId, currentUser, userProfile, owner]);
+    
+    const refreshProfile = async () => {
+      const p = await getUserProfile(profileId);
+      setProfile(p);
+    };
 
     async function sendRequest() {
-      if (!currentUser) return;
-      await sendFriendRequest(currentUser.uid, uid);
-      alert('✅ Request sent!');
+      if (!currentUser || owner) return;
+      setFriendStatus('pending'); // Optimistic update
+      try {
+        await sendFriendRequest(currentUser.uid, profileId);
+        alert('✅ Request sent!');
+      } catch (err) {
+        console.error(err);
+        setFriendStatus(null); // Revert
+      }
     }
 
     async function handleFileUpload(e, type) {
@@ -759,66 +943,81 @@
         alert('❌ Upload failed');
       } finally {
         setIsUploading(false);
-        // Reset file input
         if (e.target) e.target.value = null;
       }
     }
+    
+    function renderFriendButton() {
+      if (owner) return null;
+      if (friendStatus === 'accepted') {
+        return React.createElement('button', { className: 'btn-ghost', disabled: true }, 'Friends ✔');
+      }
+      if (friendStatus === 'pending') {
+        return React.createElement('button', { className: 'btn-ghost', disabled: true }, 'Request Sent');
+      }
+      return React.createElement('button', { className: 'btn', onClick: sendRequest }, 'Add Friend');
+    }
+
+    const avatarInputRef = useRef(null);
+    const coverInputRef = useRef(null);
 
     if (!profile) return React.createElement('div', { className: 'card' }, 'Loading...');
 
     return React.createElement('div', null,
-      // Hidden file inputs
+      showEditModal && React.createElement(EditProfileModal, { 
+        profile, 
+        onClose: (didUpdate) => {
+          setShowEditModal(false);
+          if (didUpdate) refreshProfile();
+        }
+      }),
+      
       owner && React.createElement('input', { 
-        type: 'file', 
-        ref: avatarInputRef, 
-        style: { display: 'none' }, 
-        accept: 'image/*', 
+        type: 'file', ref: avatarInputRef, style: { display: 'none' }, accept: 'image/*', 
         onChange: (e) => handleFileUpload(e, 'avatar') 
       }),
       owner && React.createElement('input', { 
-        type: 'file', 
-        ref: coverInputRef, 
-        style: { display: 'none' }, 
-        accept: 'image/*', 
+        type: 'file', ref: coverInputRef, style: { display: 'none' }, accept: 'image/*', 
         onChange: (e) => handleFileUpload(e, 'cover') 
       }),
       
       React.createElement('div', { className: 'card', style: { padding:0, overflow:'hidden' }},
-        React.createElement('div', { style: { position: 'relative' }}, // Wrapper for cover
+        React.createElement('div', { style: { position: 'relative' }},
           profile.coverUrl ? React.createElement('img', { src: profile.coverUrl, className: 'cover' }) : React.createElement('div', { className: 'cover' }),
           owner && React.createElement('button', { 
             className: 'btn-ghost', 
             style: { position: 'absolute', bottom: 12, right: 12, background: 'rgba(255,255,255,0.8)' },
             onClick: () => coverInputRef.current?.click(),
             disabled: isUploading
-          }, 'Edit Cover')
+          }, isUploading ? '...' : 'Edit Cover')
         ),
         React.createElement('div', { style: { padding:20, marginTop:-50 }},
           React.createElement('div', { className: 'row', style: { justifyContent:'space-between', alignItems:'flex-end' }},
             React.createElement('img', { 
               src: profile.avatarUrl || 'https://via.placeholder.com/150', 
               className: 'avatar-lg', 
-              style: { width:80, height:80, border:'5px solid var(--card)', cursor: owner ? 'pointer' : 'default' },
+              style: { width:80, height:80, border:'5px solid var(--card)', cursor: owner ? 'pointer' : 'default', borderRadius: '50%' },
               onClick: owner ? () => avatarInputRef.current?.click() : undefined
             }),
             owner ? 
               React.createElement('button', { 
                 className: 'btn-ghost', 
-                onClick: () => avatarInputRef.current?.click(),
+                onClick: () => setShowEditModal(true),
                 disabled: isUploading
               }, isUploading ? 'Uploading...' : 'Edit Profile') : 
-              React.createElement('button', { className: 'btn', onClick: sendRequest }, 'Add Friend')
+              renderFriendButton()
           ),
           React.createElement('div', { style: { marginTop:16 }},
-            React.createElement('h2', null, 
+            React.createElement('h2', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } }, 
               profile.displayName, 
               profile.verified && React.createElement('span', { 
                 title: 'Verified', 
-                style: { marginLeft: 6, verticalAlign: 'middle' }, 
+                style: { marginLeft: 6, verticalAlign: 'middle', flexShrink: 0 }, 
                 dangerouslySetInnerHTML: { 
                   __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
                 }
-              })
+              }),
+              profile.followerCount && React.createElement('span', { className: 'followers-badge' }, profile.followerCount)
             ),
             React.createElement('div', { className: 'small' }, profile.email),
             profile.status && React.createElement('div', { style: { marginTop:12, padding:12, background:'var(--hover)', borderRadius:8, fontStyle:'italic' }}, profile.status)
@@ -834,19 +1033,63 @@
         React.createElement('div', null, 'No posts')
       ),
       tab === 'about' && React.createElement('div', { className: 'card' },
-        React.createElement('h4', null, 'About'),
-        React.createElement('div', { className: 'small' }, 'Email: ', profile.email)
+        React.createElement('h4', { style: { marginBottom: 12 }}, 'About'),
+        profile.bio ? 
+          React.createElement('p', { style: { lineHeight: 1.5 }}, profile.bio) :
+          React.createElement('div', { className: 'small' }, 'No bio available.'),
+        React.createElement('hr', { style: { border: 'none', borderTop: '1px solid var(--hover)', margin: '16px 0' }}),
+        React.createElement('div', { className: 'small' }, React.createElement('b', null, 'Email: '), profile.email),
+        React.createElement('div', { className: 'small' }, React.createElement('b', null, 'Gender: '), profile.gender),
+        React.createElement('div', { className: 'small' }, React.createElement('b', null, 'Born: '), profile.dob)
       )
     );
   }
 
-  function MessagesPage() {
+  function MessagesPage({ currentUser, onNavToProfile }) {
+    const [friends, setFriends] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    
+    useEffect(() => {
+      (async () => {
+        setLoading(true);
+        const frdIds = await getFriends(currentUser.uid);
+        const friendProfiles = await Promise.all(frdIds.map(id => getUserProfile(id)));
+        setFriends(friendProfiles.filter(Boolean)); // Filter out null profiles
+        setLoading(false);
+      })();
+    }, [currentUser.uid]);
+    
+    const filteredFriends = friends.filter(f => 
+      f.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return React.createElement('div', { className: 'card' },
       React.createElement('h3', null, 'Messages'),
-      React.createElement('div', { className: 'empty-state' },
+      React.createElement('input', { 
+        className: 'search-input', 
+        placeholder: '🔍 Search friends...', 
+        value: searchTerm, 
+        onInput: e => setSearchTerm(e.target.value),
+        style: { width: '100%', margin: '16px 0', background: 'var(--bg)' }
+      }),
+      loading && React.createElement('div', { className: 'small' }, 'Loading friends...'),
+      !loading && friends.length === 0 && React.createElement('div', { className: 'empty-state' },
         React.createElement('div', { className: 'empty-icon' }, '💬'),
-        React.createElement('div', null, 'No messages')
-      )
+        React.createElement('div', null, 'No friends to message')
+      ),
+      !loading && filteredFriends.length === 0 && friends.length > 0 && React.createElement('div', { className: 'small' }, 'No friends found.'),
+      filteredFriends.map(f => React.createElement('div', { 
+        key: f.id, 
+        className: 'friend-item-card', 
+        onClick: () => alert(`Chat with ${f.displayName} (coming soon)`)
+      },
+        React.createElement('img', { src: f.avatarUrl || 'https.via.placeholder.com/40', className: 'avatar-lg' }),
+        React.createElement('div', null,
+          React.createElement('div', { style: { fontWeight:600 }}, f.displayName),
+          React.createElement('div', { className: 'small' }, 'Start a conversation')
+        )
+      ))
     );
   }
 
@@ -878,6 +1121,7 @@
 
   function AdminPage() {
     const [users, setUsers] = useState([]);
+    const [followerInputs, setFollowerInputs] = useState({});
     
     useEffect(() => {
       (async () => {
@@ -889,31 +1133,58 @@
     
     async function toggleVerified(uid, current) {
       await updateDoc(doc(db,'users',uid), { verified: !current });
-      const p = await getUserProfile(uid);
-      setUsers(u => u.map(x => x.id === uid ? p : x));
+      setUsers(u => u.map(x => x.id === uid ? { ...x, verified: !current } : x));
+    }
+    
+    async function saveFollowerCount(uid) {
+      const count = followerInputs[uid] || '';
+      await updateDoc(doc(db,'users',uid), { followerCount: count });
+      setUsers(u => u.map(x => x.id === uid ? { ...x, followerCount: count } : x));
+      setFollowerInputs(f => ({ ...f, [uid]: undefined })); // Clear input state
+      alert('✅ Saved!');
     }
     
     return React.createElement('div', { className: 'card' },
       React.createElement('h3', { style: { marginBottom:20 }}, 'Admin Panel'),
-      React.createElement('p', { className: 'small', style: { marginBottom:16 }}, 'Manage verifications'),
-      users.map(u => React.createElement('div', { key: u.id, className: 'friend-card' },
-        React.createElement('div', { className: 'row' },
-          u.avatarUrl && React.createElement('img', { src: u.avatarUrl, className: 'avatar' }),
-          React.createElement('div', null,
-            React.createElement('div', { style: { fontWeight:600 }}, 
-              u.displayName, 
-              u.verified && React.createElement('span', { 
-                title: 'Verified', 
-                style: { marginLeft: 6, verticalAlign: 'middle' }, 
-                dangerouslySetInnerHTML: { 
-                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
-                }
-              })
-            ),
-            React.createElement('div', { className: 'small' }, u.email)
-          )
+      React.createElement('p', { className: 'small', style: { marginBottom:16 }}, 'Manage users'),
+      users.map(u => React.createElement('div', { key: u.id, className: 'card', style: { background: 'var(--hover)' } },
+        React.createElement('div', { className: 'row', style: { justifyContent: 'space-between' }},
+          React.createElement('div', { className: 'row' },
+            u.avatarUrl && React.createElement('img', { src: u.avatarUrl, className: 'avatar' }),
+            React.createElement('div', null,
+              React.createElement('div', { style: { fontWeight:600 }}, 
+                u.displayName, 
+                u.verified && React.createElement('span', { 
+                  title: 'Verified', 
+                  style: { marginLeft: 6, verticalAlign: 'middle' }, 
+                  dangerouslySetInnerHTML: { 
+                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                  }
+                }),
+                u.followerCount && React.createElement('span', { className: 'followers-badge' }, u.followerCount)
+              ),
+              React.createElement('div', { className: 'small' }, u.email)
+            )
+          ),
+          React.createElement('button', { 
+            className: u.verified ? 'btn-ghost' : 'btn', 
+            onClick: () => toggleVerified(u.id, u.verified), 
+            style: u.verified ? { color:'#fa3e3e', padding:'6px 12px' } : { padding:'6px 12px' }
+          }, u.verified ? 'Remove ✔' : 'Verify')
         ),
-        React.createElement('button', { className: u.verified ? 'btn-ghost' : 'btn', onClick: () => toggleVerified(u.id, u.verified), style: u.verified ? { color:'#fa3e3e' } : {}}, u.verified ? 'Remove ✔' : 'Verify')
+        React.createElement('div', { className: 'row', style: { marginTop: 12 }},
+          React.createElement('input', { 
+            placeholder: 'Follower count (e.g. 1m)',
+            value: followerInputs[u.id] !== undefined ? followerInputs[u.id] : (u.followerCount || ''),
+            onInput: e => setFollowerInputs(f => ({ ...f, [u.id]: e.target.value })),
+            style: { fontSize: 13, padding: 8 }
+          }),
+          React.createElement('button', { 
+            className: 'btn-ghost', 
+            onClick: () => saveFollowerCount(u.id),
+            style: { padding: '8px 12px' }
+          }, 'Save')
+        )
       ))
     );
   }
@@ -929,3 +1200,4 @@
   </script>
 </body>
 </html>
+
