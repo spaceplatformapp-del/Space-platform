@@ -2,12 +2,12 @@
   "name": "Space - Social Media",
   "short_name": "Space",
   "description": "Connect with friends on Space social network",
-  "start_url": "/",
+  "start_url": "/Space-platform/",
   "display": "standalone",
   "background_color": "#0b1220",
   "theme_color": "#0d1117",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "/Space-platform/",
   "icons": [
     {
       "src": "icons/icon-72.png",
@@ -78,7 +78,7 @@
       "name": "Home Feed",
       "short_name": "Home",
       "description": "View your home feed",
-      "url": "/",
+      "url": "/Space-platform/",
       "icons": [
         {
           "src": "icons/icon-192.png",
@@ -90,7 +90,7 @@
       "name": "Messages",
       "short_name": "Messages",
       "description": "Check your messages",
-      "url": "/?page=messages",
+      "url": "/Space-platform/?page=messages",
       "icons": [
         {
           "src": "icons/icon-192.png",
@@ -102,7 +102,7 @@
       "name": "Profile",
       "short_name": "Profile",
       "description": "View your profile",
-      "url": "/?page=profile",
+      "url": "/Space-platform/?page=profile",
       "icons": [
         {
           "src": "icons/icon-192.png",
