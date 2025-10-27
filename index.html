@@ -345,7 +345,13 @@
               s.avatarUrl && React.createElement('img', { src: s.avatarUrl, className: 'avatar' }),
               React.createElement('div', null,
                 React.createElement('div', { style: { fontWeight:600 } }, s.displayName),
-                s.verified && React.createElement('span', { className: 'badge' }, '✔')
+                s.verified && React.createElement('span', { 
+                  title: 'Verified', 
+                  style: { marginLeft: 6, verticalAlign: 'middle' }, 
+                  dangerouslySetInnerHTML: { 
+                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                  }
+                })
               )
             )
           ))
@@ -608,7 +614,13 @@
           React.createElement('div', null,
             React.createElement('div', { style: { fontWeight:600, fontSize:15 }}, 
               author?.displayName || 'User',
-              author?.verified && React.createElement('span', { className: 'badge' }, '✔')
+              author?.verified && React.createElement('span', { 
+                title: 'Verified', 
+                style: { marginLeft: 6, verticalAlign: 'middle' }, 
+                dangerouslySetInnerHTML: { 
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                }
+              })
             ),
             React.createElement('div', { className: 'small' }, fmtDate(post.createdAt))
           )
@@ -697,7 +709,7 @@
 
     return React.createElement('div', { className: 'friend-card' },
       React.createElement('div', { className: 'row' },
-        React.createElement('img', { src: requester.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
+        React.createElement('img', { src: requester.avatarUrl || 'https.via.placeholder.com/40', className: 'avatar-lg' }),
         React.createElement('div', null,
           React.createElement('div', { style: { fontWeight:600 }}, requester.displayName),
           React.createElement('div', { className: 'small' }, requester.email)
@@ -710,10 +722,14 @@
     );
   }
 
+  // MODIFIED ProfilePage function
   function ProfilePage({ uid, currentUser }) {
     const [profile, setProfile] = useState(null);
     const [tab, setTab] = useState('posts');
+    const [isUploading, setIsUploading] = useState(false);
     const owner = !uid || (currentUser && uid === currentUser.uid);
+    const avatarInputRef = useRef(null);
+    const coverInputRef = useRef(null);
 
     useEffect(() => {
       (async () => {
@@ -728,18 +744,82 @@
       alert('✅ Request sent!');
     }
 
+    async function handleFileUpload(e, type) {
+      const file = e.target.files?.[0];
+      if (!file || !owner) return;
+      setIsUploading(true);
+      try {
+        const res = await uploadToCloudinary(file);
+        const url = res.secure_url;
+        const key = type === 'avatar' ? 'avatarUrl' : 'coverUrl';
+        await updateDoc(doc(db, 'users', currentUser.uid), { [key]: url });
+        setProfile(p => ({ ...p, [key]: url }));
+      } catch (err) {
+        console.error('Upload failed', err);
+        alert('❌ Upload failed');
+      } finally {
+        setIsUploading(false);
+        // Reset file input
+        if (e.target) e.target.value = null;
+      }
+    }
+
     if (!profile) return React.createElement('div', { className: 'card' }, 'Loading...');
 
     return React.createElement('div', null,
+      // Hidden file inputs
+      owner && React.createElement('input', { 
+        type: 'file', 
+        ref: avatarInputRef, 
+        style: { display: 'none' }, 
+        accept: 'image/*', 
+        onChange: (e) => handleFileUpload(e, 'avatar') 
+      }),
+      owner && React.createElement('input', { 
+        type: 'file', 
+        ref: coverInputRef, 
+        style: { display: 'none' }, 
+        accept: 'image/*', 
+        onChange: (e) => handleFileUpload(e, 'cover') 
+      }),
+      
       React.createElement('div', { className: 'card', style: { padding:0, overflow:'hidden' }},
-        profile.coverUrl ? React.createElement('img', { src: profile.coverUrl, className: 'cover' }) : React.createElement('div', { className: 'cover' }),
+        React.createElement('div', { style: { position: 'relative' }}, // Wrapper for cover
+          profile.coverUrl ? React.createElement('img', { src: profile.coverUrl, className: 'cover' }) : React.createElement('div', { className: 'cover' }),
+          owner && React.createElement('button', { 
+            className: 'btn-ghost', 
+            style: { position: 'absolute', bottom: 12, right: 12, background: 'rgba(255,255,255,0.8)' },
+            onClick: () => coverInputRef.current?.click(),
+            disabled: isUploading
+          }, 'Edit Cover')
+        ),
         React.createElement('div', { style: { padding:20, marginTop:-50 }},
           React.createElement('div', { className: 'row', style: { justifyContent:'space-between', alignItems:'flex-end' }},
-            React.createElement('img', { src: profile.avatarUrl || 'https://via.placeholder.com/150', className: 'avatar-lg', style: { width:80, height:80, border:'5px solid var(--card)' }}),
-            owner ? React.createElement('button', { className: 'btn-ghost' }, 'Edit') : React.createElement('button', { className: 'btn', onClick: sendRequest }, 'Add Friend')
+            React.createElement('img', { 
+              src: profile.avatarUrl || 'https://via.placeholder.com/150', 
+              className: 'avatar-lg', 
+              style: { width:80, height:80, border:'5px solid var(--card)', cursor: owner ? 'pointer' : 'default' },
+              onClick: owner ? () => avatarInputRef.current?.click() : undefined
+            }),
+            owner ? 
+              React.createElement('button', { 
+                className: 'btn-ghost', 
+                onClick: () => avatarInputRef.current?.click(),
+                disabled: isUploading
+              }, isUploading ? 'Uploading...' : 'Edit Profile') : 
+              React.createElement('button', { className: 'btn', onClick: sendRequest }, 'Add Friend')
           ),
           React.createElement('div', { style: { marginTop:16 }},
-            React.createElement('h2', null, profile.displayName, profile.verified && React.createElement('span', { className: 'badge' }, '✔')),
+            React.createElement('h2', null, 
+              profile.displayName, 
+              profile.verified && React.createElement('span', { 
+                title: 'Verified', 
+                style: { marginLeft: 6, verticalAlign: 'middle' }, 
+                dangerouslySetInnerHTML: { 
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                }
+              })
+            ),
             React.createElement('div', { className: 'small' }, profile.email),
             profile.status && React.createElement('div', { style: { marginTop:12, padding:12, background:'var(--hover)', borderRadius:8, fontStyle:'italic' }}, profile.status)
           )
@@ -820,7 +900,16 @@
         React.createElement('div', { className: 'row' },
           u.avatarUrl && React.createElement('img', { src: u.avatarUrl, className: 'avatar' }),
           React.createElement('div', null,
-            React.createElement('div', { style: { fontWeight:600 }}, u.displayName, u.verified && React.createElement('span', { className: 'badge' }, '✔')),
+            React.createElement('div', { style: { fontWeight:600 }}, 
+              u.displayName, 
+              u.verified && React.createElement('span', { 
+                title: 'Verified', 
+                style: { marginLeft: 6, verticalAlign: 'middle' }, 
+                dangerouslySetInnerHTML: { 
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4 2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                }
+              })
+            ),
             React.createElement('div', { className: 'small' }, u.email)
           )
         ),
