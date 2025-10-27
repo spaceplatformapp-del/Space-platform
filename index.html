@@ -25,7 +25,7 @@
     }
     *{box-sizing:border-box;margin:0;padding:0}
     html,body,#root{height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    .container{max-width:680px;margin:0 auto;padding:12px 12px 80px}
+    .container{max-width:680px;margin:0 auto;padding:12px 12px 80px;height:calc(100% - 120px)}
     .card{background:var(--card);border-radius:8px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,0.2);margin-bottom:12px}
     .card-lg{padding:20px}
     .row{display:flex;gap:12px;align-items:center}
@@ -49,7 +49,12 @@
     .followers-badge{background:var(--hover);color:var(--muted);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:8px}
     .notif-badge{position:absolute;top:-4px;right:-4px;background:#fa3e3e;color:#fff;border-radius:50%;min-width:20px;height:20px;padding:0 6px;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid var(--card)}
     .post-media{width:100%;max-height:600px;border-radius:8px;margin-top:12px;object-fit:cover}
-    .cover{height:200px;background:var(--gradient);border-radius:8px 8px 0 0;object-fit:cover;width:100%}
+    .cover{height:200px;background:var(--hover);border-radius:8px 8px 0 0;object-fit:cover;width:100%}
+    .avatar-placeholder{
+      width:80px;height:80px;border:'5px solid var(--card)';cursor:pointer;border-radius:50%;
+      background: var(--hover); display:flex; align-items:center; justify-content:center;
+      font-size: 40px; color: var(--muted); border: 5px solid var(--card);
+    }
     .splash{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
     .splash .logo{font-size:72px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 2s infinite}
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
@@ -60,17 +65,19 @@
     .search-results{position:absolute;top:100%;left:0;right:0;background:var(--card);border-radius:8px;margin-top:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);max-height:400px;overflow-y:auto;z-index:200}
     .search-item{padding:12px;cursor:pointer;border-bottom:1px solid var(--hover)}
     .search-item:hover{background:var(--hover)}
-    .topbar-icons{display:flex;gap:8px}
+    .topbar-icons{display:flex;gap:8px;margin-left:auto}
     .icon-btn{width:40px;height:40px;border-radius:50%;background:var(--hover);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:20px}
     .icon-btn:hover{background:#e4e6eb}
     .dark .icon-btn:hover{background:#4a4b4d}
     .bottomnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid #ccd0d5;display:flex;justify-content:space-around;padding:6px 0;z-index:100;box-shadow:0 -2px 4px rgba(0,0,0,0.1)}
-    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:8px;border-radius:8px;margin:0 4px}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:8px;border-radius:8px;margin:0 4px;position:relative}
     .nav-item:hover{background:var(--hover)}
     .nav-item.active{color:var(--primary)}
     .nav-item.active .nav-icon{border-bottom:3px solid var(--primary)}
     .nav-icon{font-size:24px;padding:4px 0}
     .nav-label{font-size:12px;font-weight:500}
+    /* Tweak notif-badge for bottom nav */
+    .nav-item .notif-badge{top:0px;right:15px;min-width:18px;height:18px;font-size:11px}
     .composer-trigger{background:var(--hover);padding:12px 16px;border-radius:50px;color:var(--muted);cursor:pointer;width:100%;text-align:left;border:none;font-size:15px}
     .composer-trigger:hover{background:#e4e6eb}
     .dark .composer-trigger:hover{background:#3a3b3c}
@@ -78,19 +85,35 @@
     .like-btn:hover{background:var(--hover)}
     .like-btn.liked{color:#e4405f}
     .comment-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--hover)}
-    .comment-item{background:var(--hover);padding:10px 12px;border-radius:16px;margin-bottom:8px}
+    .comment-item{background:var(--hover);padding:10px 12px;border-radius:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start}
     .comment-author{font-weight:600;font-size:13px;margin-bottom:4px;cursor:pointer}
     .comment-author:hover{text-decoration:underline}
     .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
     .modal-content{background:var(--card);border-radius:12px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
     .tabs{display:flex;border-bottom:1px solid var(--hover);margin-bottom:16px}
-    .tab{padding:14px 20px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:3px solid transparent}
+    .tab{padding:14px 20px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;flex:1;text-align:center}
     .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
     .friend-card{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:8px;margin-bottom:8px}
-    .friend-item-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;cursor:pointer}
+    .friend-item-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;cursor:pointer;position:relative}
     .friend-item-card:hover{background:var(--hover)}
+    .friend-item-card .notif-badge{top:8px;right:8px;position:static;margin-left:auto}
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-icon{font-size:64px;margin-bottom:16px;opacity:0.5}
+    /* Chat Page Styles */
+    .chat-page{display:flex;flex-direction:column;height:100%;padding:0;background-size:cover;background-position:center}
+    .chat-header{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--hover);flex-shrink:0;background:var(--card);position:relative}
+    .chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column-reverse}
+    .chat-message-item{display:flex;margin-bottom:8px;max-width:75%}
+    .chat-bubble{padding:10px 14px;border-radius:18px;line-height:1.4;word-break:break-word}
+    .chat-bubble img{width:100%;max-width:250px;border-radius:12px;margin-top:8px}
+    .chat-message-item.sent{margin-left:auto}
+    .chat-message-item.sent .chat-bubble{background:var(--primary);color:#fff}
+    .chat-message-item.received .chat-bubble{background:var(--hover);color:var(--text)}
+    .chat-input-box{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hover);flex-shrink:0;background:var(--card)}
+    .chat-menu{position:absolute;top:100%;right:12px;background:var(--card);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:8px;z-index:10}
+    .chat-menu-item{padding:10px 16px;cursor:pointer;border-radius:6px;font-size:14px}
+    .chat-menu-item:hover{background:var(--hover)}
+    /* End Chat Page Styles */
     #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fff3cd;border:2px solid #ffc107;border-radius:8px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
   </style>
 
@@ -146,13 +169,462 @@
   <div id="root" style="visibility:hidden"></div>
 
   <script type="module">
+  // ADDED `increment` to firebase/firestore import
   import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
   import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  // *** FIXED THE TYPO IN THE NEXT TWO LINES ***
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit, increment } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
   import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+  // --- START I18N (Translations) ---
+  const translations = {
+    en: {
+      loading: 'Loading...',
+      logIn: 'Log In',
+      password: 'Password',
+      forgotPassword: 'Forgot password?',
+      createAccount: 'Create Account',
+      signUp: 'Sign Up',
+      fullName: 'Full name',
+      gender: 'Gender',
+      male: 'Male',
+      female: 'Female',
+      other: 'Other',
+      alreadyHaveAccount: 'Already have an account?',
+      resetPassword: 'Reset Password',
+      send: 'Send',
+      cancel: 'Cancel',
+      search: 'Search...',
+      notifications: 'Notifications',
+      home: 'Home',
+      friends: 'Friends',
+      messages: 'Messages',
+      profile: 'Profile',
+      settings: 'Settings',
+      admin: 'Admin',
+      whatsOnYourMind: "What's on your mind?",
+      create: 'Create',
+      createPost: 'Create Post',
+      post: 'Post',
+      posting: 'Posting...',
+      noPosts: 'No posts yet',
+      comment: 'Comment...',
+      requests: 'Requests',
+      noRequests: 'No requests',
+      accept: 'Accept',
+      decline: 'Decline',
+      noFriends: 'No friends yet',
+      edit: 'Edit',
+      addFriend: 'Add Friend',
+      friendsDot: 'Friends ✔',
+      requestSent: 'Request Sent',
+      editProfile: 'Edit Profile',
+      posts: 'Posts',
+      about: 'About',
+      noPostsYet: 'No posts',
+      aboutYou: 'About',
+      noBio: 'No bio available.',
+      noMessages: 'No messages',
+      language: 'Language',
+      darkMode: 'Dark Mode',
+      light: 'Light',
+      dark: 'Dark',
+      logout: 'Logout',
+      helpSupport: 'Help & Support',
+      contactUs: 'Contact us:',
+      manageUsers: 'Manage Users',
+      managePosts: 'Manage Posts',
+      verifyUsersMessage: 'Verify users and set follower counts.',
+      followerCountPlaceholder: 'Follower count (e.g. 1m)',
+      save: 'Save',
+      verify: 'Verify',
+      removeVerify: 'Remove ✔',
+      managePostsMessage: 'Set display like/comment counts for posts. Leave blank to show real counts.',
+      likesReal: 'Likes (real: {count})',
+      commentsReal: 'Comments (real: {count})',
+      saveCounts: 'Save Counts',
+      searchFriends: 'Search friends...',
+      noFriendsMessage: 'No friends to message',
+      noFriendsFound: 'No friends found.',
+      startConversation: 'Start a conversation',
+      typeMessage: 'Type a message...',
+      changeBg: 'Change Background',
+      clearBg: 'Clear Background',
+      relevantComments: 'Showing relevant comments'
+    },
+    es: {
+      loading: 'Cargando...',
+      logIn: 'Iniciar sesión',
+      password: 'Contraseña',
+      forgotPassword: '¿Olvidaste tu contraseña?',
+      createAccount: 'Crear cuenta',
+      signUp: 'Registrarse',
+      fullName: 'Nombre completo',
+      gender: 'Género',
+      male: 'Masculino',
+      female: 'Femenino',
+      other: 'Otro',
+      alreadyHaveAccount: '¿Ya tienes una cuenta?',
+      resetPassword: 'Restablecer contraseña',
+      send: 'Enviar',
+      cancel: 'Cancelar',
+      search: 'Buscar...',
+      notifications: 'Notificaciones',
+      home: 'Inicio',
+      friends: 'Amigos',
+      messages: 'Mensajes',
+      profile: 'Perfil',
+      settings: 'Ajustes',
+      admin: 'Admin',
+      whatsOnYourMind: '¿Qué estás pensando?',
+      create: 'Crear',
+      createPost: 'Crear publicación',
+      post: 'Publicar',
+      posting: 'Publicando...',
+      noPosts: 'No hay publicaciones todavía',
+      comment: 'Comentar...',
+      requests: 'Solicitudes',
+      noRequests: 'No hay solicitudes',
+      accept: 'Aceptar',
+      decline: 'Rechazar',
+      noFriends: 'No hay amigos todavía',
+      edit: 'Editar',
+      addFriend: 'Añadir amigo',
+      friendsDot: 'Amigos ✔',
+      requestSent: 'Solicitud enviada',
+      editProfile: 'Editar perfil',
+      posts: 'Publicaciones',
+      about: 'Acerca de',
+      noPostsYet: 'No hay publicaciones',
+      aboutYou: 'Acerca de',
+      noBio: 'No hay biografía disponible.',
+      noMessages: 'No hay mensajes',
+      language: 'Idioma',
+      darkMode: 'Modo oscuro',
+      light: 'Claro',
+      dark: 'Oscuro',
+      logout: 'Cerrar sesión',
+      helpSupport: 'Ayuda y soporte',
+      contactUs: 'Contáctanos:',
+      manageUsers: 'Gestionar usuarios',
+      managePosts: 'Gestionar publicaciones',
+      verifyUsersMessage: 'Verificar usuarios y establecer recuento de seguidores.',
+      followerCountPlaceholder: 'Recuento de seguidores (ej. 1m)',
+      save: 'Guardar',
+      verify: 'Verificar',
+      removeVerify: 'Quitar ✔',
+      managePostsMessage: 'Establecer recuentos de "me gusta"/comentarios. Dejar en blanco para recuentos reales.',
+      likesReal: 'Me gusta (real: {count})',
+      commentsReal: 'Comentarios (real: {count})',
+      saveCounts: 'Guardar recuentos',
+      searchFriends: 'Buscar amigos...',
+      noFriendsMessage: 'No hay amigos para enviar mensajes',
+      noFriendsFound: 'No se encontraron amigos.',
+      startConversation: 'Iniciar una conversación',
+      typeMessage: 'Escribe un mensaje...',
+      changeBg: 'Cambiar fondo',
+      clearBg: 'Quitar fondo',
+      relevantComments: 'Mostrando comentarios relevantes'
+    },
+    yo: {
+      loading: 'Nṣiṣẹ...',
+      logIn: 'Wọle',
+      password: 'Ọrọigbaniwọle',
+      forgotPassword: 'Ṣe o gbagbe ọrọ igbaniwọle?',
+      createAccount: 'Ṣẹda iroyin',
+      signUp: 'Forukọsilẹ',
+      fullName: 'Orukọ kikun',
+      gender: 'Ako/Abo',
+      male: 'Okunrin',
+      female: 'Obinrin',
+      other: 'Omiiran',
+      alreadyHaveAccount: 'Ṣe o ti ni iroyin tẹlẹ?',
+      resetPassword: 'Tunto ọrọ igbaniwọle',
+      send: 'Firanṣẹ',
+      cancel: 'Fagilee',
+      search: 'Wa...',
+      notifications: 'Awọn iwifunni',
+      home: 'Ile',
+      friends: 'Awọn ọrẹ',
+      messages: 'Awọn ifiranṣẹ',
+      profile: 'Profaili',
+      settings: 'Ètò',
+      admin: 'Abojuto',
+      whatsOnYourMind: 'Kini o wa ni ọkan rẹ?',
+      create: 'Ṣẹda',
+      createPost: 'Ṣẹda ifiweranṣẹ',
+      post: 'Fiweranṣẹ',
+      posting: 'Nfiweranṣẹ...',
+      noPosts: 'Ko si ifiweranṣẹ kankan',
+      comment: 'Sọ asọye...',
+      requests: 'Awọn ibeere',
+      noRequests: 'Ko si ibeere',
+      accept: 'Gba',
+      decline: 'Kọ',
+      noFriends: 'Ko si ọrẹ kankan',
+      edit: 'Ṣatunkọ',
+      addFriend: 'Fi ọrẹ kun',
+      friendsDot: 'Ọrẹ ✔',
+      requestSent: 'Ibeere ti ranṣẹ',
+      editProfile: 'Ṣatunkọ profaili',
+      posts: 'Awọn ifiweranṣẹ',
+      about: 'Nipa',
+      noPostsYet: 'Ko si ifiweranṣẹ',
+      aboutYou: 'Nipa',
+      noBio: 'Ko si alaye nipa rẹ.',
+      noMessages: 'Ko si ifiranṣẹ',
+      language: 'Ede',
+      darkMode: 'Ipo Dudu',
+      light: 'Imọlẹ',
+      dark: 'Dudu',
+      logout: 'Jade',
+      helpSupport: 'Iranlọwọ ati Atilẹyin',
+      contactUs: 'Pe wa:',
+      manageUsers: 'Ṣakoso awọn olumulo',
+      managePosts: 'Ṣakoso awọn ifiweranṣẹ',
+      verifyUsersMessage: 'Daju awọn olumulo ati ṣeto nọmba awọn ọmọlẹyin.',
+      followerCountPlaceholder: 'Nọmba awọn ọmọlẹyin (fun apẹẹrẹ, 1m)',
+      save: 'Fipamọ',
+      verify: 'Daju',
+      removeVerify: 'Yọ ✔ kuro',
+      managePostsMessage: 'Ṣeto awọn nọmba ifẹ ati asọye. Fi silẹ ni ofo fun nọmba gidi.',
+      likesReal: 'Awọn ifẹ (gidi: {count})',
+      commentsReal: 'Awọn asọye (gidi: {count})',
+      saveCounts: 'Fipamọ Awọn nọmba',
+      searchFriends: 'Wa awọn ọrẹ...',
+      noFriendsMessage: 'Ko si ọrẹ lati fi ifiranṣẹ ranṣẹ si',
+      noFriendsFound: 'Ko ri ọrẹ kankan.',
+      startConversation: 'Bẹrẹ ibaraẹnisọrọ',
+      typeMessage: 'Tẹ ifiranṣẹ...',
+      changeBg: 'Yi abẹlẹ pada',
+      clearBg: 'Pa abẹlẹ rẹ',
+      relevantComments: 'Nfi awọn asọye to wulo han'
+    },
+    it: {
+      loading: 'Caricamento...',
+      logIn: 'Accedi',
+      password: 'Password',
+      forgotPassword: 'Password dimenticata?',
+      createAccount: 'Crea account',
+      signUp: 'Iscriviti',
+      fullName: 'Nome e cognome',
+      gender: 'Genere',
+      male: 'Maschio',
+      female: 'Femmina',
+      other: 'Altro',
+      alreadyHaveAccount: 'Hai già un account?',
+      resetPassword: 'Reimposta password',
+      send: 'Invia',
+      cancel: 'Annulla',
+      search: 'Cerca...',
+      notifications: 'Notifiche',
+      home: 'Home',
+      friends: 'Amici',
+      messages: 'Messaggi',
+      profile: 'Profilo',
+      settings: 'Impostazioni',
+      admin: 'Admin',
+      whatsOnYourMind: 'A cosa stai pensando?',
+      create: 'Crea',
+      createPost: 'Crea post',
+      post: 'Pubblica',
+      posting: 'Pubblicazione...',
+      noPosts: 'Nessun post ancora',
+      comment: 'Commenta...',
+      requests: 'Richieste',
+      noRequests: 'Nessuna richiesta',
+      accept: 'Accetta',
+      decline: 'Rifiuta',
+      noFriends: 'Nessun amico ancora',
+      edit: 'Modifica',
+      addFriend: 'Aggiungi amico',
+      friendsDot: 'Amici ✔',
+      requestSent: 'Richiesta inviata',
+      editProfile: 'Modifica profilo',
+      posts: 'Post',
+      about: 'Informazioni',
+      noPostsYet: 'Nessun post',
+      aboutYou: 'Informazioni',
+      noBio: 'Nessuna biografia disponibile.',
+      noMessages: 'Nessun messaggio',
+      language: 'Lingua',
+      darkMode: 'Modalità scura',
+      light: 'Chiaro',
+      dark: 'Scuro',
+      logout: 'Esci',
+      helpSupport: 'Aiuto e supporto',
+      contactUs: 'Contattaci:',
+      manageUsers: 'Gestisci utenti',
+      managePosts: 'Gestisci post',
+      verifyUsersMessage: 'Verifica utenti e imposta conteggio follower.',
+      followerCountPlaceholder: 'Conteggio follower (es. 1m)',
+      save: 'Salva',
+      verify: 'Verifica',
+      removeVerify: 'Rimuovi ✔',
+      managePostsMessage: 'Imposta conteggi like/commenti. Lascia vuoto per i conteggi reali.',
+      likesReal: 'Mi piace (reali: {count})',
+      commentsReal: 'Commenti (reali: {count})',
+      saveCounts: 'Salva conteggi',
+      searchFriends: 'Cerca amici...',
+      noFriendsMessage: 'Nessun amico con cui messaggiare',
+      noFriendsFound: 'Nessun amico trovato.',
+      startConversation: 'Inizia una conversazione',
+      typeMessage: 'Scrivi un messaggio...',
+      changeBg: 'Cambia sfondo',
+      clearBg: 'Cancella sfondo',
+      relevantComments: 'Mostrando commenti pertinenti'
+    },
+    fr: {
+      loading: 'Chargement...',
+      logIn: 'Connexion',
+      password: 'Mot de passe',
+      forgotPassword: 'Mot de passe oublié ?',
+      createAccount: 'Créer un compte',
+      signUp: "S'inscrire",
+      fullName: 'Nom complet',
+      gender: 'Genre',
+      male: 'Homme',
+      female: 'Femme',
+      other: 'Autre',
+      alreadyHaveAccount: 'Vous avez déjà un compte ?',
+      resetPassword: 'Réinitialiser le mot de passe',
+      send: 'Envoyer',
+      cancel: 'Annuler',
+      search: 'Rechercher...',
+      notifications: 'Notifications',
+      home: 'Accueil',
+      friends: 'Amis',
+      messages: 'Messages',
+      profile: 'Profil',
+      settings: 'Paramètres',
+      admin: 'Admin',
+      whatsOnYourMind: 'À quoi pensez-vous ?',
+      create: 'Créer',
+      createPost: 'Créer une publication',
+      post: 'Publier',
+      posting: 'Publication...',
+      noPosts: 'Aucune publication pour le moment',
+      comment: 'Commenter...',
+      requests: 'Demandes',
+      noRequests: 'Aucune demande',
+      accept: 'Accepter',
+      decline: 'Refuser',
+      noFriends: "Pas encore d'amis",
+      edit: 'Modifier',
+      addFriend: 'Ajouter un ami',
+      friendsDot: 'Amis ✔',
+      requestSent: 'Demande envoyée',
+      editProfile: 'Modifier le profil',
+      posts: 'Publications',
+      about: 'À propos',
+      noPostsYet: 'Aucune publication',
+      aboutYou: 'À propos',
+      noBio: 'Aucune biographie disponible.',
+      noMessages: 'Aucun message',
+      language: 'Langue',
+      darkMode: 'Mode sombre',
+      light: 'Clair',
+      dark: 'Sombre',
+      logout: 'Déconnexion',
+      helpSupport: 'Aide et support',
+      contactUs: 'Contactez-nous :',
+      manageUsers: 'Gérer les utilisateurs',
+      managePosts: 'Gérer les publications',
+      verifyUsersMessage: 'Vérifier les utilisateurs et définir le nombre d"abonnés.',
+      followerCountPlaceholder: 'Nombre d"abonnés (ex. 1m)',
+      save: 'Enregistrer',
+      verify: 'Vérifier',
+      removeVerify: 'Retirer ✔',
+      managePostsMessage: 'Définir les compteurs de likes/commentaires. Laisser vide pour les vrais compteurs.',
+      likesReal: 'Likes (réels: {count})',
+      commentsReal: 'Commentaires (réels: {count})',
+      saveCounts: 'Enregistrer les comptes',
+      searchFriends: 'Rechercher des amis...',
+      noFriendsMessage: 'Aucun ami à qui envoyer un message',
+      noFriendsFound: 'Aucun ami trouvé.',
+      startConversation: 'Démarrer une conversation',
+      typeMessage: 'Écrire un message...',
+      changeBg: 'Changer le fond',
+      clearBg: 'Effacer le fond',
+      relevantComments: 'Affichage des commentaires pertinents'
+    },
+    de: {
+      loading: 'Wird geladen...',
+      logIn: 'Anmelden',
+      password: 'Passwort',
+      forgotPassword: 'Passwort vergessen?',
+      createAccount: 'Konto erstellen',
+      signUp: 'Registrieren',
+      fullName: 'Vollständiger Name',
+      gender: 'Geschlecht',
+      male: 'Männlich',
+      female: 'Weiblich',
+      other: 'Andere',
+      alreadyHaveAccount: 'Haben Sie bereits ein Konto?',
+      resetPassword: 'Passwort zurücksetzen',
+      send: 'Senden',
+      cancel: 'Abbrechen',
+      search: 'Suchen...',
+      notifications: 'Benachrichtigungen',
+      home: 'Start',
+      friends: 'Freunde',
+      messages: 'Nachrichten',
+      profile: 'Profil',
+      settings: 'Einstellungen',
+      admin: 'Admin',
+      whatsOnYourMind: 'Was denkst du gerade?',
+      create: 'Erstellen',
+      createPost: 'Beitrag erstellen',
+      post: 'Posten',
+      posting: 'Wird gepostet...',
+      noPosts: 'Noch keine Beiträge',
+      comment: 'Kommentieren...',
+      requests: 'Anfragen',
+      noRequests: 'Keine Anfragen',
+      accept: 'Annehmen',
+      decline: 'Ablehnen',
+      noFriends: 'Noch keine Freunde',
+      edit: 'Bearbeiten',
+      addFriend: 'Freund hinzufügen',
+      friendsDot: 'Freunde ✔',
+      requestSent: 'Anfrage gesendet',
+      editProfile: 'Profil bearbeiten',
+      posts: 'Beiträge',
+      about: 'Über',
+      noPostsYet: 'Keine Beiträge',
+      aboutYou: 'Über',
+      noBio: 'Keine Bio verfügbar.',
+      noMessages: 'Keine Nachrichten',
+      language: 'Sprache',
+      darkMode: 'Dunkelmodus',
+      light: 'Hell',
+      dark: 'Dunkel',
+      logout: 'Abmelden',
+      helpSupport: 'Hilfe & Support',
+      contactUs: 'Kontaktiere uns:',
+      manageUsers: 'Benutzer verwalten',
+      managePosts: 'Beiträge verwalten',
+      verifyUsersMessage: 'Benutzer verifizieren und Follower-Anzahl festlegen.',
+      followerCountPlaceholder: 'Follower-Anzahl (z.B. 1m)',
+      save: 'Speichern',
+      verify: 'Verifizieren',
+      removeVerify: '✔ entfernen',
+      managePostsMessage: 'Like-/Kommentar-Anzeige festlegen. Leer lassen for echte Zahlen.',
+      likesReal: 'Likes (echt: {count})',
+      commentsReal: 'Kommentare (echt: {count})',
+      saveCounts: 'Zahlen speichern',
+      searchFriends: 'Freunde suchen...',
+      noFriendsMessage: 'Keine Freunde zum Chatten',
+      noFriendsFound: 'Keine Freunde gefunden.',
+      startConversation: 'Gespräch beginnen',
+      typeMessage: 'Nachricht eingeben...',
+      changeBg: 'Hintergrund ändern',
+      clearBg: 'Hintergrund löschen',
+      relevantComments: 'Relevante Kommentare werden angezeigt'
+    }
+  };
+  // --- END I18N ---
 
   const CONFIG = window.SPACE_CONFIG || {};
   const app = initializeApp(CONFIG.firebaseConfig);
@@ -160,7 +632,9 @@
   const db = getFirestore(app);
   const CLOUDINARY_CLOUD = CONFIG.cloudinary?.cloudName || "";
   const CLOUDINARY_UPLOAD_PRESET = CONFIG.cloudinary?.uploadPreset || "";
-  const ADMIN_EMAIL = CONFIG.ADMIN_EMAIL || "";
+  const ADMIN_EMAIL = (CONFIG.ADMIN_EMAIL || "").toLowerCase();
+  
+  const getChatId = (uid1, uid2) => [uid1, uid2].sort().join('_');
 
   async function uploadToCloudinary(file) {
     if (!CLOUDINARY_CLOUD || !CLOUDINARY_UPLOAD_PRESET) throw new Error('Cloudinary not configured');
@@ -173,8 +647,15 @@
     return res.json();
   }
 
-  async function createUserProfile(uid, profile) {
-    await setDoc(doc(db, 'users', uid), { ...profile, bio: '', status: '', followerCount: '', createdAt: serverTimestamp() });
+  async function createUserProfile(uid, profile) { 
+    await setDoc(doc(db, 'users', uid), { 
+      ...profile, 
+      bio: '', 
+      status: '', 
+      followerCount: '', 
+      createdAt: serverTimestamp(),
+      email: profile.email.toLowerCase()
+    });
   }
   async function getUserProfile(uid) {
     if (!uid) return null;
@@ -188,7 +669,16 @@
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
 
-  async function createPost(post) { return addDoc(collection(db, 'posts'), { ...post, likes: [], comments: [], createdAt: serverTimestamp() }); }
+  async function createPost(post) { 
+    return addDoc(collection(db, 'posts'), { 
+      ...post, 
+      likes: [], 
+      comments: [], 
+      createdAt: serverTimestamp(),
+      displayLikeCount: '',
+      displayCommentCount: ''
+    }); 
+  }
   function subscribeFeed(cb) { const q = query(collection(db, 'posts'), orderBy('createdAt','desc')); return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); }
   async function updatePost(postId, data) { return updateDoc(doc(db,'posts',postId), data); }
   async function deletePost(postId) { return deleteDoc(doc(db,'posts',postId)); }
@@ -205,7 +695,12 @@
   }
   async function addComment(postId, uid, text) {
     const postRef = doc(db, 'posts', postId);
-    await updateDoc(postRef, { comments: arrayUnion({ uid, text, createdAt: new Date().toISOString() }) });
+    const newComment = { 
+      uid, 
+      text, 
+      createdAt: new Date().toISOString()
+    };
+    await updateDoc(postRef, { comments: arrayUnion(newComment) });
   }
 
   async function createStory(uid, mediaUrl, mediaType) { 
@@ -226,11 +721,9 @@
 
   async function sendFriendRequest(from, to) { 
     const id = `${from}_${to}`;
-    // Check if reverse request exists
     const reverseId = `${to}_${from}`;
     const reverseSnap = await getDoc(doc(db, 'friends', reverseId));
     if (reverseSnap.exists()) {
-      // If reverse request is pending, accept it
       if (reverseSnap.data().status === 'pending') {
         await acceptFriendRequest(reverseId);
         return;
@@ -257,7 +750,6 @@
       ...snap1.docs.map(d => d.data()),
       ...snap2.docs.map(d => d.data())
     ];
-    // Get the other user's ID
     const friendIds = friendsData.map(f => f.requester === uid ? f.target : f.requester);
     return friendIds;
   }
@@ -274,15 +766,45 @@
     return null;
   }
 
-
-  async function sendMessage(chatId, from, text, media=null) { 
-    await addDoc(collection(db, `chats/${chatId}/messages`), { from, text, media, read: false, createdAt: serverTimestamp() }); 
-    await setDoc(doc(db, 'chats', chatId), { participants: chatId.split('_'), lastMessage: text, updatedAt: serverTimestamp() }, { merge: true });
+  // --- CHAT FUNCTIONS (UPDATED) ---
+  async function sendMessage(chatId, from, to, { text, media }) {
+    if (!text && !media) return;
+    
+    const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
+    const targetUnreadKey = `unreadCount_${to}`;
+    
+    await setDoc(doc(db, 'chats', chatId), { 
+      participants: chatId.split('_'), 
+      lastMessage: lastMessage, 
+      updatedAt: serverTimestamp(),
+      [targetUnreadKey]: increment(1) // Increment unread count for the receiver
+    }, { merge: true });
+    
+    await addDoc(collection(db, `chats/${chatId}/messages`), { 
+      from, 
+      text: text || null, 
+      media: media || null, 
+      read: false, // This `read` is now just for reference
+      createdAt: serverTimestamp() 
+    }); 
   }
+  
+  // NEW: Function to clear unread count when chat is opened
+  async function clearUnreadCount(chatId, uid) {
+    const key = `unreadCount_${uid}`;
+    await setDoc(doc(db, 'chats', chatId), {
+      [key]: 0
+    }, { merge: true });
+  }
+
   function subscribeMessages(chatId, cb) { 
-    const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','asc')); 
+    const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc')); 
     return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); 
   }
+  function subscribeChatData(chatId, cb) {
+    return onSnapshot(doc(db, 'chats', chatId), (doc) => cb(doc.data()));
+  }
+  // --- END CHAT FUNCTIONS ---
 
   function fmtDate(ts) {
     if (!ts) return '';
@@ -296,6 +818,7 @@
       return date.toLocaleDateString();
     } catch { return ''; }
   }
+  
   function App() {
     const [user, setUser] = useState(null);
     const [page, setPage] = useState('loading');
@@ -309,11 +832,54 @@
     const [userProfile, setUserProfile] = useState(null);
     const [showComposer, setShowComposer] = useState(false);
     const [showForgot, setShowForgot] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [totalUnread, setTotalUnread] = useState(0); // NEW: Total unread messages
+    const [chatUnreadMap, setChatUnreadMap] = useState({}); // NEW: Unread count per chat
 
+    const t = (key, params = {}) => {
+      let text = translations[lang]?.[key] || translations['en'][key] || key;
+      Object.keys(params).forEach(p => {
+        text = text.replace(`{${p}}`, params[p]);
+      });
+      return text;
+    };
+    
+    const navTo = (p) => {
+      if (p === 'profile') setSelectedProfile(null); 
+      setPage(p);
+    };
+    
     const navToProfile = (uid) => {
       setSelectedProfile(uid);
       setPage('profile');
     };
+    
+    const handleSetLang = (newLang) => {
+      setLang(newLang);
+      localStorage.setItem('lang', newLang);
+    };
+    
+    // NEW: Listener for unread messages
+    useEffect(() => {
+      if (!user) return;
+      const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid));
+      const unsub = onSnapshot(q, (snap) => {
+        let total = 0;
+        const unreadMap = {};
+        snap.forEach(doc => {
+          const data = doc.data();
+          const unreadKey = `unreadCount_${user.uid}`;
+          const count = data[unreadKey] || 0;
+          if (count > 0) {
+            total += count;
+            unreadMap[doc.id] = count;
+          }
+        });
+        setTotalUnread(total);
+        setChatUnreadMap(unreadMap);
+      });
+      return () => unsub();
+    }, [user]);
 
     useEffect(()=> {
       const splash = document.getElementById('splash');
@@ -322,10 +888,12 @@
         if (u) {
           const prof = await getUserProfile(u.uid);
           setUserProfile(prof);
+          setIsAdmin(prof?.email === ADMIN_EMAIL);
           if (!prof) setPage('register'); 
           else setPage('home');
         } else {
           setPage('login');
+          setIsAdmin(false);
         }
       });
       const unsubFeed = subscribeFeed(setFeed);
@@ -355,32 +923,37 @@
 
     if (!user && (page === 'login' || page === 'register')) {
       return React.createElement('div', { className: 'container' },
-        page === 'login' && React.createElement(LoginPage, { onSuccess: () => setPage('home'), onSwitch: () => setPage('register'), onForgot: () => setShowForgot(true) }),
-        page === 'register' && React.createElement(RegisterPage, { onSuccess: () => setPage('home'), onSwitch: () => setPage('login') }),
-        showForgot && React.createElement(ForgotModal, { onClose: () => setShowForgot(false) })
+        page === 'login' && React.createElement(LoginPage, { t, onSuccess: () => setPage('home'), onSwitch: () => setPage('register'), onForgot: () => setShowForgot(true) }),
+        page === 'register' && React.createElement(RegisterPage, { t, onSuccess: () => setPage('home'), onSwitch: () => setPage('login') }),
+        showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) })
       );
     }
 
     return React.createElement('div', null,
-      React.createElement(TopBar, { user, userProfile, searchTerm, setSearchTerm, searchResults, onNav: setPage, onOpenProfile: navToProfile }),
+      React.createElement(TopBar, { t, user, userProfile, searchTerm, setSearchTerm, searchResults, page: page, onNav: navTo, onOpenProfile: navToProfile, unreadCount: totalUnread }),
       React.createElement('div', { className: 'container' },
-        page === 'loading' && React.createElement('div', { className: 'card' }, 'Loading...'),
-        page === 'home' && React.createElement(HomePage, { user, feed, stories, showComposer, setShowComposer, onNavToProfile: navToProfile }),
-        page === 'friends' && React.createElement(FriendsPage, { user }),
-        page === 'profile' && React.createElement(ProfilePage, { uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
-        page === 'messages' && React.createElement(MessagesPage, { currentUser: user, onNavToProfile: navToProfile }),
-        page === 'settings' && React.createElement(SettingsPage, { lang, setLang, theme, setTheme }),
-        page === 'admin' && userProfile && userProfile.verified && React.createElement(AdminPage, null)
+        page === 'loading' && React.createElement('div', { className: 'card' }, t('loading')),
+        page === 'home' && React.createElement(HomePage, { t, user, userProfile, feed, stories, showComposer, setShowComposer, onNavToProfile: navToProfile }),
+        page === 'friends' && React.createElement(FriendsPage, { t, user }),
+        page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
+        page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
+        page === 'settings' && React.createElement(SettingsPage, { t, lang, setLang: handleSetLang, theme, setTheme }),
+        page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
       ),
-      user && React.createElement(BottomNav, { page, setPage, userProfile })
+      user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread })
     );
   }
 
-  function TopBar({ user, userProfile, searchTerm, setSearchTerm, searchResults, onNav, onOpenProfile }) {
+  function TopBar({ t, user, userProfile, searchTerm, setSearchTerm, searchResults, page, onNav, onOpenProfile, unreadCount }) {
     return React.createElement('div', { className: 'topbar' },
+      page !== 'home' && React.createElement('div', { 
+        className: 'icon-btn', 
+        onClick: () => onNav('home'), 
+        style: { background: 'transparent' }
+      }, '⬅️'),
       React.createElement('div', { className: 'topbar-logo', onClick: () => onNav('home') }, 'S'),
       user && React.createElement('div', { className: 'search-box' },
-        React.createElement('input', { className: 'search-input', placeholder: '🔍 Search...', value: searchTerm, onInput: e => setSearchTerm(e.target.value) }),
+        React.createElement('input', { className: 'search-input', placeholder: t('search'), value: searchTerm, onInput: e => setSearchTerm(e.target.value) }),
         searchResults.length > 0 && React.createElement('div', { className: 'search-results' },
           searchResults.map(s => React.createElement('div', { key: s.id, className: 'search-item', onClick: () => { onOpenProfile(s.id); setSearchTerm(''); }},
             React.createElement('div', { className: 'row' },
@@ -400,36 +973,35 @@
         )
       ),
       user && React.createElement('div', { className: 'topbar-icons' },
-        React.createElement('div', { className: 'icon-btn', onClick: () => onNav('notifications') }, '🔔'),
+        // UPDATED: Bell icon now shows badge and goes to messages
+        React.createElement('div', { className: 'icon-btn', onClick: () => onNav('messages'), title: t('notifications') }, 
+          '🔔',
+          unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
+        ),
         userProfile?.avatarUrl && React.createElement('img', { src: userProfile.avatarUrl, className: 'avatar', onClick: () => onNav('profile'), style: { cursor:'pointer' }})
       )
     );
   }
 
-  function BottomNav({ page, setPage, userProfile }) {
-    const navTo = (p) => {
-      // Special case for profile: clear selectedProfile to show *my* profile
-      if (p === 'profile' && page === 'profile') {
-        // If already on profile page, clicking again should force *my* profile
-        setPage('loading'); // Force re-render
-        setTimeout(() => setPage('profile'), 0);
-      }
-      setPage(p);
-    }
+  function BottomNav({ t, page, setPage, userProfile, isAdmin, unreadCount }) {
+    const navItems = ['home', 'friends', 'messages', 'profile', 'settings'];
+    const icons = { home: '🏠', friends: '👥', messages: '💬', profile: '👤', settings: '⚙️', admin: '🛡️' };
     
+    if (isAdmin) navItems.push('admin');
+
     return React.createElement('div', { className: 'bottomnav' },
-      ['home','friends','messages','profile','settings'].map(p => 
-        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => navTo(p) },
-          React.createElement('div', { className: 'nav-icon' }, 
-            p === 'home' ? '🏠' : p === 'friends' ? '👥' : p === 'messages' ? '💬' : p === 'profile' ? '👤' : '⚙️'
-          ),
-          React.createElement('div', { className: 'nav-label' }, p.charAt(0).toUpperCase() + p.slice(1))
+      navItems.map(p => 
+        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
+          React.createElement('div', { className: 'nav-icon' }, icons[p]),
+          React.createElement('div', { className: 'nav-label' }, t(p)),
+          // UPDATED: Messages icon now shows badge
+          p === 'messages' && unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
         )
       )
     );
   }
 
-  function LoginPage({ onSuccess, onSwitch, onForgot }) {
+  function LoginPage({ t, onSuccess, onSwitch, onForgot }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
@@ -447,18 +1019,18 @@
       React.createElement('h1', { style: { textAlign:'center', background:'var(--gradient)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', marginBottom:24 }}, 'Space'),
       React.createElement('form', { onSubmit: submit, className: 'col' },
         React.createElement('input', { placeholder: 'Email', type: 'email', value: email, onInput: e => setEmail(e.target.value), required: true }),
-        React.createElement('input', { placeholder: 'Password', type: 'password', value: password, onInput: e => setPassword(e.target.value), required: true }),
-        React.createElement('button', { className: 'btn', type: 'submit', style: { width:'100%' }}, 'Log In'),
-        React.createElement('a', { href: '#', onClick: e => { e.preventDefault(); onForgot(); }, style: { textAlign:'center', fontSize:14, color:'var(--primary)' }}, 'Forgot password?'),
+        React.createElement('input', { placeholder: t('password'), type: 'password', value: password, onInput: e => setPassword(e.target.value), required: true }),
+        React.createElement('button', { className: 'btn', type: 'submit', style: { width:'100%' }}, t('logIn')),
+        React.createElement('a', { href: '#', onClick: e => { e.preventDefault(); onForgot(); }, style: { textAlign:'center', fontSize:14, color:'var(--primary)' }}, t('forgotPassword')),
         msg && React.createElement('div', { style: { color:'#fa3e3e', fontSize:14, textAlign:'center' }}, msg)
       ),
       React.createElement('div', { style: { textAlign:'center', marginTop:20, paddingTop:20, borderTop:'1px solid var(--hover)' }},
-        React.createElement('button', { className: 'btn-secondary', onClick: onSwitch, style: { padding:'10px 24px', borderRadius:6 }}, 'Create Account')
+        React.createElement('button', { className: 'btn-secondary', onClick: onSwitch, style: { padding:'10px 24px', borderRadius:6 }}, t('createAccount'))
       )
     );
   }
 
-  function RegisterPage({ onSuccess, onSwitch }) {
+  function RegisterPage({ t, onSuccess, onSwitch }) {
     const [form, setForm] = useState({ name:'', dob:'', gender:'', email:'', password:'' });
     const [error, setError] = useState('');
     async function submit(e) {
@@ -466,7 +1038,7 @@
       setError('');
       try {
         const cred = await createUserWithEmailAndPassword(auth, form.email, form.password);
-        const isAdmin = form.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        const isAdmin = form.email.toLowerCase() === ADMIN_EMAIL;
         await createUserProfile(cred.user.uid, {
           displayName: form.name,
           displayNameLower: form.name.toLowerCase(),
@@ -475,10 +1047,7 @@
           email: form.email,
           avatarUrl: null,
           coverUrl: null,
-          verified: isAdmin,
-          bio: '',
-          status: '',
-          followerCount: ''
+          verified: isAdmin
         });
         if (ADMIN_EMAIL && !isAdmin) {
           const q = query(collection(db,'users'), where('email','==',ADMIN_EMAIL));
@@ -493,28 +1062,28 @@
       }
     }
     return React.createElement('div', { className: 'card card-lg', style: { maxWidth:400, margin:'40px auto' }},
-      React.createElement('h2', { style: { textAlign:'center', marginBottom:24 }}, 'Sign Up'),
+      React.createElement('h2', { style: { textAlign:'center', marginBottom:24 }}, t('signUp')),
       React.createElement('form', { onSubmit: submit, className: 'col' },
-        React.createElement('input', { placeholder: 'Full name', value: form.name, onInput: e => setForm({...form, name: e.target.value}), required: true }),
+        React.createElement('input', { placeholder: t('fullName'), value: form.name, onInput: e => setForm({...form, name: e.target.value}), required: true }),
         React.createElement('input', { type: 'date', value: form.dob, onInput: e => setForm({...form, dob: e.target.value}), required: true }),
         React.createElement('select', { value: form.gender, onChange: e => setForm({...form, gender: e.target.value}), required: true },
-          React.createElement('option', { value: '' }, 'Gender'),
-          React.createElement('option', { value: 'male' }, 'Male'),
-          React.createElement('option', { value: 'female' }, 'Female'),
-          React.createElement('option', { value: 'other' }, 'Other')
+          React.createElement('option', { value: '' }, t('gender')),
+          React.createElement('option', { value: 'male' }, t('male')),
+          React.createElement('option', { value: 'female' }, t('female')),
+          React.createElement('option', { value: 'other' }, t('other'))
         ),
         React.createElement('input', { placeholder: 'Email', type: 'email', value: form.email, onInput: e => setForm({...form, email: e.target.value}), required: true }),
-        React.createElement('input', { placeholder: 'Password', type: 'password', value: form.password, onInput: e => setForm({...form, password: e.target.value}), required: true }),
-        React.createElement('button', { className: 'btn', type: 'submit', style: { width:'100%' }}, 'Sign Up'),
+        React.createElement('input', { placeholder: t('password'), type: 'password', value: form.password, onInput: e => setForm({...form, password: e.target.value}), required: true }),
+        React.createElement('button', { className: 'btn', type: 'submit', style: { width:'100%' }}, t('signUp')),
         error && React.createElement('div', { style: { color:'#fa3e3e', fontSize:14, textAlign:'center' }}, error)
       ),
       React.createElement('div', { style: { textAlign:'center', marginTop:20 }},
-        React.createElement('a', { href: '#', onClick: e => { e.preventDefault(); onSwitch(); }, style: { color:'var(--primary)' }}, 'Already have an account?')
+        React.createElement('a', { href: '#', onClick: e => { e.preventDefault(); onSwitch(); }, style: { color:'var(--primary)' }}, t('alreadyHaveAccount'))
       )
     );
   }
 
-  function ForgotModal({ onClose }) {
+  function ForgotModal({ t, onClose }) {
     const [email, setEmail] = useState('');
     const [msg, setMsg] = useState('');
     async function submit(e) {
@@ -529,12 +1098,12 @@
     }
     return React.createElement('div', { className: 'modal', onClick: onClose },
       React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
-        React.createElement('h3', { style: { marginBottom:20 }}, 'Reset Password'),
+        React.createElement('h3', { style: { marginBottom:20 }}, t('resetPassword')),
         React.createElement('form', { onSubmit: submit, className: 'col' },
           React.createElement('input', { placeholder: 'Enter email', type: 'email', value: email, onInput: e => setEmail(e.target.value), required: true }),
           React.createElement('div', { className: 'row', style: { gap:12 }},
-            React.createElement('button', { className: 'btn', type: 'submit', style: { flex:1 }}, 'Send'),
-            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, 'Cancel')
+            React.createElement('button', { className: 'btn', type: 'submit', style: { flex:1 }}, t('send')),
+            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, t('cancel'))
           ),
           msg && React.createElement('div', { style: { textAlign:'center', marginTop:12 }}, msg)
         )
@@ -542,30 +1111,32 @@
     );
   }
 
-  function HomePage({ user, feed, stories, showComposer, setShowComposer, onNavToProfile }) {
+  function HomePage({ t, user, userProfile, feed, stories, showComposer, setShowComposer, onNavToProfile }) {
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
         React.createElement('div', { className: 'row', style: { alignItems:'flex-start', gap:16 }},
-          React.createElement('div', { className: 'avatar-lg', style: { background:'var(--gradient)', flexShrink:0 }}),
-          React.createElement('button', { className: 'composer-trigger', onClick: () => setShowComposer(true), style: { flex:1 }}, "What's on your mind?")
+          userProfile?.avatarUrl ? 
+            React.createElement('img', { src: userProfile.avatarUrl, className: 'avatar-lg' }) :
+            React.createElement('div', { className: 'avatar-lg', style: { background:'var(--gradient)', flexShrink:0 }}),
+          React.createElement('button', { className: 'composer-trigger', onClick: () => setShowComposer(true), style: { flex:1 }}, t('whatsOnYourMind'))
         )
       ),
       React.createElement('div', { className: 'card', style: { padding:'16px 12px' }},
         React.createElement('div', { className: 'row', style: { overflowX:'auto', gap:12, paddingBottom:8 }},
-          React.createElement(StoryComposer, { user }),
+          React.createElement(StoryComposer, { t, user }),
           stories.slice(0,5).map(s => React.createElement(StoryCard, { key: s.id, story: s }))
         )
       ),
-      showComposer && React.createElement(ComposerModal, { user, onClose: () => setShowComposer(false) }),
+      showComposer && React.createElement(ComposerModal, { t, user, onClose: () => setShowComposer(false) }),
       feed.length === 0 && React.createElement('div', { className: 'empty-state' },
         React.createElement('div', { className: 'empty-icon' }, '📝'),
-        React.createElement('div', null, 'No posts yet')
+        React.createElement('div', null, t('noPosts'))
       ),
-      feed.map(p => React.createElement(PostCard, { key: p.id, post: p, currentUser: user, onNavToProfile: onNavToProfile }))
+      feed.map(p => React.createElement(PostCard, { t, key: p.id, post: p, currentUser: user, onNavToProfile: onNavToProfile }))
     );
   }
 
-  function StoryComposer({ user }) {
+  function StoryComposer({ t, user }) {
     const fileInput = useRef(null);
     const [loading, setLoading] = useState(false);
     async function handleFile(e) {
@@ -579,8 +1150,8 @@
     }
     return React.createElement('div', { className: 'story-circle', onClick: () => fileInput.current?.click(), style: { background:'var(--hover)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column' }},
       React.createElement('input', { ref: fileInput, type: 'file', accept: 'image/*,video/*', onChange: handleFile, style: { display:'none' }}),
-      React.createElement('div', { style: { fontSize:32 }}, loading ? '⏳' : '➕'),
-      React.createElement('div', { style: { fontSize:13, fontWeight:600, marginTop:8 }}, 'Create')
+      React.createElement('div', { style: { fontSize:32, color: 'var(--text)' }}, loading ? '⏳' : '➕'),
+      React.createElement('div', { style: { fontSize:13, fontWeight:600, marginTop:8, color: 'var(--text)' }}, t('create'))
     );
   }
 
@@ -599,7 +1170,7 @@
     );
   }
 
-  function ComposerModal({ user, onClose }) {
+  function ComposerModal({ t, user, onClose }) {
     const [text, setText] = useState('');
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -619,21 +1190,20 @@
     }
     return React.createElement('div', { className: 'modal', onClick: onClose },
       React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
-        React.createElement('h3', { style: { marginBottom:20 }}, 'Create Post'),
+        React.createElement('h3', { style: { marginBottom:20 }}, t('createPost')),
         React.createElement('form', { onSubmit: submit, className: 'col' },
-          React.createElement('textarea', { placeholder: "What's on your mind?", value: text, onInput: e => setText(e.target.value), style: { minHeight:120 }}),
+          React.createElement('textarea', { placeholder: t('whatsOnYourMind'), value: text, onInput: e => setText(e.target.value), style: { minHeight:120 }}),
           React.createElement('input', { type: 'file', accept: 'image/*,video/*', onChange: e => setFile(e.target.files?.[0]) }),
           React.createElement('div', { className: 'row', style: { gap:12 }},
-            React.createElement('button', { className: 'btn', type: 'submit', disabled: loading, style: { flex:1 }}, loading ? 'Posting...' : 'Post'),
-            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, 'Cancel')
+            React.createElement('button', { className: 'btn', type: 'submit', disabled: loading, style: { flex:1 }}, loading ? t('posting') : t('post')),
+            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, t('cancel'))
           )
         )
       )
     );
   }
 
-  // New Modal for Editing Profile
-  function EditProfileModal({ profile, onClose }) {
+  function EditProfileModal({ t, profile, onClose }) {
     const [form, setForm] = useState({
       displayName: profile?.displayName || '',
       bio: profile?.bio || '',
@@ -649,7 +1219,7 @@
           ...form,
           displayNameLower: form.displayName.toLowerCase()
         });
-        onClose(true); // Pass true to signal successful update
+        onClose(true);
       } catch (err) {
         console.error("Failed to update profile", err);
         alert('❌ Update failed');
@@ -660,15 +1230,15 @@
 
     return React.createElement('div', { className: 'modal', onClick: onClose },
       React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
-        React.createElement('h3', { style: { marginBottom:20 }}, 'Edit Profile'),
+        React.createElement('h3', { style: { marginBottom:20 }}, t('editProfile')),
         React.createElement('form', { onSubmit: submit, className: 'col' },
-          React.createElement('label', { className: 'small' }, 'Name'),
+          React.createElement('label', { className: 'small' }, t('fullName')),
           React.createElement('input', { 
             value: form.displayName, 
             onInput: e => setForm(f => ({ ...f, displayName: e.target.value })), 
             required: true 
           }),
-          React.createElement('label', { className: 'small' }, 'Bio / About'),
+          React.createElement('label', { className: 'small' }, t('aboutYou')),
           React.createElement('textarea', { 
             placeholder: 'Tell us about yourself...',
             value: form.bio, 
@@ -676,13 +1246,13 @@
           }),
           React.createElement('label', { className: 'small' }, 'Status'),
           React.createElement('input', { 
-            placeholder: 'What are you up to?',
+            placeholder: t('whatsOnYourMind'),
             value: form.status, 
             onInput: e => setForm(f => ({ ...f, status: e.target.value }))
           }),
           React.createElement('div', { className: 'row', style: { gap:12, marginTop: 12 }},
-            React.createElement('button', { className: 'btn', type: 'submit', disabled: loading, style: { flex:1 }}, loading ? 'Saving...' : 'Save'),
-            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, 'Cancel')
+            React.createElement('button', { className: 'btn', type: 'submit', disabled: loading, style: { flex:1 }}, loading ? t('posting') : t('save')),
+            React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onClose, style: { flex:1 }}, t('cancel'))
           )
         )
       )
@@ -690,13 +1260,20 @@
   }
 
 
-  function PostCard({ post, currentUser, onNavToProfile }) {
+  function PostCard({ t, post, currentUser, onNavToProfile }) {
     const [author, setAuthor] = useState(null);
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [commentsWithAuthors, setCommentsWithAuthors] = useState([]);
+    
     const liked = post.likes?.includes(currentUser?.uid);
     const isMine = currentUser?.uid === post.authorId;
+    
+    const realLikeCount = post.likes?.length || 0;
+    const realCommentCount = post.comments?.length || 0;
+    const displayLikes = post.displayLikeCount || realLikeCount;
+    const displayComments = post.displayCommentCount || realCommentCount;
+    const showRelevantMsg = post.displayCommentCount && post.displayCommentCount != realCommentCount;
 
     useEffect(() => {
       (async () => {
@@ -705,9 +1282,8 @@
       })();
     }, [post.authorId]);
     
-    // Fetch comment authors
     useEffect(() => {
-      if (showComments && post.comments?.length > 0) {
+      if (post.comments?.length > 0) {
         (async () => {
           const authors = {};
           const comments = await Promise.all(post.comments.map(async c => {
@@ -716,10 +1292,12 @@
             }
             return { ...c, author: authors[c.uid] };
           }));
-          setCommentsWithAuthors(comments.reverse()); // Show newest first
+          setCommentsWithAuthors(comments.reverse());
         })();
+      } else {
+        setCommentsWithAuthors([]);
       }
-    }, [showComments, post.comments]);
+    }, [post.comments]);
 
     async function handleLike() {
       if (!currentUser) return;
@@ -728,13 +1306,15 @@
 
     async function submitComment() {
       if (!commentText.trim() || !currentUser) return;
-      await addComment(post.id, currentUser.uid, commentText);
-      // Optimistically add comment to UI
-      setCommentsWithAuthors([
-        { uid: currentUser.uid, text: commentText, author: await getUserProfile(currentUser.uid), createdAt: new Date().toISOString() },
-        ...commentsWithAuthors
-      ]);
+      const newComment = { 
+        uid: currentUser.uid, 
+        text: commentText, 
+        author: await getUserProfile(currentUser.uid), 
+        createdAt: new Date().toISOString()
+      };
+      setCommentsWithAuthors([newComment, ...commentsWithAuthors]);
       setCommentText('');
+      await addComment(post.id, currentUser.uid, commentText);
     }
 
     async function handleDelete() {
@@ -779,27 +1359,30 @@
       React.createElement('div', { style: { display:'flex', gap:8, marginTop:12, paddingTop:12, borderTop:'1px solid var(--hover)' }},
         React.createElement('div', { className: `like-btn ${liked ? 'liked' : ''}`, onClick: handleLike },
           React.createElement('span', { style: { fontSize:20 }}, liked ? '❤️' : '🤍'),
-          React.createElement('span', null, post.likes?.length || 0)
+          React.createElement('span', null, displayLikes)
         ),
         React.createElement('div', { className: 'like-btn', onClick: () => setShowComments(!showComments) },
           React.createElement('span', { style: { fontSize:20 }}, '💬'),
-          React.createElement('span', null, post.comments?.length || 0)
+          React.createElement('span', null, displayComments)
         )
       ),
       showComments && React.createElement('div', { className: 'comment-section' },
+        showRelevantMsg && React.createElement('div', { className: 'small', style: { textAlign: 'center', marginBottom: 12, fontStyle: 'italic' }}, t('relevantComments')),
         React.createElement('div', { className: 'row', style: { marginBottom:12 }},
-          React.createElement('input', { placeholder: 'Comment...', value: commentText, onInput: e => setCommentText(e.target.value), onKeyPress: e => e.key === 'Enter' && submitComment() }),
+          React.createElement('input', { placeholder: t('comment'), value: commentText, onInput: e => setCommentText(e.target.value), onKeyPress: e => e.key === 'Enter' && submitComment() }),
           React.createElement('button', { className: 'btn', onClick: submitComment, style: { padding:'8px 16px' }}, '➤')
         ),
-        commentsWithAuthors?.map((c, i) => React.createElement('div', { key: c.createdAt + i, className: 'comment-item' },
-          React.createElement('div', { className: 'comment-author', onClick: () => onNavToProfile(c.uid) }, c.author?.displayName || 'User'),
-          React.createElement('div', null, c.text)
+        commentsWithAuthors.map((c, i) => React.createElement('div', { key: c.createdAt + i, className: 'comment-item' },
+          React.createElement('div', null,
+            React.createElement('div', { className: 'comment-author', onClick: () => onNavToProfile(c.uid) }, c.author?.displayName || 'User'),
+            React.createElement('div', null, c.text)
+          )
         ))
       )
     );
   }
 
-  function FriendsPage({ user }) {
+  function FriendsPage({ t, user }) {
     const [requests, setRequests] = useState([]);
     const [friends, setFriends] = useState([]);
 
@@ -810,12 +1393,11 @@
       })();
     }, [user.uid]);
     
-    // Re-fetch friends when requests change
     useEffect(() => {
       (async () => {
         const frdIds = await getFriends(user.uid);
         const friendProfiles = await Promise.all(frdIds.map(id => getUserProfile(id)));
-        setFriends(friendProfiles.filter(Boolean)); // Filter out null profiles
+        setFriends(friendProfiles.filter(Boolean));
       })();
     }, [user.uid, requests]);
 
@@ -832,15 +1414,15 @@
 
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
-        React.createElement('h3', { style: { marginBottom:16 }}, `Requests (${requests.length})`),
-        requests.length === 0 && React.createElement('div', { className: 'small' }, 'No requests'),
-        requests.map(req => React.createElement(FriendRequestCard, { key: req.id, request: req, onAccept: () => accept(req), onDecline: () => decline(req) }))
+        React.createElement('h3', { style: { marginBottom:16 }}, `${t('requests')} (${requests.length})`),
+        requests.length === 0 && React.createElement('div', { className: 'small' }, t('noRequests')),
+        requests.map(req => React.createElement(FriendRequestCard, { key: req.id, t, request: req, onAccept: () => accept(req), onDecline: () => decline(req) }))
       ),
       React.createElement('div', { className: 'card' },
-        React.createElement('h3', { style: { marginBottom:16 }}, `Friends (${friends.length})`),
+        React.createElement('h3', { style: { marginBottom:16 }}, `${t('friends')} (${friends.length})`),
         friends.length === 0 && React.createElement('div', { className: 'empty-state' },
           React.createElement('div', { className: 'empty-icon' }, '👥'),
-          React.createElement('div', null, 'No friends yet')
+          React.createElement('div', null, t('noFriends'))
         ),
         friends.map(f => React.createElement('div', { key: f.id, className: 'friend-card' },
           React.createElement('div', { className: 'row' },
@@ -855,7 +1437,7 @@
     );
   }
 
-  function FriendRequestCard({ request, onAccept, onDecline }) {
+  function FriendRequestCard({ t, request, onAccept, onDecline }) {
     const [requester, setRequester] = useState(null);
     useEffect(() => {
       (async () => {
@@ -875,34 +1457,31 @@
         )
       ),
       React.createElement('div', { className: 'row', style: { gap:8 }},
-        React.createElement('button', { className: 'btn', onClick: onAccept }, 'Accept'),
-        React.createElement('button', { className: 'btn-ghost', onClick: onDecline }, 'Decline')
+        React.createElement('button', { className: 'btn', onClick: onAccept }, t('accept')),
+        React.createElement('button', { className: 'btn-ghost', onClick: onDecline }, t('decline'))
       )
     );
   }
 
-  // MODIFIED ProfilePage function
-  function ProfilePage({ uid, currentUser, userProfile, onNavToProfile }) {
+  function ProfilePage({ t, uid, currentUser, userProfile, onNavToProfile }) {
     const [profile, setProfile] = useState(null);
     const [tab, setTab] = useState('posts');
     const [isUploading, setIsUploading] = useState(false);
-    const [friendStatus, setFriendStatus] = useState(null); // 'pending', 'accepted', null
+    const [friendStatus, setFriendStatus] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
 
-    const profileId = uid || currentUser?.uid; // Determine whose profile to show
+    const profileId = uid || currentUser?.uid;
     const owner = currentUser && profileId === currentUser.uid;
 
     useEffect(() => {
       (async () => {
         if (profileId) {
-          // If we are viewing our own profile, use the already-loaded userProfile
           if (owner) {
             setProfile(userProfile);
           } else {
             const p = await getUserProfile(profileId);
             setProfile(p);
           }
-          // Check friend status
           if (!owner && currentUser) {
             const status = await getFriendStatus(currentUser.uid, profileId);
             setFriendStatus(status);
@@ -918,13 +1497,13 @@
 
     async function sendRequest() {
       if (!currentUser || owner) return;
-      setFriendStatus('pending'); // Optimistic update
+      setFriendStatus('pending');
       try {
         await sendFriendRequest(currentUser.uid, profileId);
         alert('✅ Request sent!');
       } catch (err) {
         console.error(err);
-        setFriendStatus(null); // Revert
+        setFriendStatus(null);
       }
     }
 
@@ -950,21 +1529,22 @@
     function renderFriendButton() {
       if (owner) return null;
       if (friendStatus === 'accepted') {
-        return React.createElement('button', { className: 'btn-ghost', disabled: true }, 'Friends ✔');
+        return React.createElement('button', { className: 'btn-ghost', disabled: true }, t('friendsDot'));
       }
       if (friendStatus === 'pending') {
-        return React.createElement('button', { className: 'btn-ghost', disabled: true }, 'Request Sent');
+        return React.createElement('button', { className: 'btn-ghost', disabled: true }, t('requestSent'));
       }
-      return React.createElement('button', { className: 'btn', onClick: sendRequest }, 'Add Friend');
+      return React.createElement('button', { className: 'btn', onClick: sendRequest }, t('addFriend'));
     }
 
     const avatarInputRef = useRef(null);
     const coverInputRef = useRef(null);
 
-    if (!profile) return React.createElement('div', { className: 'card' }, 'Loading...');
+    if (!profile) return React.createElement('div', { className: 'card' }, t('loading'));
 
     return React.createElement('div', null,
       showEditModal && React.createElement(EditProfileModal, { 
+        t,
         profile, 
         onClose: (didUpdate) => {
           setShowEditModal(false);
@@ -989,22 +1569,34 @@
             style: { position: 'absolute', bottom: 12, right: 12, background: 'rgba(255,255,255,0.8)' },
             onClick: () => coverInputRef.current?.click(),
             disabled: isUploading
-          }, isUploading ? '...' : 'Edit Cover')
+          }, isUploading ? '...' : `📷 ${t('edit')}`)
         ),
         React.createElement('div', { style: { padding:20, marginTop:-50 }},
           React.createElement('div', { className: 'row', style: { justifyContent:'space-between', alignItems:'flex-end' }},
-            React.createElement('img', { 
-              src: profile.avatarUrl || 'https://via.placeholder.com/150', 
-              className: 'avatar-lg', 
-              style: { width:80, height:80, border:'5px solid var(--card)', cursor: owner ? 'pointer' : 'default', borderRadius: '50%' },
-              onClick: owner ? () => avatarInputRef.current?.click() : undefined
-            }),
+            owner ? 
+              (!profile.avatarUrl ? 
+                React.createElement('div', { className: 'avatar-placeholder', onClick: () => avatarInputRef.current?.click() }, '📷') :
+                React.createElement('img', { 
+                  src: profile.avatarUrl, 
+                  className: 'avatar-lg', 
+                  style: { width:80, height:80, border:'5px solid var(--card)', cursor: 'pointer', borderRadius: '50%' },
+                  onClick: () => avatarInputRef.current?.click()
+                })
+              ) :
+              (!profile.avatarUrl ?
+                React.createElement('div', { className: 'avatar-placeholder', style: { cursor: 'default' } }, '👤') :
+                React.createElement('img', { 
+                  src: profile.avatarUrl, 
+                  className: 'avatar-lg', 
+                  style: { width:80, height:80, border:'5px solid var(--card)', borderRadius: '50%' }
+                })
+              ),
             owner ? 
               React.createElement('button', { 
                 className: 'btn-ghost', 
                 onClick: () => setShowEditModal(true),
                 disabled: isUploading
-              }, isUploading ? 'Uploading...' : 'Edit Profile') : 
+              }, isUploading ? t('posting') : t('editProfile')) : 
               renderFriendButton()
           ),
           React.createElement('div', { style: { marginTop:16 }},
@@ -1019,107 +1611,277 @@
               }),
               profile.followerCount && React.createElement('span', { className: 'followers-badge' }, profile.followerCount)
             ),
-            React.createElement('div', { className: 'small' }, profile.email),
+            // FIXED: Email is removed from here
             profile.status && React.createElement('div', { style: { marginTop:12, padding:12, background:'var(--hover)', borderRadius:8, fontStyle:'italic' }}, profile.status)
           )
         ),
         React.createElement('div', { className: 'tabs' },
-          React.createElement('div', { className: `tab ${tab === 'posts' ? 'active' : ''}`, onClick: () => setTab('posts') }, 'Posts'),
-          React.createElement('div', { className: `tab ${tab === 'about' ? 'active' : ''}`, onClick: () => setTab('about') }, 'About')
+          React.createElement('div', { className: `tab ${tab === 'posts' ? 'active' : ''}`, onClick: () => setTab('posts') }, t('posts')),
+          React.createElement('div', { className: `tab ${tab === 'about' ? 'active' : ''}`, onClick: () => setTab('about') }, t('about'))
         )
       ),
       tab === 'posts' && React.createElement('div', { className: 'empty-state' },
         React.createElement('div', { className: 'empty-icon' }, '📝'),
-        React.createElement('div', null, 'No posts')
+        React.createElement('div', null, t('noPostsYet'))
       ),
       tab === 'about' && React.createElement('div', { className: 'card' },
-        React.createElement('h4', { style: { marginBottom: 12 }}, 'About'),
+        React.createElement('h4', { style: { marginBottom: 12 }}, t('aboutYou')),
         profile.bio ? 
-          React.createElement('p', { style: { lineHeight: 1.5 }}, profile.bio) :
-          React.createElement('div', { className: 'small' }, 'No bio available.'),
-        React.createElement('hr', { style: { border: 'none', borderTop: '1px solid var(--hover)', margin: '16px 0' }}),
-        React.createElement('div', { className: 'small' }, React.createElement('b', null, 'Email: '), profile.email),
-        React.createElement('div', { className: 'small' }, React.createElement('b', null, 'Gender: '), profile.gender),
-        React.createElement('div', { className: 'small' }, React.createElement('b', null, 'Born: '), profile.dob)
+          React.createElement('p', { style: { lineHeight: 1.5, whiteSpace: 'pre-wrap' }}, profile.bio) :
+          React.createElement('div', { className: 'small' }, t('noBio'))
       )
     );
   }
 
-  function MessagesPage({ currentUser, onNavToProfile }) {
+  function MessagesPage({ t, currentUser, onNavToProfile, unreadMap }) {
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedChat, setSelectedChat] = useState(null);
     
     useEffect(() => {
       (async () => {
         setLoading(true);
         const frdIds = await getFriends(currentUser.uid);
         const friendProfiles = await Promise.all(frdIds.map(id => getUserProfile(id)));
-        setFriends(friendProfiles.filter(Boolean)); // Filter out null profiles
+        setFriends(friendProfiles.filter(Boolean));
         setLoading(false);
       })();
     }, [currentUser.uid]);
+    
+    if (selectedChat) {
+      const chatId = getChatId(currentUser.uid, selectedChat.uid);
+      return React.createElement(ChatWindow, { 
+        t,
+        currentUser, 
+        chatId, 
+        targetUser: selectedChat,
+        onBack: () => setSelectedChat(null)
+      });
+    }
     
     const filteredFriends = friends.filter(f => 
       f.displayName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return React.createElement('div', { className: 'card' },
-      React.createElement('h3', null, 'Messages'),
+      React.createElement('h3', null, t('messages')),
       React.createElement('input', { 
         className: 'search-input', 
-        placeholder: '🔍 Search friends...', 
+        placeholder: t('searchFriends'), 
         value: searchTerm, 
         onInput: e => setSearchTerm(e.target.value),
         style: { width: '100%', margin: '16px 0', background: 'var(--bg)' }
       }),
-      loading && React.createElement('div', { className: 'small' }, 'Loading friends...'),
+      loading && React.createElement('div', { className: 'small' }, t('loading')),
       !loading && friends.length === 0 && React.createElement('div', { className: 'empty-state' },
         React.createElement('div', { className: 'empty-icon' }, '💬'),
-        React.createElement('div', null, 'No friends to message')
+        React.createElement('div', null, t('noFriendsMessage'))
       ),
-      !loading && filteredFriends.length === 0 && friends.length > 0 && React.createElement('div', { className: 'small' }, 'No friends found.'),
-      filteredFriends.map(f => React.createElement('div', { 
-        key: f.id, 
-        className: 'friend-item-card', 
-        onClick: () => alert(`Chat with ${f.displayName} (coming soon)`)
-      },
-        React.createElement('img', { src: f.avatarUrl || 'https.via.placeholder.com/40', className: 'avatar-lg' }),
-        React.createElement('div', null,
-          React.createElement('div', { style: { fontWeight:600 }}, f.displayName),
-          React.createElement('div', { className: 'small' }, 'Start a conversation')
-        )
-      ))
+      !loading && filteredFriends.length === 0 && friends.length > 0 && React.createElement('div', { className: 'small' }, t('noFriendsFound')),
+      filteredFriends.map(f => {
+        const chatId = getChatId(currentUser.uid, f.id);
+        const unreadCount = unreadMap[chatId] || 0;
+        
+        return React.createElement('div', { 
+          key: f.id, 
+          className: 'friend-item-card', 
+          onClick: () => setSelectedChat({ uid: f.id, displayName: f.displayName, avatarUrl: f.avatarUrl })
+        },
+          React.createElement('img', { src: f.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
+          React.createElement('div', null,
+            React.createElement('div', { style: { fontWeight:600 }}, f.displayName),
+            React.createElement('div', { className: 'small' }, t('startConversation'))
+          ),
+          unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
+        );
+      })
     );
   }
 
-  function SettingsPage({ lang, setLang, theme, setTheme }) {
+  function ChatWindow({ t, currentUser, chatId, targetUser, onBack }) {
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const [chatData, setChatData] = useState(null);
+    const [showMenu, setShowMenu] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const messagesEndRef = useRef(null);
+    const mediaInputRef = useRef(null);
+    const bgInputRef = useRef(null);
+
+    // NEW: Clear unread count on mount
+    useEffect(() => {
+      clearUnreadCount(chatId, currentUser.uid);
+      
+      const unsub = subscribeMessages(chatId, setMessages);
+      const unsubData = subscribeChatData(chatId, setChatData);
+      return () => { unsub(); unsubData(); };
+    }, [chatId, currentUser.uid]);
+    
+    useEffect(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+    
+    async function handleSend(e) {
+      e.preventDefault();
+      if (!newMessage.trim()) return;
+      const msg = newMessage;
+      setNewMessage('');
+      try {
+        await sendMessage(chatId, currentUser.uid, targetUser.uid, { text: msg, media: null });
+      } catch (err) {
+        console.error('Message send failed:', err);
+        alert('❌ ' + err.message);
+        setNewMessage(msg);
+      }
+    }
+    
+    async function handleMediaUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      setIsUploading(true);
+      try {
+        const res = await uploadToCloudinary(file);
+        await sendMessage(chatId, currentUser.uid, targetUser.uid, { 
+          text: null, 
+          media: { url: res.secure_url, type: res.resource_type } 
+        });
+      } catch (err) {
+        console.error('Media upload failed:', err);
+        alert('❌ ' + err.message);
+      } finally {
+        setIsUploading(false);
+        if (e.target) e.target.value = null;
+      }
+    }
+    
+    async function handleBackgroundUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      setShowMenu(false);
+      setIsUploading(true);
+      try {
+        const res = await uploadToCloudinary(file);
+        await updateDoc(doc(db, 'chats', chatId), { 
+          [currentUser.uid + '_bg']: res.secure_url 
+        });
+      } catch (err) {
+        console.error('BG upload failed:', err);
+        alert('❌ ' + err.message);
+      } finally {
+        setIsUploading(false);
+        if (e.target) e.target.value = null;
+      }
+    }
+    
+    async function handleClearBg() {
+      setShowMenu(false);
+      await updateDoc(doc(db, 'chats', chatId), { 
+        [currentUser.uid + '_bg']: '' 
+      });
+    }
+
+    const myBg = chatData?.[currentUser.uid + '_bg'];
+
+    return React.createElement('div', { 
+      className: 'card chat-page',
+      style: {
+        backgroundImage: myBg ? `url(${myBg})` : 'none'
+      }
+    },
+      React.createElement('input', { type: 'file', ref: mediaInputRef, style: { display: 'none' }, accept: 'image/*,video/*', onChange: handleMediaUpload }),
+      React.createElement('input', { type: 'file', ref: bgInputRef, style: { display: 'none' }, accept: 'image/*', onChange: handleBackgroundUpload }),
+      
+      React.createElement('div', { className: 'chat-header' },
+        React.createElement('button', { className: 'btn-ghost', onClick: onBack, style: { padding: '8px' }}, '⬅️'),
+        React.createElement('img', { src: targetUser.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar' }),
+        React.createElement('div', { style: { fontWeight: 600, marginRight: 'auto' }}, targetUser.displayName),
+        React.createElement('button', { className: 'btn-ghost', onClick: () => setShowMenu(!showMenu), style: { padding: '8px' }}, '...'),
+        showMenu && React.createElement('div', { className: 'chat-menu' },
+          React.createElement('div', { className: 'chat-menu-item', onClick: () => bgInputRef.current.click() }, t('changeBg')),
+          React.createElement('div', { className: 'chat-menu-item', onClick: handleClearBg }, t('clearBg'))
+        )
+      ),
+      React.createElement('div', { className: 'chat-messages' },
+        React.createElement('div', { ref: messagesEndRef }),
+        messages.map(msg => React.createElement('div', { 
+          key: msg.id, 
+          className: `chat-message-item ${msg.from === currentUser.uid ? 'sent' : 'received'}`
+        },
+          React.createElement('div', { className: 'chat-bubble' },
+            msg.text,
+            msg.media && React.createElement('img', { 
+              src: msg.media.url, 
+              onClick: () => window.open(msg.media.url, '_blank'),
+              style: { cursor: 'pointer' }
+            })
+          )
+        ))
+      ),
+      React.createElement('form', { className: 'chat-input-box', onSubmit: handleSend },
+        React.createElement('button', { 
+          className: 'btn-ghost', 
+          type: 'button', 
+          onClick: () => mediaInputRef.current.click(),
+          disabled: isUploading,
+          style: { padding: '10px' }
+        }, isUploading ? '⏳' : '📷'),
+        React.createElement('input', { 
+          placeholder: t('typeMessage'), 
+          value: newMessage, 
+          onInput: e => setNewMessage(e.target.value),
+          style: { background: 'var(--bg)' },
+          disabled: isUploading
+        }),
+        React.createElement('button', { className: 'btn', type: 'submit', style: { padding: '10px 16px' }, disabled: isUploading }, '➤')
+      )
+    );
+  }
+
+  function SettingsPage({ t, lang, setLang, theme, setTheme }) {
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
-        React.createElement('h3', { style: { marginBottom:20 }}, 'Settings'),
+        React.createElement('h3', { style: { marginBottom:20 }}, t('settings')),
         React.createElement('div', { className: 'col' },
-          React.createElement('label', { className: 'small' }, 'Language'),
+          React.createElement('label', { className: 'small' }, t('language')),
           React.createElement('select', { value: lang, onChange: e => setLang(e.target.value) },
             React.createElement('option', { value: 'en' }, 'English'),
             React.createElement('option', { value: 'yo' }, 'Yoruba'),
-            React.createElement('option', { value: 'pt' }, 'Portuguese')
+            React.createElement('option', { value: 'es' }, 'Español (Spanish)'),
+            React.createElement('option', { value: 'it' }, 'Italiano (Italian)'),
+            React.createElement('option', { value: 'fr' }, 'Français (French)'),
+            React.createElement('option', { value: 'de' }, 'Deutsch (German)')
         ),
         React.createElement('div', { className: 'row', style: { alignItems:'center', justifyContent:'space-between', marginTop:16 } },
-          React.createElement('span', null, 'Dark Mode'),
-          React.createElement('button', { className: 'btn-ghost', onClick: () => setTheme(theme === 'light' ? 'dark' : 'light') }, theme === 'light' ? '🌞 Light' : '🌙 Dark')
+          React.createElement('span', null, t('darkMode')),
+          React.createElement('button', { className: 'btn-ghost', onClick: () => setTheme(theme === 'light' ? 'dark' : 'light') }, theme === 'light' ? `🌞 ${t('light')}` : `🌙 ${t('dark')}`)
         ),
-        React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20, background:'#fa3e3e' }}, 'Logout')
+        React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20, background:'#fa3e3e' }}, t('logout'))
         )
       ),
       React.createElement('div', { className: 'card' },
-        React.createElement('h4', null, 'Help & Support'),
-        React.createElement('p', { className: 'small', style: { marginTop:12 }}, 'Contact us:'),
+        React.createElement('h4', null, t('helpSupport')),
+        React.createElement('p', { className: 'small', style: { marginTop:12 }}, t('contactUs')),
         React.createElement('a', { href: 'mailto:spaceplatformapp@gmail.com', style: { color:'var(--primary)', fontWeight:600, fontSize:15 }}, 'spaceplatformapp@gmail.com')
       )
     );
   }
 
-  function AdminPage() {
+  function AdminPage({ t, currentUser }) {
+    const [tab, setTab] = useState('users');
+    
+    return React.createElement('div', { className: 'card' },
+      React.createElement('h3', { style: { marginBottom:0 }}, t('admin')),
+      React.createElement('div', { className: 'tabs' },
+        React.createElement('div', { className: `tab ${tab === 'users' ? 'active' : ''}`, onClick: () => setTab('users') }, t('manageUsers')),
+        React.createElement('div', { className: `tab ${tab === 'posts' ? 'active' : ''}`, onClick: () => setTab('posts') }, t('managePosts'))
+      ),
+      tab === 'users' && React.createElement(AdminManageUsers, { t }),
+      tab === 'posts' && React.createElement(AdminManagePosts, { t })
+    );
+  }
+  
+  function AdminManageUsers({ t }) {
     const [users, setUsers] = useState([]);
     const [followerInputs, setFollowerInputs] = useState({});
     
@@ -1132,28 +1894,37 @@
     }, []);
     
     async function toggleVerified(uid, current) {
-      await updateDoc(doc(db,'users',uid), { verified: !current });
-      setUsers(u => u.map(x => x.id === uid ? { ...x, verified: !current } : x));
+      try {
+        await updateDoc(doc(db,'users',uid), { verified: !current });
+        setUsers(u => u.map(x => x.id === uid ? { ...x, verified: !current } : x));
+      } catch (err) {
+        console.error('Verify failed:', err);
+        alert('❌ ' + err.message);
+      }
     }
     
     async function saveFollowerCount(uid) {
       const count = followerInputs[uid] || '';
-      await updateDoc(doc(db,'users',uid), { followerCount: count });
-      setUsers(u => u.map(x => x.id === uid ? { ...x, followerCount: count } : x));
-      setFollowerInputs(f => ({ ...f, [uid]: undefined })); // Clear input state
-      alert('✅ Saved!');
+      try {
+        await updateDoc(doc(db,'users',uid), { followerCount: count });
+        setUsers(u => u.map(x => x.id === uid ? { ...x, followerCount: count } : x));
+        setFollowerInputs(f => ({ ...f, [uid]: undefined }));
+        alert('✅ Saved!');
+      } catch (err) {
+        console.error('Save follower count failed:', err);
+        alert('❌ ' + err.message);
+      }
     }
     
-    return React.createElement('div', { className: 'card' },
-      React.createElement('h3', { style: { marginBottom:20 }}, 'Admin Panel'),
-      React.createElement('p', { className: 'small', style: { marginBottom:16 }}, 'Manage users'),
+    return React.createElement('div', null,
+      React.createElement('p', { className: 'small', style: { marginBottom:16 }}, t('verifyUsersMessage')),
       users.map(u => React.createElement('div', { key: u.id, className: 'card', style: { background: 'var(--hover)' } },
         React.createElement('div', { className: 'row', style: { justifyContent: 'space-between' }},
           React.createElement('div', { className: 'row' },
             u.avatarUrl && React.createElement('img', { src: u.avatarUrl, className: 'avatar' }),
             React.createElement('div', null,
               React.createElement('div', { style: { fontWeight:600 }}, 
-                u.displayName, 
+                u.displayName,
                 u.verified && React.createElement('span', { 
                   title: 'Verified', 
                   style: { marginLeft: 6, verticalAlign: 'middle' }, 
@@ -1162,19 +1933,18 @@
                   }
                 }),
                 u.followerCount && React.createElement('span', { className: 'followers-badge' }, u.followerCount)
-              ),
-              React.createElement('div', { className: 'small' }, u.email)
+              )
             )
           ),
           React.createElement('button', { 
             className: u.verified ? 'btn-ghost' : 'btn', 
             onClick: () => toggleVerified(u.id, u.verified), 
             style: u.verified ? { color:'#fa3e3e', padding:'6px 12px' } : { padding:'6px 12px' }
-          }, u.verified ? 'Remove ✔' : 'Verify')
+          }, u.verified ? t('removeVerify') : t('verify'))
         ),
         React.createElement('div', { className: 'row', style: { marginTop: 12 }},
           React.createElement('input', { 
-            placeholder: 'Follower count (e.g. 1m)',
+            placeholder: t('followerCountPlaceholder'),
             value: followerInputs[u.id] !== undefined ? followerInputs[u.id] : (u.followerCount || ''),
             onInput: e => setFollowerInputs(f => ({ ...f, [u.id]: e.target.value })),
             style: { fontSize: 13, padding: 8 }
@@ -1183,8 +1953,59 @@
             className: 'btn-ghost', 
             onClick: () => saveFollowerCount(u.id),
             style: { padding: '8px 12px' }
-          }, 'Save')
+          }, t('save'))
         )
+      ))
+    );
+  }
+  
+  function AdminManagePosts({ t }) {
+    const [posts, setPosts] = useState([]);
+    const [postInputs, setPostInputs] = useState({});
+    
+    useEffect(() => {
+      (async () => {
+        const q = query(collection(db,'posts'), orderBy('createdAt','desc'));
+        const snap = await getDocs(q);
+        setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      })();
+    }, []);
+    
+    async function savePostCounts(postId) {
+      const inputs = postInputs[postId] || {};
+      const data = {
+        displayLikeCount: inputs.displayLikes !== undefined ? inputs.displayLikes : '',
+        displayCommentCount: inputs.displayComments !== undefined ? inputs.displayComments : ''
+      };
+      await updateDoc(doc(db,'posts', postId), data);
+      setPosts(p => p.map(x => x.id === postId ? { ...x, ...data } : x));
+      setPostInputs(f => ({ ...f, [postId]: undefined }));
+      alert('✅ Saved!');
+    }
+    
+    return React.createElement('div', null,
+      React.createElement('p', { className: 'small', style: { marginBottom:16 }}, t('managePostsMessage')),
+      posts.map(p => React.createElement('div', { key: p.id, className: 'card', style: { background: 'var(--hover)' } },
+        React.createElement('p', { className: 'small', style: { fontStyle: 'italic' }}, p.content ? `"${p.content.substring(0,100)}..."` : '(Media post)'),
+        React.createElement('div', { className: 'row', style: { marginTop: 12, gap: 8 }},
+          React.createElement('input', { 
+            placeholder: t('likesReal', { count: p.likes.length }),
+            value: postInputs[p.id]?.displayLikes !== undefined ? postInputs[p.id].displayLikes : (p.displayLikeCount || ''),
+            onInput: e => setPostInputs(f => ({ ...f, [p.id]: { ...f[p.id], displayLikes: e.target.value } })),
+            style: { fontSize: 13, padding: 8 }
+          }),
+          React.createElement('input', { 
+            placeholder: t('commentsReal', { count: p.comments.length }),
+            value: postInputs[p.id]?.displayComments !== undefined ? postInputs[p.id].displayComments : (p.displayCommentCount || ''),
+            onInput: e => setPostInputs(f => ({ ...f, [p.id]: { ...f[p.id], displayComments: e.target.value } })),
+            style: { fontSize: 13, padding: 8 }
+          })
+        ),
+        React.createElement('button', { 
+          className: 'btn', 
+          onClick: () => savePostCounts(p.id),
+          style: { padding: '8px 16px', marginTop: 8, width: '100%' }
+        }, t('saveCounts'))
       ))
     );
   }
@@ -1200,4 +2021,5 @@
   </script>
 </body>
 </html>
+
 
