@@ -103,22 +103,23 @@
     .chat-page{display:flex;flex-direction:column;height:100%;padding:0;background-size:cover;background-position:center}
     .chat-header{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--hover);flex-shrink:0;background:var(--card);position:relative}
     .chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column-reverse}
-    .chat-message-item{display:flex;margin-bottom:8px;max-width:75%}
+    .chat-message-item{display:flex;margin-bottom:8px;max-width:75%;}
     .chat-bubble{padding:10px 14px;border-radius:18px;line-height:1.4;word-break:break-word}
     .chat-bubble img{width:100%;max-width:250px;border-radius:12px;margin-top:8px}
     .chat-message-item.sent{margin-left:auto}
-    .chat-message-item.sent .chat-bubble{background:var(--primary);color:#fff}
+    .chat-message-item.sent .chat-bubble{background:var(--primary);color:#fff;cursor:pointer}
     .chat-message-item.received .chat-bubble{background:var(--hover);color:var(--text)}
     .chat-input-box{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hover);flex-shrink:0;background:var(--card)}
     .chat-menu{position:absolute;top:100%;right:12px;background:var(--card);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:8px;z-index:10}
     .chat-menu-item{padding:10px 16px;cursor:pointer;border-radius:6px;font-size:14px}
     .chat-menu-item:hover{background:var(--hover)}
+    .chat-menu-item.danger{color:#fa3e3e}
+    .chat-menu-item.danger:hover{background:rgba(250, 62, 62, 0.1)}
     /* End Chat Page Styles */
     
-    /* NEW: Install Banner Styles */
     .install-banner {
       position: fixed;
-      bottom: 70px; /* Above the nav bar */
+      bottom: 70px;
       left: 12px;
       right: 12px;
       background: var(--card);
@@ -146,7 +147,6 @@
     .install-banner-buttons .btn {
       padding: 8px 16px;
     }
-    /* End Install Banner Styles */
 
     #space-diagnostics{position:fixed;left:8px;right:8px;top:8px;padding:12px;background:#fff3cd;border:2px solid #ffc107;border-radius:8px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
   </style>
@@ -207,7 +207,7 @@
   import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit, increment } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit, increment, runTransaction } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
   import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
   // --- START I18N (Translations) ---
@@ -285,9 +285,18 @@
       changeBg: 'Change Background',
       clearBg: 'Clear Background',
       relevantComments: 'Showing relevant comments',
-      installBanner: 'Add Space to your Home Screen!', // NEW
-      install: 'Install', // NEW
-      dismiss: 'Dismiss' // NEW
+      installBanner: 'Add Space to your Home Screen!',
+      install: 'Install',
+      dismiss: 'Dismiss',
+      blockUser: 'Block {name}', // NEW
+      unsend: 'Unsend', // NEW
+      unsendMessage: 'Unsend this message?', // NEW
+      unsendConfirm: 'This will permanently delete the message for everyone.', // NEW
+      yourEmail: 'Your Email (for feedback)', // NEW
+      yourMessage: 'Your Message', // NEW
+      submit: 'Submit', // NEW
+      messageSent: '✅ Message sent!', // NEW
+      messageFailed: '❌ Message failed to send.' // NEW
     },
     es: {
       loading: 'Cargando...',
@@ -362,9 +371,18 @@
       changeBg: 'Cambiar fondo',
       clearBg: 'Quitar fondo',
       relevantComments: 'Mostrando comentarios relevantes',
-      installBanner: '¡Añade Space a tu pantalla de inicio!', // NEW
-      install: 'Instalar', // NEW
-      dismiss: 'Omitir' // NEW
+      installBanner: '¡Añade Space a tu pantalla de inicio!',
+      install: 'Instalar',
+      dismiss: 'Omitir',
+      blockUser: 'Bloquear a {name}', // NEW
+      unsend: 'Anular envío', // NEW
+      unsendMessage: '¿Anular el envío de este mensaje?', // NEW
+      unsendConfirm: 'Esto eliminará permanentemente el mensaje para todos.', // NEW
+      yourEmail: 'Tu correo (para respuesta)', // NEW
+      yourMessage: 'Tu mensaje', // NEW
+      submit: 'Entregar', // NEW
+      messageSent: '✅ ¡Mensaje enviado!', // NEW
+      messageFailed: '❌ Error al enviar el mensaje.' // NEW
     },
     yo: {
       loading: 'Nṣiṣẹ...',
@@ -439,9 +457,18 @@
       changeBg: 'Yi abẹlẹ pada',
       clearBg: 'Pa abẹlẹ rẹ',
       relevantComments: 'Nfi awọn asọye to wulo han',
-      installBanner: 'Fi Space kun Iboju Ile rẹ!', // NEW
-      install: 'Fi sori ẹrọ', // NEW
-      dismiss: 'Kọ' // NEW
+      installBanner: 'Fi Space kun Iboju Ile rẹ!',
+      install: 'Fi sori ẹrọ',
+      dismiss: 'Kọ',
+      blockUser: 'Dina {name}', // NEW
+      unsend: 'Fagilee ifiranṣẹ', // NEW
+      unsendMessage: 'Ṣe o fẹ fagilee ifiranṣẹ yii?', // NEW
+      unsendConfirm: 'Eyi yoo pa ifiranṣẹ naa rẹ patapata fun gbogbo eniyan.', // NEW
+      yourEmail: 'Imeeli rẹ (fun esi)', // NEW
+      yourMessage: 'Ifiranṣẹ rẹ', // NEW
+      submit: 'Gbigbe', // NEW
+      messageSent: '✅ Ifiranṣẹ ti ranṣẹ!', // NEW
+      messageFailed: '❌ Ifiranṣẹ ko lọ.' // NEW
     },
     it: {
       loading: 'Caricamento...',
@@ -516,9 +543,18 @@
       changeBg: 'Cambia sfondo',
       clearBg: 'Cancella sfondo',
       relevantComments: 'Mostrando commenti pertinenti',
-      installBanner: 'Aggiungi Space alla tua Home!', // NEW
-      install: 'Installa', // NEW
-      dismiss: 'Ignora' // NEW
+      installBanner: 'Aggiungi Space alla tua Home!',
+      install: 'Installa',
+      dismiss: 'Ignora',
+      blockUser: 'Blocca {name}', // NEW
+      unsend: 'Annulla invio', // NEW
+      unsendMessage: 'Annullare l"invio di questo messaggio?', // NEW
+      unsendConfirm: 'Questo eliminerà permanentemente il messaggio per tutti.', // NEW
+      yourEmail: 'La tua email (per feedback)', // NEW
+      yourMessage: 'Il tuo messaggio', // NEW
+      submit: 'Invia', // NEW
+      messageSent: '✅ Messaggio inviato!', // NEW
+      messageFailed: '❌ Invio messaggio non riuscito.' // NEW
     },
     fr: {
       loading: 'Chargement...',
@@ -593,9 +629,18 @@
       changeBg: 'Changer le fond',
       clearBg: 'Effacer le fond',
       relevantComments: 'Affichage des commentaires pertinents',
-      installBanner: "Ajoutez Space à votre écran d'accueil !", // NEW
-      install: 'Installer', // NEW
-      dismiss: 'Rejeter' // NEW
+      installBanner: "Ajoutez Space à votre écran d'accueil !",
+      install: 'Installer',
+      dismiss: 'Rejeter',
+      blockUser: 'Bloquer {name}', // NEW
+      unsend: 'Annuler l"envoi', // NEW
+      unsendMessage: "Annuler l'envoi de ce message ?", // NEW
+      unsendConfirm: 'Cela supprimera définitivement le message pour tout le monde.', // NEW
+      yourEmail: 'Votre e-mail (pour un retour)', // NEW
+      yourMessage: 'Votre message', // NEW
+      submit: 'Soumettre', // NEW
+      messageSent: '✅ Message envoyé !', // NEW
+      messageFailed: "❌ Échec de l'envoi du message." // NEW
     },
     de: {
       loading: 'Wird geladen...',
@@ -670,9 +715,18 @@
       changeBg: 'Hintergrund ändern',
       clearBg: 'Hintergrund löschen',
       relevantComments: 'Relevante Kommentare werden angezeigt',
-      installBanner: 'Space zum Startbildschirm hinzufügen!', // NEW
-      install: 'Installieren', // NEW
-      dismiss: 'Schließen' // NEW
+      installBanner: 'Space zum Startbildschirm hinzufügen!',
+      install: 'Installieren',
+      dismiss: 'Schließen',
+      blockUser: '{name} blockieren', // NEW
+      unsend: 'Senden rückgängig machen', // NEW
+      unsendMessage: 'Senden dieser Nachricht rückgängig machen?', // NEW
+      unsendConfirm: 'Dadurch wird die Nachricht dauerhaft für alle gelöscht.', // NEW
+      yourEmail: 'Ihre E-Mail (für Feedback)', // NEW
+      yourMessage: 'Ihre Nachricht', // NEW
+      submit: 'Senden', // NEW
+      messageSent: '✅ Nachricht gesendet!', // NEW
+      messageFailed: '❌ Senden der Nachricht fehlgeschlagen.' // NEW
     }
   };
   // --- END I18N ---
@@ -802,7 +856,13 @@
       ...snap2.docs.map(d => d.data())
     ];
     const friendIds = friendsData.map(f => f.requester === uid ? f.target : f.requester);
-    return friendIds;
+    
+    // NEW: Filter out blocked users
+    const blocksQuery = query(collection(db, 'blocks'), where('by', '==', uid));
+    const blocksSnap = await getDocs(blocksQuery);
+    const blockedIds = blocksSnap.docs.map(d => d.data().for);
+    
+    return friendIds.filter(id => !blockedIds.includes(id));
   }
   async function getFriendStatus(uid1, uid2) {
     if (!uid1 || !uid2) return null;
@@ -821,6 +881,18 @@
   async function sendMessage(chatId, from, to, { text, media }) {
     if (!text && !media) return;
     
+    // Check if blocked
+    const blockId1 = `${from}_${to}`;
+    const blockId2 = `${to}_${from}`;
+    const [block1, block2] = await Promise.all([
+      getDoc(doc(db, 'blocks', blockId1)),
+      getDoc(doc(db, 'blocks', blockId2))
+    ]);
+    if (block1.exists() || block2.exists()) {
+      alert("Cannot send message. User is blocked or has blocked you.");
+      return;
+    }
+    
     const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
     const targetUnreadKey = `unreadCount_${to}`;
     
@@ -838,6 +910,28 @@
       read: false, 
       createdAt: serverTimestamp() 
     }); 
+  }
+  
+  // NEW: Unsend Message
+  async function unsendMessage(chatId, messageId) {
+    await deleteDoc(doc(db, 'chats', chatId, 'messages', messageId));
+  }
+  
+  // NEW: Block User
+  async function blockUser(currentUid, targetUid) {
+    // 1. Create a block record
+    const blockId = `${currentUid}_${targetUid}`;
+    await setDoc(doc(db, 'blocks', blockId), {
+      by: currentUid,
+      for: targetUid,
+      createdAt: serverTimestamp()
+    });
+    
+    // 2. Delete friend relationship
+    const friendId1 = `${currentUid}_${targetUid}`;
+    const friendId2 = `${targetUid}_${currentUid}`;
+    await deleteDoc(doc(db, 'friends', friendId1));
+    await deleteDoc(doc(db, 'friends', friendId2));
   }
   
   async function clearUnreadCount(chatId, uid) {
@@ -869,13 +963,26 @@
     } catch { return ''; }
   }
   
-  // NEW: InstallBanner Component
   function InstallBanner({ t, onInstall, onDismiss }) {
     return React.createElement('div', { className: 'install-banner' },
       React.createElement('div', { className: 'install-banner-text' }, t('installBanner')),
       React.createElement('div', { className: 'install-banner-buttons' },
         React.createElement('button', { className: 'btn-ghost', onClick: onDismiss }, t('dismiss')),
         React.createElement('button', { className: 'btn', onClick: onInstall }, t('install'))
+      )
+    );
+  }
+
+  // NEW: Unsend Modal
+  function UnsendModal({ t, onCancel, onConfirm }) {
+    return React.createElement('div', { className: 'modal', onClick: onCancel },
+      React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
+        React.createElement('h3', { style: { marginBottom:12 }}, t('unsendMessage')),
+        React.createElement('p', { className: 'small', style: { marginBottom:20 }}, t('unsendConfirm')),
+        React.createElement('div', { className: 'row', style: { gap:12 }},
+          React.createElement('button', { className: 'btn-ghost', type: 'button', onClick: onCancel, style: { flex:1 }}, t('cancel')),
+          React.createElement('button', { className: 'btn', type: 'button', onClick: onConfirm, style: { flex:1, background: '#fa3e3e' }}, t('unsend'))
+        )
       )
     );
   }
@@ -897,7 +1004,6 @@
     const [totalUnread, setTotalUnread] = useState(0);
     const [chatUnreadMap, setChatUnreadMap] = useState({});
     
-    // NEW: Install Prompt State
     const [installPromptEvent, setInstallPromptEvent] = useState(null);
     const [showInstallBanner, setShowInstallBanner] = useState(false);
 
@@ -924,12 +1030,10 @@
       localStorage.setItem('lang', newLang);
     };
     
-    // NEW: Install Prompt Logic
     useEffect(() => {
       const handler = (e) => {
-        e.preventDefault(); // Prevent the mini-infobar
+        e.preventDefault();
         setInstallPromptEvent(e);
-        // Show banner only if not already installed
         if (!window.matchMedia('(display-mode: standalone)').matches) {
           setShowInstallBanner(true);
         }
@@ -940,7 +1044,7 @@
 
     const handleInstallClick = async () => {
       if (!installPromptEvent) return;
-      installPromptEvent.prompt(); // Show the browser install dialog
+      installPromptEvent.prompt();
       const { outcome } = await installPromptEvent.userChoice;
       if (outcome === 'accepted') {
         console.log('User accepted the install prompt');
@@ -952,7 +1056,6 @@
     const handleDismissClick = () => {
       setShowInstallBanner(false);
     };
-    // --- End Install Logic ---
 
     useEffect(() => {
       if (!user) return;
@@ -1024,7 +1127,6 @@
     }
 
     return React.createElement('div', null,
-      // NEW: Render Install Banner
       showInstallBanner && React.createElement(InstallBanner, {
         t,
         onInstall: handleInstallClick,
@@ -1034,10 +1136,10 @@
       React.createElement('div', { className: 'container' },
         page === 'loading' && React.createElement('div', { className: 'card' }, t('loading')),
         page === 'home' && React.createElement(HomePage, { t, user, userProfile, feed, stories, showComposer, setShowComposer, onNavToProfile: navToProfile }),
-        page === 'friends' && React.createElement(FriendsPage, { t, user }),
+        page === 'friends' && React.createElement(FriendsPage, { t, user, onNavToProfile: navToProfile }),
         page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
         page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
-        page === 'settings' && React.createElement(SettingsPage, { t, lang, setLang: handleSetLang, theme, setTheme }),
+        page === 'settings' && React.createElement(SettingsPage, { t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user }),
         page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
       ),
       user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread })
@@ -1064,7 +1166,7 @@
                   title: 'Verified', 
                   style: { marginLeft: 6, verticalAlign: 'middle' }, 
                   dangerouslySetInnerHTML: { 
-                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
                   }
                 })
               )
@@ -1480,7 +1582,7 @@
     );
   }
 
-  function FriendsPage({ t, user }) {
+  function FriendsPage({ t, user, onNavToProfile }) {
     const [requests, setRequests] = useState([]);
     const [friends, setFriends] = useState([]);
 
@@ -1522,12 +1624,11 @@
           React.createElement('div', { className: 'empty-icon' }, '👥'),
           React.createElement('div', null, t('noFriends'))
         ),
-        friends.map(f => React.createElement('div', { key: f.id, className: 'friend-card' },
+        friends.map(f => React.createElement('div', { key: f.id, className: 'friend-card', style: { cursor: 'pointer' }, onClick: () => onNavToProfile(f.id) },
           React.createElement('div', { className: 'row' },
             React.createElement('img', { src: f.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
             React.createElement('div', null,
-              React.createElement('div', { style: { fontWeight:600 }}, f.displayName),
-              React.createElement('div', { className: 'small' }, f.email)
+              React.createElement('div', { style: { fontWeight:600 }}, f.displayName)
             )
           )
         ))
@@ -1550,8 +1651,7 @@
       React.createElement('div', { className: 'row' },
         React.createElement('img', { src: requester.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
         React.createElement('div', null,
-          React.createElement('div', { style: { fontWeight:600 }}, requester.displayName),
-          React.createElement('div', { className: 'small' }, requester.email)
+          React.createElement('div', { style: { fontWeight:600 }}, requester.displayName)
         )
       ),
       React.createElement('div', { className: 'row', style: { gap:8 }},
@@ -1563,6 +1663,7 @@
 
   function ProfilePage({ t, uid, currentUser, userProfile, onNavToProfile }) {
     const [profile, setProfile] = useState(null);
+    const [posts, setPosts] = useState([]); // NEW: State for posts
     const [tab, setTab] = useState('posts');
     const [isUploading, setIsUploading] = useState(false);
     const [friendStatus, setFriendStatus] = useState(null);
@@ -1587,6 +1688,16 @@
         }
       })();
     }, [profileId, currentUser, userProfile, owner]);
+    
+    // NEW: UseEffect to fetch posts
+    useEffect(() => {
+      if (!profileId) return;
+      (async () => {
+        const q = query(collection(db, 'posts'), where('authorId', '==', profileId), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      })();
+    }, [profileId, tab]);
     
     const refreshProfile = async () => {
       const p = await getUserProfile(profileId);
@@ -1717,9 +1828,14 @@
           React.createElement('div', { className: `tab ${tab === 'about' ? 'active' : ''}`, onClick: () => setTab('about') }, t('about'))
         )
       ),
-      tab === 'posts' && React.createElement('div', { className: 'empty-state' },
-        React.createElement('div', { className: 'empty-icon' }, '📝'),
-        React.createElement('div', null, t('noPostsYet'))
+      // NEW: Render posts or empty state
+      tab === 'posts' && (
+        posts.length === 0 ? 
+          React.createElement('div', { className: 'empty-state' },
+            React.createElement('div', { className: 'empty-icon' }, '📝'),
+            React.createElement('div', null, t('noPostsYet'))
+          ) : 
+          posts.map(p => React.createElement(PostCard, { t, key: p.id, post: p, currentUser: currentUser, onNavToProfile: onNavToProfile }))
       ),
       tab === 'about' && React.createElement('div', { className: 'card' },
         React.createElement('h4', { style: { marginBottom: 12 }}, t('aboutYou')),
@@ -1753,7 +1869,11 @@
         currentUser, 
         chatId, 
         targetUser: selectedChat,
-        onBack: () => setSelectedChat(null)
+        onBack: () => setSelectedChat(null),
+        onBlock: () => {
+          setFriends(friends.filter(f => f.id !== selectedChat.uid));
+          setSelectedChat(null);
+        }
       });
     }
     
@@ -1796,12 +1916,13 @@
     );
   }
 
-  function ChatWindow({ t, currentUser, chatId, targetUser, onBack }) {
+  function ChatWindow({ t, currentUser, chatId, targetUser, onBack, onBlock }) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [chatData, setChatData] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [unsendModal, setUnsendModal] = useState(null); // NEW: State for unsend modal
     const messagesEndRef = useRef(null);
     const mediaInputRef = useRef(null);
     const bgInputRef = useRef(null);
@@ -1877,6 +1998,33 @@
       });
     }
 
+    // NEW: Handle Unsend
+    async function handleUnsend() {
+      if (!unsendModal) return;
+      const msgId = unsendModal.id;
+      setUnsendModal(null);
+      try {
+        await unsendMessage(chatId, msgId);
+      } catch (err) {
+        console.error('Unsend failed:', err);
+        alert('❌ ' + err.message);
+      }
+    }
+    
+    // NEW: Handle Block
+    async function handleBlock() {
+      setShowMenu(false);
+      if (!confirm(`Block ${targetUser.displayName}? This will also unfriend them.`)) return;
+      try {
+        await blockUser(currentUser.uid, targetUser.uid);
+        alert(`✅ ${targetUser.displayName} blocked.`);
+        onBlock(); // Go back and remove from list
+      } catch (err) {
+        console.error('Block failed:', err);
+        alert('❌ ' + err.message);
+      }
+    }
+
     const myBg = chatData?.[currentUser.uid + '_bg'];
 
     return React.createElement('div', { 
@@ -1888,6 +2036,9 @@
       React.createElement('input', { type: 'file', ref: mediaInputRef, style: { display: 'none' }, accept: 'image/*,video/*', onChange: handleMediaUpload }),
       React.createElement('input', { type: 'file', ref: bgInputRef, style: { display: 'none' }, accept: 'image/*', onChange: handleBackgroundUpload }),
       
+      // NEW: Render Unsend Modal
+      unsendModal && React.createElement(UnsendModal, { t, onCancel: () => setUnsendModal(null), onConfirm: handleUnsend }),
+      
       React.createElement('div', { className: 'chat-header' },
         React.createElement('button', { className: 'btn-ghost', onClick: onBack, style: { padding: '8px' }}, '⬅️'),
         React.createElement('img', { src: targetUser.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar' }),
@@ -1895,24 +2046,30 @@
         React.createElement('button', { className: 'btn-ghost', onClick: () => setShowMenu(!showMenu), style: { padding: '8px' }}, '...'),
         showMenu && React.createElement('div', { className: 'chat-menu' },
           React.createElement('div', { className: 'chat-menu-item', onClick: () => bgInputRef.current.click() }, t('changeBg')),
-          React.createElement('div', { className: 'chat-menu-item', onClick: handleClearBg }, t('clearBg'))
+          React.createElement('div', { className: 'chat-menu-item', onClick: handleClearBg }, t('clearBg')),
+          React.createElement('div', { className: 'chat-menu-item danger', onClick: handleBlock }, t('blockUser', { name: targetUser.displayName }))
         )
       ),
       React.createElement('div', { className: 'chat-messages' },
         React.createElement('div', { ref: messagesEndRef }),
-        messages.map(msg => React.createElement('div', { 
-          key: msg.id, 
-          className: `chat-message-item ${msg.from === currentUser.uid ? 'sent' : 'received'}`
-        },
-          React.createElement('div', { className: 'chat-bubble' },
-            msg.text,
-            msg.media && React.createElement('img', { 
-              src: msg.media.url, 
-              onClick: () => window.open(msg.media.url, '_blank'),
-              style: { cursor: 'pointer' }
-            })
-          )
-        ))
+        messages.map(msg => {
+          const isSent = msg.from === currentUser.uid;
+          return React.createElement('div', { 
+            key: msg.id, 
+            className: `chat-message-item ${isSent ? 'sent' : 'received'}`,
+            // NEW: Add onClick to open unsend modal
+            onClick: () => isSent && setUnsendModal(msg)
+          },
+            React.createElement('div', { className: 'chat-bubble' },
+              msg.text,
+              msg.media && React.createElement('img', { 
+                src: msg.media.url, 
+                onClick: (e) => { e.stopPropagation(); window.open(msg.media.url, '_blank'); },
+                style: { cursor: 'pointer' }
+              })
+            )
+          );
+        })
       ),
       React.createElement('form', { className: 'chat-input-box', onSubmit: handleSend },
         React.createElement('button', { 
@@ -1934,7 +2091,32 @@
     );
   }
 
-  function SettingsPage({ t, lang, setLang, theme, setTheme }) {
+  function SettingsPage({ t, lang, setLang, theme, setTheme, currentUser }) {
+    const [supportForm, setSupportForm] = useState({ email: currentUser.email || '', message: '' });
+    const [supportMsg, setSupportMsg] = useState('');
+    const [loading, setLoading] = useState(false);
+    
+    async function handleSupportSubmit(e) {
+      e.preventDefault();
+      if (!supportForm.email || !supportForm.message) return;
+      setLoading(true);
+      setSupportMsg('');
+      try {
+        await addDoc(collection(db, 'supportTickets'), {
+          ...supportForm,
+          from: currentUser.uid,
+          createdAt: serverTimestamp()
+        });
+        setSupportMsg(t('messageSent'));
+        setSupportForm({ email: currentUser.email || '', message: '' });
+      } catch (err) {
+        console.error('Support ticket failed', err);
+        setSupportMsg(t('messageFailed'));
+      } finally {
+        setLoading(false);
+      }
+    }
+    
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
         React.createElement('h3', { style: { marginBottom:20 }}, t('settings')),
@@ -1955,10 +2137,33 @@
         React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20, background:'#fa3e3e' }}, t('logout'))
         )
       ),
+      // NEW: Support Form
       React.createElement('div', { className: 'card' },
         React.createElement('h4', null, t('helpSupport')),
-        React.createElement('p', { className: 'small', style: { marginTop:12 }}, t('contactUs')),
-        React.createElement('a', { href: 'mailto:spaceplatformapp@gmail.com', style: { color:'var(--primary)', fontWeight:600, fontSize:15 }}, 'spaceplatformapp@gmail.com')
+        React.createElement('form', { onSubmit: handleSupportSubmit, className: 'col', style: { marginTop: 12 }},
+          React.createElement('input', {
+            placeholder: t('yourEmail'),
+            type: 'email',
+            value: supportForm.email,
+            onInput: e => setSupportForm(f => ({ ...f, email: e.target.value })),
+            required: true
+          }),
+          React.createElement('textarea', {
+            placeholder: t('yourMessage'),
+            value: supportForm.message,
+            onInput: e => setSupportForm(f => ({ ...f, message: e.target.value })),
+            required: true
+          }),
+          React.createElement('button', { className: 'btn', type: 'submit', disabled: loading }, loading ? t('posting') : t('submit')),
+          supportMsg && React.createElement('div', { 
+            className: 'small', 
+            style: { 
+              textAlign: 'center', 
+              color: supportMsg.startsWith('❌') ? '#fa3e3e' : 'green',
+              marginTop: 8
+            }
+          }, supportMsg)
+        )
       )
     );
   }
@@ -2109,11 +2314,8 @@
   const container = document.getElementById('root');
   createRoot(container).render(React.createElement(App));
 
-  // This is now required for the install prompt
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // **** THIS IS THE FIX ****
-      // I changed '/sw.js' to 'sw.js' to make it a relative path
       navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
     });
   }
