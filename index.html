@@ -879,38 +879,55 @@
 
   // --- CHAT FUNCTIONS (UPDATED) ---
   async function sendMessage(chatId, from, to, { text, media }) {
-    if (!text && !media) return;
-    
-    // Check if blocked
-    const blockId1 = `${from}_${to}`;
-    const blockId2 = `${to}_${from}`;
-    const [block1, block2] = await Promise.all([
-      getDoc(doc(db, 'blocks', blockId1)),
-      getDoc(doc(db, 'blocks', blockId2))
-    ]);
-    if (block1.exists() || block2.exists()) {
-      alert("Cannot send message. User is blocked or has blocked you.");
-      return;
-    }
-    
-    const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
-    const targetUnreadKey = `unreadCount_${to}`;
-    
-    await setDoc(doc(db, 'chats', chatId), { 
+  if (!text && !media) return;
+  
+  // Check if blocked
+  const blockId1 = `${from}_${to}`;
+  const blockId2 = `${to}_${from}`;
+  const [block1, block2] = await Promise.all([
+    getDoc(doc(db, 'blocks', blockId1)),
+    getDoc(doc(db, 'blocks', blockId2))
+  ]);
+  if (block1.exists() || block2.exists()) {
+    alert("Cannot send message. User is blocked or has blocked you.");
+    return;
+  }
+  
+  const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
+  const targetUnreadKey = `unreadCount_${to}`;
+  const fromUnreadKey = `unreadCount_${from}`;
+  
+  // Check if chat exists
+  const chatRef = doc(db, 'chats', chatId);
+  const chatSnap = await getDoc(chatRef);
+  
+  if (!chatSnap.exists()) {
+    // Create new chat with both unread counts initialized
+    await setDoc(chatRef, { 
       participants: chatId.split('_'), 
       lastMessage: lastMessage, 
       updatedAt: serverTimestamp(),
+      [targetUnreadKey]: 1,
+      [fromUnreadKey]: 0
+    });
+  } else {
+    // Update existing chat
+    await updateDoc(chatRef, { 
+      lastMessage: lastMessage, 
+      updatedAt: serverTimestamp(),
       [targetUnreadKey]: increment(1)
-    }, { merge: true });
-    
-    await addDoc(collection(db, `chats/${chatId}/messages`), { 
-      from, 
-      text: text || null, 
-      media: media || null, 
-      read: false, 
-      createdAt: serverTimestamp() 
-    }); 
+    });
   }
+  
+  // Add the message
+  await addDoc(collection(db, `chats/${chatId}/messages`), { 
+    from, 
+    text: text || null, 
+    media: media || null, 
+    read: false, 
+    createdAt: serverTimestamp() 
+  }); 
+}
   
   // NEW: Unsend Message
   async function unsendMessage(chatId, messageId) {
