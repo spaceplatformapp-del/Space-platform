@@ -881,16 +881,26 @@
   async function sendMessage(chatId, from, to, { text, media }) {
   if (!text && !media) return;
   
-  // Check if blocked
-  const blockId1 = `${from}_${to}`;
-  const blockId2 = `${to}_${from}`;
-  const [block1, block2] = await Promise.all([
-    getDoc(doc(db, 'blocks', blockId1)),
-    getDoc(doc(db, 'blocks', blockId2))
-  ]);
-  if (block1.exists() || block2.exists()) {
-    alert("Cannot send message. User is blocked or has blocked you.");
-    return;
+  // Check if blocked - FIXED VERSION
+  try {
+    // Check if I blocked them
+    const q1 = query(collection(db, 'blocks'), 
+      where('by', '==', from), 
+      where('for', '==', to));
+    const snap1 = await getDocs(q1);
+    
+    // Check if they blocked me
+    const q2 = query(collection(db, 'blocks'), 
+      where('by', '==', to), 
+      where('for', '==', from));
+    const snap2 = await getDocs(q2);
+    
+    if (!snap1.empty || !snap2.empty) {
+      alert("Cannot send message. User is blocked or has blocked you.");
+      return;
+    }
+  } catch (err) {
+    console.error('Block check failed:', err);
   }
   
   const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
