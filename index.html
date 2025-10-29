@@ -1693,7 +1693,7 @@
     useEffect(() => {
       if (!profileId) return;
       (async () => {
-        const q = query(collection(db, 'posts'), where('authorId', '==', profileId), orderBy('createdAt', 'desc'));
+        const q = query(collection(db, 'posts'), where('authorId', '==', profileId));
         const snap = await getDocs(q);
         setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
       })();
