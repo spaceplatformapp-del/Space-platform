@@ -962,19 +962,33 @@
   }
   
   async function clearUnreadCount(chatId, uid) {
-    const key = `unreadCount_${uid}`;
-    await setDoc(doc(db, 'chats', chatId), {
-      [key]: 0
-    }, { merge: true });
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatSnap = await getDoc(chatRef);
+    
+    // Only update if chat exists
+    if (chatSnap.exists()) {
+      const key = `unreadCount_${uid}`;
+      await updateDoc(chatRef, { [key]: 0 });
+    }
+  } catch (err) {
+    console.error('Clear unread failed:', err);
   }
+}
 
   function subscribeMessages(chatId, cb) { 
     const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc')); 
     return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); 
   }
   function subscribeChatData(chatId, cb) {
-    return onSnapshot(doc(db, 'chats', chatId), (doc) => cb(doc.data()));
-  }
+  return onSnapshot(doc(db, 'chats', chatId), (doc) => {
+    if (doc.exists()) {
+      cb(doc.data());
+    } else {
+      cb(null); // Return null if chat doesn't exist yet
+    }
+  });
+}
   // --- END CHAT FUNCTIONS ---
 
   function fmtDate(ts) {
