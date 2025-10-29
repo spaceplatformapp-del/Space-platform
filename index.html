@@ -210,7 +210,7 @@
   import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, limit, increment, runTransaction } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
   import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-  // --- START I18N (Translations) ---
+// --- START I18N (Translations) ---
   const translations = {
     en: {
       loading: 'Loading...',
@@ -288,15 +288,19 @@
       installBanner: 'Add Space to your Home Screen!',
       install: 'Install',
       dismiss: 'Dismiss',
-      blockUser: 'Block {name}', // NEW
-      unsend: 'Unsend', // NEW
-      unsendMessage: 'Unsend this message?', // NEW
-      unsendConfirm: 'This will permanently delete the message for everyone.', // NEW
-      yourEmail: 'Your Email (for feedback)', // NEW
-      yourMessage: 'Your Message', // NEW
-      submit: 'Submit', // NEW
-      messageSent: '✅ Message sent!', // NEW
-      messageFailed: '❌ Message failed to send.' // NEW
+      blockUser: 'Block {name}',
+      unsend: 'Unsend',
+      unsendMessage: 'Unsend this message?',
+      unsendConfirm: 'This will permanently delete the message for everyone.',
+      yourEmail: 'Your Email (for feedback)',
+      yourMessage: 'Your Message',
+      submit: 'Submit',
+      messageSent: '✅ Message sent!',
+      messageFailed: '❌ Message failed to send.',
+      blockedUsers: 'Blocked Users', // **** ADDED ****
+      noBlockedUsers: "You haven't blocked anyone.", // **** ADDED ****
+      unblock: 'Unblock', // **** ADDED ****
+      close: 'Close' // **** ADDED ****
     },
     es: {
       loading: 'Cargando...',
@@ -374,15 +378,19 @@
       installBanner: '¡Añade Space a tu pantalla de inicio!',
       install: 'Instalar',
       dismiss: 'Omitir',
-      blockUser: 'Bloquear a {name}', // NEW
-      unsend: 'Anular envío', // NEW
-      unsendMessage: '¿Anular el envío de este mensaje?', // NEW
-      unsendConfirm: 'Esto eliminará permanentemente el mensaje para todos.', // NEW
-      yourEmail: 'Tu correo (para respuesta)', // NEW
-      yourMessage: 'Tu mensaje', // NEW
-      submit: 'Entregar', // NEW
-      messageSent: '✅ ¡Mensaje enviado!', // NEW
-      messageFailed: '❌ Error al enviar el mensaje.' // NEW
+      blockUser: 'Bloquear a {name}',
+      unsend: 'Anular envío',
+      unsendMessage: '¿Anular el envío de este mensaje?',
+      unsendConfirm: 'Esto eliminará permanentemente el mensaje para todos.',
+      yourEmail: 'Tu correo (para respuesta)',
+      yourMessage: 'Tu mensaje',
+      submit: 'Entregar',
+      messageSent: '✅ ¡Mensaje enviado!',
+      messageFailed: '❌ Error al enviar el mensaje.',
+      blockedUsers: 'Usuarios bloqueados', // **** ADDED ****
+      noBlockedUsers: 'No has bloqueado a nadie.', // **** ADDED ****
+      unblock: 'Desbloquear', // **** ADDED ****
+      close: 'Cerrar' // **** ADDED ****
     },
     yo: {
       loading: 'Nṣiṣẹ...',
@@ -460,15 +468,19 @@
       installBanner: 'Fi Space kun Iboju Ile rẹ!',
       install: 'Fi sori ẹrọ',
       dismiss: 'Kọ',
-      blockUser: 'Dina {name}', // NEW
-      unsend: 'Fagilee ifiranṣẹ', // NEW
-      unsendMessage: 'Ṣe o fẹ fagilee ifiranṣẹ yii?', // NEW
-      unsendConfirm: 'Eyi yoo pa ifiranṣẹ naa rẹ patapata fun gbogbo eniyan.', // NEW
-      yourEmail: 'Imeeli rẹ (fun esi)', // NEW
-      yourMessage: 'Ifiranṣẹ rẹ', // NEW
-      submit: 'Gbigbe', // NEW
-      messageSent: '✅ Ifiranṣẹ ti ranṣẹ!', // NEW
-      messageFailed: '❌ Ifiranṣẹ ko lọ.' // NEW
+      blockUser: 'Dina {name}',
+      unsend: 'Fagilee ifiranṣẹ',
+      unsendMessage: 'Ṣe o fẹ fagilee ifiranṣẹ yii?',
+      unsendConfirm: 'Eyi yoo pa ifiranṣẹ naa rẹ patapata fun gbogbo eniyan.',
+      yourEmail: 'Imeeli rẹ (fun esi)',
+      yourMessage: 'Ifiranṣẹ rẹ',
+      submit: 'Gbigbe',
+      messageSent: '✅ Ifiranṣẹ ti ranṣẹ!',
+      messageFailed: '❌ Ifiranṣẹ ko lọ.',
+      blockedUsers: 'Àwọn Tí O Dínà', // **** ADDED ****
+      noBlockedUsers: 'O kò tíì dínà ẹnikẹ́ni.', // **** ADDED ****
+      unblock: 'Ṣí Dinà', // **** ADDED ****
+      close: 'Tì Pa' // **** ADDED ****
     },
     it: {
       loading: 'Caricamento...',
@@ -546,15 +558,19 @@
       installBanner: 'Aggiungi Space alla tua Home!',
       install: 'Installa',
       dismiss: 'Ignora',
-      blockUser: 'Blocca {name}', // NEW
-      unsend: 'Annulla invio', // NEW
-      unsendMessage: 'Annullare l"invio di questo messaggio?', // NEW
-      unsendConfirm: 'Questo eliminerà permanentemente il messaggio per tutti.', // NEW
-      yourEmail: 'La tua email (per feedback)', // NEW
-      yourMessage: 'Il tuo messaggio', // NEW
-      submit: 'Invia', // NEW
-      messageSent: '✅ Messaggio inviato!', // NEW
-      messageFailed: '❌ Invio messaggio non riuscito.' // NEW
+      blockUser: 'Blocca {name}',
+      unsend: 'Annulla invio',
+      unsendMessage: 'Annullare l"invio di questo messaggio?',
+      unsendConfirm: 'Questo eliminerà permanentemente il messaggio per tutti.',
+      yourEmail: 'La tua email (per feedback)',
+      yourMessage: 'Il tuo messaggio',
+      submit: 'Invia',
+      messageSent: '✅ Messaggio inviato!',
+      messageFailed: '❌ Invio messaggio non riuscito.',
+      blockedUsers: 'Utenti bloccati', // **** ADDED ****
+      noBlockedUsers: 'Non hai bloccato nessuno.', // **** ADDED ****
+      unblock: 'Sblocca', // **** ADDED ****
+      close: 'Chiudi' // **** ADDED ****
     },
     fr: {
       loading: 'Chargement...',
@@ -632,15 +648,19 @@
       installBanner: "Ajoutez Space à votre écran d'accueil !",
       install: 'Installer',
       dismiss: 'Rejeter',
-      blockUser: 'Bloquer {name}', // NEW
-      unsend: 'Annuler l"envoi', // NEW
-      unsendMessage: "Annuler l'envoi de ce message ?", // NEW
-      unsendConfirm: 'Cela supprimera définitivement le message pour tout le monde.', // NEW
-      yourEmail: 'Votre e-mail (pour un retour)', // NEW
-      yourMessage: 'Votre message', // NEW
-      submit: 'Soumettre', // NEW
-      messageSent: '✅ Message envoyé !', // NEW
-      messageFailed: "❌ Échec de l'envoi du message." // NEW
+      blockUser: 'Bloquer {name}',
+      unsend: 'Annuler l"envoi',
+      unsendMessage: "Annuler l'envoi de ce message ?",
+      unsendConfirm: 'Cela supprimera définitivement le message pour tout le monde.',
+      yourEmail: 'Votre e-mail (pour un retour)',
+      yourMessage: 'Votre message',
+      submit: 'Soumettre',
+      messageSent: '✅ Message envoyé !',
+      messageFailed: "❌ Échec de l'envoi du message.",
+      blockedUsers: 'Utilisateurs bloqués', // **** ADDED ****
+      noBlockedUsers: 'Vous n"avez bloqué personne.', // **** ADDED ****
+      unblock: 'Débloquer', // **** ADDED ****
+      close: 'Fermer' // **** ADDED ****
     },
     de: {
       loading: 'Wird geladen...',
@@ -718,15 +738,19 @@
       installBanner: 'Space zum Startbildschirm hinzufügen!',
       install: 'Installieren',
       dismiss: 'Schließen',
-      blockUser: '{name} blockieren', // NEW
-      unsend: 'Senden rückgängig machen', // NEW
-      unsendMessage: 'Senden dieser Nachricht rückgängig machen?', // NEW
-      unsendConfirm: 'Dadurch wird die Nachricht dauerhaft für alle gelöscht.', // NEW
-      yourEmail: 'Ihre E-Mail (für Feedback)', // NEW
-      yourMessage: 'Ihre Nachricht', // NEW
-      submit: 'Senden', // NEW
-      messageSent: '✅ Nachricht gesendet!', // NEW
-      messageFailed: '❌ Senden der Nachricht fehlgeschlagen.' // NEW
+      blockUser: '{name} blockieren',
+      unsend: 'Senden rückgängig machen',
+      unsendMessage: 'Senden dieser Nachricht rückgängig machen?',
+      unsendConfirm: 'Dadurch wird die Nachricht dauerhaft für alle gelöscht.',
+      yourEmail: 'Ihre E-Mail (für Feedback)',
+      yourMessage: 'Ihre Nachricht',
+      submit: 'Senden',
+      messageSent: '✅ Nachricht gesendet!',
+      messageFailed: '❌ Senden der Nachricht fehlgeschlagen.',
+      blockedUsers: 'Blockierte Benutzer', // **** ADDED ****
+      noBlockedUsers: 'Du hast niemanden blockiert.', // **** ADDED ****
+      unblock: 'Entblocken', // **** ADDED ****
+      close: 'Schließen' // **** ADDED ****
     }
   };
   // --- END I18N ---
@@ -738,7 +762,7 @@
   const CLOUDINARY_CLOUD = CONFIG.cloudinary?.cloudName || "";
   const CLOUDINARY_UPLOAD_PRESET = CONFIG.cloudinary?.uploadPreset || "";
   const ADMIN_EMAIL = (CONFIG.ADMIN_EMAIL || "").toLowerCase();
-  
+
   const getChatId = (uid1, uid2) => [uid1, uid2].sort().join('_');
 
   async function uploadToCloudinary(file) {
@@ -752,12 +776,12 @@
     return res.json();
   }
 
-  async function createUserProfile(uid, profile) { 
-    await setDoc(doc(db, 'users', uid), { 
-      ...profile, 
-      bio: '', 
-      status: '', 
-      followerCount: '', 
+  async function createUserProfile(uid, profile) {
+    await setDoc(doc(db, 'users', uid), {
+      ...profile,
+      bio: '',
+      status: '',
+      followerCount: '',
       createdAt: serverTimestamp(),
       email: profile.email.toLowerCase()
     });
@@ -774,15 +798,15 @@
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
 
-  async function createPost(post) { 
-    return addDoc(collection(db, 'posts'), { 
-      ...post, 
-      likes: [], 
-      comments: [], 
+  async function createPost(post) {
+    return addDoc(collection(db, 'posts'), {
+      ...post,
+      likes: [],
+      comments: [],
       createdAt: serverTimestamp(),
       displayLikeCount: '',
       displayCommentCount: ''
-    }); 
+    });
   }
   function subscribeFeed(cb) { const q = query(collection(db, 'posts'), orderBy('createdAt','desc')); return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); }
   async function updatePost(postId, data) { return updateDoc(doc(db,'posts',postId), data); }
@@ -800,20 +824,20 @@
   }
   async function addComment(postId, uid, text) {
     const postRef = doc(db, 'posts', postId);
-    const newComment = { 
-      uid, 
-      text, 
+    const newComment = {
+      uid,
+      text,
       createdAt: new Date().toISOString()
     };
     await updateDoc(postRef, { comments: arrayUnion(newComment) });
   }
 
-  async function createStory(uid, mediaUrl, mediaType) { 
+  async function createStory(uid, mediaUrl, mediaType) {
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    return addDoc(collection(db, 'stories'), { uid, mediaUrl, mediaType, createdAt: serverTimestamp(), expiresAt: expiresAt.toISOString() }); 
+    return addDoc(collection(db, 'stories'), { uid, mediaUrl, mediaType, createdAt: serverTimestamp(), expiresAt: expiresAt.toISOString() });
   }
-  function subscribeStories(cb) { 
-    const q = query(collection(db, 'stories'), orderBy('createdAt','desc')); 
+  function subscribeStories(cb) {
+    const q = query(collection(db, 'stories'), orderBy('createdAt','desc'));
     return onSnapshot(q, snap => {
       const now = new Date();
       const active = snap.docs.map(d=>({ id: d.id, ...d.data() })).filter(s => {
@@ -821,10 +845,10 @@
         return new Date(s.expiresAt) > now;
       });
       cb(active);
-    }); 
+    });
   }
 
-  async function sendFriendRequest(from, to) { 
+  async function sendFriendRequest(from, to) {
     const id = `${from}_${to}`;
     const reverseId = `${to}_${from}`;
     const reverseSnap = await getDoc(doc(db, 'friends', reverseId));
@@ -856,12 +880,11 @@
       ...snap2.docs.map(d => d.data())
     ];
     const friendIds = friendsData.map(f => f.requester === uid ? f.target : f.requester);
-    
-    // NEW: Filter out blocked users
+
     const blocksQuery = query(collection(db, 'blocks'), where('by', '==', uid));
     const blocksSnap = await getDocs(blocksQuery);
     const blockedIds = blocksSnap.docs.map(d => d.data().for);
-    
+
     return friendIds.filter(id => !blockedIds.includes(id));
   }
   async function getFriendStatus(uid1, uid2) {
@@ -877,118 +900,99 @@
     return null;
   }
 
-  // --- CHAT FUNCTIONS (UPDATED) ---
+  // --- CHAT FUNCTIONS ---
   async function sendMessage(chatId, from, to, { text, media }) {
-  if (!text && !media) return;
-  
-  // Check if blocked - FIXED VERSION
-  try {
-    // Check if I blocked them
-    const q1 = query(collection(db, 'blocks'), 
-      where('by', '==', from), 
-      where('for', '==', to));
-    const snap1 = await getDocs(q1);
-    
-    // Check if they blocked me
-    const q2 = query(collection(db, 'blocks'), 
-      where('by', '==', to), 
-      where('for', '==', from));
-    const snap2 = await getDocs(q2);
-    
-    if (!snap1.empty || !snap2.empty) {
-      alert("Cannot send message. User is blocked or has blocked you.");
-      return;
+    if (!text && !media) return;
+
+    try {
+      const q1 = query(collection(db, 'blocks'), where('by', '==', from), where('for', '==', to));
+      const snap1 = await getDocs(q1);
+      const q2 = query(collection(db, 'blocks'), where('by', '==', to), where('for', '==', from));
+      const snap2 = await getDocs(q2);
+
+      if (!snap1.empty || !snap2.empty) {
+        alert("Cannot send message. User is blocked or has blocked you.");
+        return;
+      }
+    } catch (err) { console.error('Block check failed:', err); }
+
+    const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
+    const targetUnreadKey = `unreadCount_${to}`;
+    const fromUnreadKey = `unreadCount_${from}`;
+
+    const chatRef = doc(db, 'chats', chatId);
+    const chatSnap = await getDoc(chatRef);
+
+    if (!chatSnap.exists()) {
+      await setDoc(chatRef, {
+        participants: chatId.split('_'),
+        lastMessage: lastMessage,
+        updatedAt: serverTimestamp(),
+        [targetUnreadKey]: 1,
+        [fromUnreadKey]: 0
+      });
+    } else {
+      await updateDoc(chatRef, {
+        lastMessage: lastMessage,
+        updatedAt: serverTimestamp(),
+        [targetUnreadKey]: increment(1)
+      });
     }
-  } catch (err) {
-    console.error('Block check failed:', err);
-  }
-  
-  const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
-  const targetUnreadKey = `unreadCount_${to}`;
-  const fromUnreadKey = `unreadCount_${from}`;
-  
-  // Check if chat exists
-  const chatRef = doc(db, 'chats', chatId);
-  const chatSnap = await getDoc(chatRef);
-  
-  if (!chatSnap.exists()) {
-    // Create new chat with both unread counts initialized
-    await setDoc(chatRef, { 
-      participants: chatId.split('_'), 
-      lastMessage: lastMessage, 
-      updatedAt: serverTimestamp(),
-      [targetUnreadKey]: 1,
-      [fromUnreadKey]: 0
-    });
-  } else {
-    // Update existing chat
-    await updateDoc(chatRef, { 
-      lastMessage: lastMessage, 
-      updatedAt: serverTimestamp(),
-      [targetUnreadKey]: increment(1)
+
+    await addDoc(collection(db, `chats/${chatId}/messages`), {
+      from,
+      text: text || null,
+      media: media || null,
+      read: false,
+      createdAt: serverTimestamp()
     });
   }
-  
-  // Add the message
-  await addDoc(collection(db, `chats/${chatId}/messages`), { 
-    from, 
-    text: text || null, 
-    media: media || null, 
-    read: false, 
-    createdAt: serverTimestamp() 
-  }); 
-}
-  
-  // NEW: Unsend Message
+
   async function unsendMessage(chatId, messageId) {
     await deleteDoc(doc(db, 'chats', chatId, 'messages', messageId));
   }
-  
-  // NEW: Block User
+
   async function blockUser(currentUid, targetUid) {
-    // 1. Create a block record
     const blockId = `${currentUid}_${targetUid}`;
     await setDoc(doc(db, 'blocks', blockId), {
       by: currentUid,
       for: targetUid,
       createdAt: serverTimestamp()
     });
-    
-    // 2. Delete friend relationship
+
     const friendId1 = `${currentUid}_${targetUid}`;
     const friendId2 = `${targetUid}_${currentUid}`;
     await deleteDoc(doc(db, 'friends', friendId1));
     await deleteDoc(doc(db, 'friends', friendId2));
   }
-  
-  async function clearUnreadCount(chatId, uid) {
-  try {
-    const chatRef = doc(db, 'chats', chatId);
-    const chatSnap = await getDoc(chatRef);
-    
-    // Only update if chat exists
-    if (chatSnap.exists()) {
-      const key = `unreadCount_${uid}`;
-      await updateDoc(chatRef, { [key]: 0 });
-    }
-  } catch (err) {
-    console.error('Clear unread failed:', err);
-  }
-}
 
-  function subscribeMessages(chatId, cb) { 
-    const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc')); 
-    return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })))); 
+  // **** ADDED THIS FUNCTION ****
+  async function unblockUser(currentUid, targetUid) {
+    const blockId = `${currentUid}_${targetUid}`;
+    await deleteDoc(doc(db, 'blocks', blockId));
+  }
+
+  async function clearUnreadCount(chatId, uid) {
+    try {
+      const chatRef = doc(db, 'chats', chatId);
+      const chatSnap = await getDoc(chatRef);
+      if (chatSnap.exists()) {
+        const key = `unreadCount_${uid}`;
+        await updateDoc(chatRef, { [key]: 0 });
+      }
+    } catch (err) { console.error('Clear unread failed:', err); }
+  }
+
+  function subscribeMessages(chatId, cb) {
+    const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc'));
+    return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() }))));
   }
   function subscribeChatData(chatId, cb) {
-  return onSnapshot(doc(db, 'chats', chatId), (doc) => {
-    if (doc.exists()) {
-      cb(doc.data());
-    } else {
-      cb(null); // Return null if chat doesn't exist yet
-    }
-  });
-}
+    return onSnapshot(doc(db, 'chats', chatId), (doc) => {
+      if (doc.exists()) { cb(doc.data()); }
+      else { cb(null); }
+    });
+  }
   // --- END CHAT FUNCTIONS ---
 
   function fmtDate(ts) {
@@ -1003,7 +1007,7 @@
       return date.toLocaleDateString();
     } catch { return ''; }
   }
-  
+
   function InstallBanner({ t, onInstall, onDismiss }) {
     return React.createElement('div', { className: 'install-banner' },
       React.createElement('div', { className: 'install-banner-text' }, t('installBanner')),
@@ -1014,7 +1018,6 @@
     );
   }
 
-  // NEW: Unsend Modal
   function UnsendModal({ t, onCancel, onConfirm }) {
     return React.createElement('div', { className: 'modal', onClick: onCancel },
       React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
@@ -1044,9 +1047,12 @@
     const [isAdmin, setIsAdmin] = useState(false);
     const [totalUnread, setTotalUnread] = useState(0);
     const [chatUnreadMap, setChatUnreadMap] = useState({});
-    
+
     const [installPromptEvent, setInstallPromptEvent] = useState(null);
     const [showInstallBanner, setShowInstallBanner] = useState(false);
+
+    // **** ADDED THIS STATE ****
+    const [showBlockedList, setShowBlockedList] = useState(false);
 
     const t = (key, params = {}) => {
       let text = translations[lang]?.[key] || translations['en'][key] || key;
@@ -1055,22 +1061,22 @@
       });
       return text;
     };
-    
+
     const navTo = (p) => {
-      if (p === 'profile') setSelectedProfile(null); 
+      if (p === 'profile') setSelectedProfile(null);
       setPage(p);
     };
-    
+
     const navToProfile = (uid) => {
       setSelectedProfile(uid);
       setPage('profile');
     };
-    
+
     const handleSetLang = (newLang) => {
       setLang(newLang);
       localStorage.setItem('lang', newLang);
     };
-    
+
     useEffect(() => {
       const handler = (e) => {
         e.preventDefault();
@@ -1127,7 +1133,7 @@
           const prof = await getUserProfile(u.uid);
           setUserProfile(prof);
           setIsAdmin(prof?.email === ADMIN_EMAIL);
-          if (!prof) setPage('register'); 
+          if (!prof) setPage('register');
           else setPage('home');
         } else {
           setPage('login');
@@ -1144,16 +1150,16 @@
       return ()=> { unsubFeed(); unsubStories(); };
     }, []);
 
-    useEffect(()=> { 
-      document.documentElement.classList.toggle('dark', theme === 'dark'); 
-      localStorage.setItem('theme', theme); 
+    useEffect(()=> {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      localStorage.setItem('theme', theme);
     }, [theme]);
-    
+
     useEffect(()=> {
       const timeout = setTimeout(async ()=> {
-        if (searchTerm.length >= 2) { 
-          const r = await searchUsers(searchTerm); 
-          setSearchResults(r); 
+        if (searchTerm.length >= 2) {
+          const r = await searchUsers(searchTerm);
+          setSearchResults(r);
         } else setSearchResults([]);
       }, 300);
       return ()=> clearTimeout(timeout);
@@ -1167,6 +1173,7 @@
       );
     }
 
+    // **** MODIFIED THIS RETURN BLOCK ****
     return React.createElement('div', null,
       showInstallBanner && React.createElement(InstallBanner, {
         t,
@@ -1180,18 +1187,33 @@
         page === 'friends' && React.createElement(FriendsPage, { t, user, onNavToProfile: navToProfile }),
         page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
         page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
-        page === 'settings' && React.createElement(SettingsPage, { t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user }),
+        // Modified SettingsPage props
+        page === 'settings' && React.createElement(SettingsPage, {
+            t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
+            onShowBlocked: () => setShowBlockedList(true) // Pass function to open modal
+        }),
         page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
       ),
-      user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread })
+      user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread }),
+
+      // Added BlockedListModal rendering
+      showBlockedList && React.createElement(BlockedListModal, {
+          t,
+          currentUser: user,
+          onClose: () => setShowBlockedList(false)
+      }),
+
+      // Keep other modals
+      showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) }),
+      showComposer && React.createElement(ComposerModal, { t, user, onClose: () => setShowComposer(false) })
     );
-  }
+  } // --- END OF App() FUNCTION ---
 
   function TopBar({ t, user, userProfile, searchTerm, setSearchTerm, searchResults, page, onNav, onOpenProfile, unreadCount }) {
     return React.createElement('div', { className: 'topbar' },
-      page !== 'home' && React.createElement('div', { 
-        className: 'icon-btn', 
-        onClick: () => onNav('home'), 
+      page !== 'home' && React.createElement('div', {
+        className: 'icon-btn',
+        onClick: () => onNav('home'),
         style: { background: 'transparent' }
       }, '⬅️'),
       React.createElement('div', { className: 'topbar-logo', onClick: () => onNav('home') }, 'S'),
@@ -1203,11 +1225,11 @@
               s.avatarUrl && React.createElement('img', { src: s.avatarUrl, className: 'avatar' }),
               React.createElement('div', null,
                 React.createElement('div', { style: { fontWeight:600 } }, s.displayName),
-                s.verified && React.createElement('span', { 
-                  title: 'Verified', 
-                  style: { marginLeft: 6, verticalAlign: 'middle' }, 
-                  dangerouslySetInnerHTML: { 
-                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+                s.verified && React.createElement('span', {
+                  title: 'Verified',
+                  style: { marginLeft: 6, verticalAlign: 'middle' },
+                  dangerouslySetInnerHTML: {
+                    __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>'
                   }
                 })
               )
@@ -1216,7 +1238,7 @@
         )
       ),
       user && React.createElement('div', { className: 'topbar-icons' },
-        React.createElement('div', { className: 'icon-btn', onClick: () => onNav('messages'), title: t('notifications') }, 
+        React.createElement('div', { className: 'icon-btn', onClick: () => onNav('messages'), title: t('notifications') },
           '🔔',
           unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
         ),
@@ -1228,11 +1250,11 @@
   function BottomNav({ t, page, setPage, userProfile, isAdmin, unreadCount }) {
     const navItems = ['home', 'friends', 'messages', 'profile', 'settings'];
     const icons = { home: '🏠', friends: '👥', messages: '💬', profile: '👤', settings: '⚙️', admin: '🛡️' };
-    
+
     if (isAdmin) navItems.push('admin');
 
     return React.createElement('div', { className: 'bottomnav' },
-      navItems.map(p => 
+      navItems.map(p =>
         React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
           React.createElement('div', { className: 'nav-icon' }, icons[p]),
           React.createElement('div', { className: 'nav-label' }, t(p)),
@@ -1249,10 +1271,10 @@
     async function submit(e) {
       e?.preventDefault();
       setMsg('');
-      try { 
-        await signInWithEmailAndPassword(auth, email, password); 
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
         onSuccess();
-      } catch (err) { 
+      } catch (err) {
         setMsg(err.message);
       }
     }
@@ -1298,7 +1320,7 @@
         try { await sendEmailVerification(cred.user); } catch(e){}
         alert('✅ Account created!');
         onSuccess();
-      } catch (err) { 
+      } catch (err) {
         setError(err.message);
       }
     }
@@ -1356,7 +1378,7 @@
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
         React.createElement('div', { className: 'row', style: { alignItems:'flex-start', gap:16 }},
-          userProfile?.avatarUrl ? 
+          userProfile?.avatarUrl ?
             React.createElement('img', { src: userProfile.avatarUrl, className: 'avatar-lg' }) :
             React.createElement('div', { className: 'avatar-lg', style: { background:'var(--gradient)', flexShrink:0 }}),
           React.createElement('button', { className: 'composer-trigger', onClick: () => setShowComposer(true), style: { flex:1 }}, t('whatsOnYourMind'))
@@ -1474,21 +1496,21 @@
         React.createElement('h3', { style: { marginBottom:20 }}, t('editProfile')),
         React.createElement('form', { onSubmit: submit, className: 'col' },
           React.createElement('label', { className: 'small' }, t('fullName')),
-          React.createElement('input', { 
-            value: form.displayName, 
-            onInput: e => setForm(f => ({ ...f, displayName: e.target.value })), 
-            required: true 
+          React.createElement('input', {
+            value: form.displayName,
+            onInput: e => setForm(f => ({ ...f, displayName: e.target.value })),
+            required: true
           }),
           React.createElement('label', { className: 'small' }, t('aboutYou')),
-          React.createElement('textarea', { 
+          React.createElement('textarea', {
             placeholder: 'Tell us about yourself...',
-            value: form.bio, 
+            value: form.bio,
             onInput: e => setForm(f => ({ ...f, bio: e.target.value }))
           }),
           React.createElement('label', { className: 'small' }, 'Status'),
-          React.createElement('input', { 
+          React.createElement('input', {
             placeholder: t('whatsOnYourMind'),
-            value: form.status, 
+            value: form.status,
             onInput: e => setForm(f => ({ ...f, status: e.target.value }))
           }),
           React.createElement('div', { className: 'row', style: { gap:12, marginTop: 12 }},
@@ -1506,10 +1528,10 @@
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [commentsWithAuthors, setCommentsWithAuthors] = useState([]);
-    
+
     const liked = post.likes?.includes(currentUser?.uid);
     const isMine = currentUser?.uid === post.authorId;
-    
+
     const realLikeCount = post.likes?.length || 0;
     const realCommentCount = post.comments?.length || 0;
     const displayLikes = post.displayLikeCount || realLikeCount;
@@ -1522,7 +1544,7 @@
         setAuthor(prof);
       })();
     }, [post.authorId]);
-    
+
     useEffect(() => {
       if (post.comments?.length > 0) {
         (async () => {
@@ -1547,10 +1569,10 @@
 
     async function submitComment() {
       if (!commentText.trim() || !currentUser) return;
-      const newComment = { 
-        uid: currentUser.uid, 
-        text: commentText, 
-        author: await getUserProfile(currentUser.uid), 
+      const newComment = {
+        uid: currentUser.uid,
+        text: commentText,
+        author: await getUserProfile(currentUser.uid),
         createdAt: new Date().toISOString()
       };
       setCommentsWithAuthors([newComment, ...commentsWithAuthors]);
@@ -1570,20 +1592,20 @@
 
     return React.createElement('div', { className: 'card' },
       React.createElement('div', { className: 'row', style: { justifyContent:'space-between', marginBottom:12 }},
-        React.createElement('div', { 
-          className: 'row', 
-          onClick: () => onNavToProfile(post.authorId), 
-          style: { cursor: 'pointer' } 
+        React.createElement('div', {
+          className: 'row',
+          onClick: () => onNavToProfile(post.authorId),
+          style: { cursor: 'pointer' }
         },
           React.createElement('img', { src: author?.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
           React.createElement('div', null,
-            React.createElement('div', { style: { fontWeight:600, fontSize:15 }}, 
+            React.createElement('div', { style: { fontWeight:600, fontSize:15 }},
               author?.displayName || 'User',
-              author?.verified && React.createElement('span', { 
-                title: 'Verified', 
-                style: { marginLeft: 6, verticalAlign: 'middle' }, 
-                dangerouslySetInnerHTML: { 
-                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+              author?.verified && React.createElement('span', {
+                title: 'Verified',
+                style: { marginLeft: 6, verticalAlign: 'middle' },
+                dangerouslySetInnerHTML: {
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>'
                 }
               })
             ),
@@ -1593,7 +1615,7 @@
         isMine && React.createElement('button', { className: 'btn-ghost', onClick: handleDelete, style: { padding:'6px 12px', color:'#fa3e3e' }}, '🗑️')
       ),
       post.content && React.createElement('p', { style: { margin:'12px 0', fontSize:15, lineHeight:1.4 }}, post.content),
-      post.media && (post.media.type?.startsWith('video') ? 
+      post.media && (post.media.type?.startsWith('video') ?
         React.createElement('video', { src: post.media.url, controls: true, className: 'post-media' }) :
         React.createElement('img', { src: post.media.url, className: 'post-media' })
       ),
@@ -1633,7 +1655,7 @@
         setRequests(reqs);
       })();
     }, [user.uid]);
-    
+
     useEffect(() => {
       (async () => {
         const frdIds = await getFriends(user.uid);
@@ -1704,7 +1726,7 @@
 
   function ProfilePage({ t, uid, currentUser, userProfile, onNavToProfile }) {
     const [profile, setProfile] = useState(null);
-    const [posts, setPosts] = useState([]); // NEW: State for posts
+    const [posts, setPosts] = useState([]);
     const [tab, setTab] = useState('posts');
     const [isUploading, setIsUploading] = useState(false);
     const [friendStatus, setFriendStatus] = useState(null);
@@ -1729,17 +1751,20 @@
         }
       })();
     }, [profileId, currentUser, userProfile, owner]);
-    
-    // NEW: UseEffect to fetch posts
+
     useEffect(() => {
       if (!profileId) return;
       (async () => {
+        // Removed orderBy here
         const q = query(collection(db, 'posts'), where('authorId', '==', profileId));
         const snap = await getDocs(q);
-        setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        // Sort manually in JS after fetching
+        const fetchedPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        fetchedPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        setPosts(fetchedPosts);
       })();
     }, [profileId, tab]);
-    
+
     const refreshProfile = async () => {
       const p = await getUserProfile(profileId);
       setProfile(p);
@@ -1775,7 +1800,7 @@
         if (e.target) e.target.value = null;
       }
     }
-    
+
     function renderFriendButton() {
       if (owner) return null;
       if (friendStatus === 'accepted') {
@@ -1793,29 +1818,29 @@
     if (!profile) return React.createElement('div', { className: 'card' }, t('loading'));
 
     return React.createElement('div', null,
-      showEditModal && React.createElement(EditProfileModal, { 
+      showEditModal && React.createElement(EditProfileModal, {
         t,
-        profile, 
+        profile,
         onClose: (didUpdate) => {
           setShowEditModal(false);
           if (didUpdate) refreshProfile();
         }
       }),
-      
-      owner && React.createElement('input', { 
-        type: 'file', ref: avatarInputRef, style: { display: 'none' }, accept: 'image/*', 
-        onChange: (e) => handleFileUpload(e, 'avatar') 
+
+      owner && React.createElement('input', {
+        type: 'file', ref: avatarInputRef, style: { display: 'none' }, accept: 'image/*',
+        onChange: (e) => handleFileUpload(e, 'avatar')
       }),
-      owner && React.createElement('input', { 
-        type: 'file', ref: coverInputRef, style: { display: 'none' }, accept: 'image/*', 
-        onChange: (e) => handleFileUpload(e, 'cover') 
+      owner && React.createElement('input', {
+        type: 'file', ref: coverInputRef, style: { display: 'none' }, accept: 'image/*',
+        onChange: (e) => handleFileUpload(e, 'cover')
       }),
-      
+
       React.createElement('div', { className: 'card', style: { padding:0, overflow:'hidden' }},
         React.createElement('div', { style: { position: 'relative' }},
           profile.coverUrl ? React.createElement('img', { src: profile.coverUrl, className: 'cover' }) : React.createElement('div', { className: 'cover' }),
-          owner && React.createElement('button', { 
-            className: 'btn-ghost', 
+          owner && React.createElement('button', {
+            className: 'btn-ghost',
             style: { position: 'absolute', bottom: 12, right: 12, background: 'rgba(255,255,255,0.8)' },
             onClick: () => coverInputRef.current?.click(),
             disabled: isUploading
@@ -1823,40 +1848,40 @@
         ),
         React.createElement('div', { style: { padding:20, marginTop:-50 }},
           React.createElement('div', { className: 'row', style: { justifyContent:'space-between', alignItems:'flex-end' }},
-            owner ? 
-              (!profile.avatarUrl ? 
+            owner ?
+              (!profile.avatarUrl ?
                 React.createElement('div', { className: 'avatar-placeholder', onClick: () => avatarInputRef.current?.click() }, '📷') :
-                React.createElement('img', { 
-                  src: profile.avatarUrl, 
-                  className: 'avatar-lg', 
+                React.createElement('img', {
+                  src: profile.avatarUrl,
+                  className: 'avatar-lg',
                   style: { width:80, height:80, border:'5px solid var(--card)', cursor: 'pointer', borderRadius: '50%' },
                   onClick: () => avatarInputRef.current?.click()
                 })
               ) :
               (!profile.avatarUrl ?
                 React.createElement('div', { className: 'avatar-placeholder', style: { cursor: 'default' } }, '👤') :
-                React.createElement('img', { 
-                  src: profile.avatarUrl, 
-                  className: 'avatar-lg', 
+                React.createElement('img', {
+                  src: profile.avatarUrl,
+                  className: 'avatar-lg',
                   style: { width:80, height:80, border:'5px solid var(--card)', borderRadius: '50%' }
                 })
               ),
-            owner ? 
-              React.createElement('button', { 
-                className: 'btn-ghost', 
+            owner ?
+              React.createElement('button', {
+                className: 'btn-ghost',
                 onClick: () => setShowEditModal(true),
                 disabled: isUploading
-              }, isUploading ? t('posting') : t('editProfile')) : 
+              }, isUploading ? t('posting') : t('editProfile')) :
               renderFriendButton()
           ),
           React.createElement('div', { style: { marginTop:16 }},
-            React.createElement('h2', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } }, 
-              profile.displayName, 
-              profile.verified && React.createElement('span', { 
-                title: 'Verified', 
-                style: { marginLeft: 6, verticalAlign: 'middle', flexShrink: 0 }, 
-                dangerouslySetInnerHTML: { 
-                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>' 
+            React.createElement('h2', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } },
+              profile.displayName,
+              profile.verified && React.createElement('span', {
+                title: 'Verified',
+                style: { marginLeft: 6, verticalAlign: 'middle', flexShrink: 0 },
+                dangerouslySetInnerHTML: {
+                  __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>'
                 }
               }),
               profile.followerCount && React.createElement('span', { className: 'followers-badge' }, profile.followerCount)
@@ -1869,18 +1894,17 @@
           React.createElement('div', { className: `tab ${tab === 'about' ? 'active' : ''}`, onClick: () => setTab('about') }, t('about'))
         )
       ),
-      // NEW: Render posts or empty state
       tab === 'posts' && (
-        posts.length === 0 ? 
+        posts.length === 0 ?
           React.createElement('div', { className: 'empty-state' },
             React.createElement('div', { className: 'empty-icon' }, '📝'),
             React.createElement('div', null, t('noPostsYet'))
-          ) : 
+          ) :
           posts.map(p => React.createElement(PostCard, { t, key: p.id, post: p, currentUser: currentUser, onNavToProfile: onNavToProfile }))
       ),
       tab === 'about' && React.createElement('div', { className: 'card' },
         React.createElement('h4', { style: { marginBottom: 12 }}, t('aboutYou')),
-        profile.bio ? 
+        profile.bio ?
           React.createElement('p', { style: { lineHeight: 1.5, whiteSpace: 'pre-wrap' }}, profile.bio) :
           React.createElement('div', { className: 'small' }, t('noBio'))
       )
@@ -1892,7 +1916,7 @@
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedChat, setSelectedChat] = useState(null);
-    
+
     useEffect(() => {
       (async () => {
         setLoading(true);
@@ -1902,33 +1926,32 @@
         setLoading(false);
       })();
     }, [currentUser.uid]);
-    
+
     if (selectedChat) {
       const chatId = getChatId(currentUser.uid, selectedChat.uid);
-      return React.createElement(ChatWindow, { 
+      return React.createElement(ChatWindow, {
         t,
-        currentUser, 
-        chatId, 
+        currentUser,
+        chatId,
         targetUser: selectedChat,
         onBack: () => setSelectedChat(null),
-        // NEW: Handle block event from ChatWindow
         onBlock: () => {
           setFriends(friends.filter(f => f.id !== selectedChat.uid));
           setSelectedChat(null);
         }
       });
     }
-    
-    const filteredFriends = friends.filter(f => 
+
+    const filteredFriends = friends.filter(f =>
       f.displayName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return React.createElement('div', { className: 'card' },
       React.createElement('h3', null, t('messages')),
-      React.createElement('input', { 
-        className: 'search-input', 
-        placeholder: t('searchFriends'), 
-        value: searchTerm, 
+      React.createElement('input', {
+        className: 'search-input',
+        placeholder: t('searchFriends'),
+        value: searchTerm,
         onInput: e => setSearchTerm(e.target.value),
         style: { width: '100%', margin: '16px 0', background: 'var(--bg)' }
       }),
@@ -1941,10 +1964,10 @@
       filteredFriends.map(f => {
         const chatId = getChatId(currentUser.uid, f.id);
         const unreadCount = unreadMap[chatId] || 0;
-        
-        return React.createElement('div', { 
-          key: f.id, 
-          className: 'friend-item-card', 
+
+        return React.createElement('div', {
+          key: f.id,
+          className: 'friend-item-card',
           onClick: () => setSelectedChat({ uid: f.id, displayName: f.displayName, avatarUrl: f.avatarUrl })
         },
           React.createElement('img', { src: f.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar-lg' }),
@@ -1964,26 +1987,25 @@
     const [chatData, setChatData] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
-    const [unsendModal, setUnsendModal] = useState(null); // NEW: State for unsend modal
+    const [unsendModal, setUnsendModal] = useState(null);
     const messagesEndRef = useRef(null);
     const mediaInputRef = useRef(null);
     const bgInputRef = useRef(null);
 
-    // NEW: Long press timer state
     const [pressTimer, setPressTimer] = useState(null);
 
     useEffect(() => {
       clearUnreadCount(chatId, currentUser.uid);
-      
+
       const unsub = subscribeMessages(chatId, setMessages);
       const unsubData = subscribeChatData(chatId, setChatData);
       return () => { unsub(); unsubData(); };
     }, [chatId, currentUser.uid]);
-    
+
     useEffect(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
-    
+
     async function handleSend(e) {
       e.preventDefault();
       if (!newMessage.trim()) return;
@@ -1997,16 +2019,16 @@
         setNewMessage(msg);
       }
     }
-    
+
     async function handleMediaUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
       setIsUploading(true);
       try {
         const res = await uploadToCloudinary(file);
-        await sendMessage(chatId, currentUser.uid, targetUser.uid, { 
-          text: null, 
-          media: { url: res.secure_url, type: res.resource_type } 
+        await sendMessage(chatId, currentUser.uid, targetUser.uid, {
+          text: null,
+          media: { url: res.secure_url, type: res.resource_type }
         });
       } catch (err) {
         console.error('Media upload failed:', err);
@@ -2016,7 +2038,7 @@
         if (e.target) e.target.value = null;
       }
     }
-    
+
     async function handleBackgroundUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -2024,8 +2046,8 @@
       setIsUploading(true);
       try {
         const res = await uploadToCloudinary(file);
-        await updateDoc(doc(db, 'chats', chatId), { 
-          [currentUser.uid + '_bg']: res.secure_url 
+        await updateDoc(doc(db, 'chats', chatId), {
+          [currentUser.uid + '_bg']: res.secure_url
         });
       } catch (err) {
         console.error('BG upload failed:', err);
@@ -2035,15 +2057,14 @@
         if (e.target) e.target.value = null;
       }
     }
-    
+
     async function handleClearBg() {
       setShowMenu(false);
-      await updateDoc(doc(db, 'chats', chatId), { 
-        [currentUser.uid + '_bg']: '' 
+      await updateDoc(doc(db, 'chats', chatId), {
+        [currentUser.uid + '_bg']: ''
       });
     }
 
-    // NEW: Handle Unsend
     async function handleUnsend() {
       if (!unsendModal) return;
       const msgId = unsendModal.id;
@@ -2055,48 +2076,40 @@
         alert('❌ ' + err.message);
       }
     }
-    
-    // NEW: Handle Block
+
     async function handleBlock() {
       setShowMenu(false);
       if (!confirm(`Block ${targetUser.displayName}? This will also unfriend them.`)) return;
       try {
         await blockUser(currentUser.uid, targetUser.uid);
         alert(`✅ ${targetUser.displayName} blocked.`);
-        onBlock(); // Go back and remove from list
+        onBlock();
       } catch (err) {
         console.error('Block failed:', err);
         alert('❌ ' + err.message);
       }
     }
-    
-    // NEW: Long Press Handlers
+
     const handleTouchStart = (msg) => {
       const timer = setTimeout(() => {
-        setUnsendModal(msg); // Open modal after 500ms
+        setUnsendModal(msg);
       }, 500);
       setPressTimer(timer);
     };
-    const handleTouchEnd = () => {
-      clearTimeout(pressTimer); // Cancel timer if released early
-    };
-    const handleTouchMove = () => {
-      clearTimeout(pressTimer); // Cancel if finger moves
-    };
+    const handleTouchEnd = () => { clearTimeout(pressTimer); };
+    const handleTouchMove = () => { clearTimeout(pressTimer); };
 
     const myBg = chatData?.[currentUser.uid + '_bg'];
 
-    return React.createElement('div', { 
+    return React.createElement('div', {
       className: 'card chat-page',
-      style: {
-        backgroundImage: myBg ? `url(${myBg})` : 'none'
-      }
+      style: { backgroundImage: myBg ? `url(${myBg})` : 'none' }
     },
       React.createElement('input', { type: 'file', ref: mediaInputRef, style: { display: 'none' }, accept: 'image/*,video/*', onChange: handleMediaUpload }),
       React.createElement('input', { type: 'file', ref: bgInputRef, style: { display: 'none' }, accept: 'image/*', onChange: handleBackgroundUpload }),
-      
+
       unsendModal && React.createElement(UnsendModal, { t, onCancel: () => setUnsendModal(null), onConfirm: handleUnsend }),
-      
+
       React.createElement('div', { className: 'chat-header' },
         React.createElement('button', { className: 'btn-ghost', onClick: onBack, style: { padding: '8px' }}, '⬅️'),
         React.createElement('img', { src: targetUser.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar' }),
@@ -2112,21 +2125,20 @@
         React.createElement('div', { ref: messagesEndRef }),
         messages.map(msg => {
           const isSent = msg.from === currentUser.uid;
-          return React.createElement('div', { 
-            key: msg.id, 
+          return React.createElement('div', {
+            key: msg.id,
             className: `chat-message-item ${isSent ? 'sent' : 'received'}`,
-            // NEW: Add long press handlers (touch and mouse)
             onTouchStart: () => isSent && handleTouchStart(msg),
             onTouchEnd: handleTouchEnd,
             onTouchMove: handleTouchMove,
-            onMouseDown: (e) => isSent && handleTouchStart(msg), // Mouse alternative
-            onMouseUp: handleTouchEnd, // Mouse alternative
-            onMouseLeave: handleTouchEnd // Mouse alternative
+            onMouseDown: (e) => isSent && handleTouchStart(msg),
+            onMouseUp: handleTouchEnd,
+            onMouseLeave: handleTouchEnd
           },
             React.createElement('div', { className: 'chat-bubble' },
               msg.text,
-              msg.media && React.createElement('img', { 
-                src: msg.media.url, 
+              msg.media && React.createElement('img', {
+                src: msg.media.url,
                 onClick: (e) => { e.stopPropagation(); window.open(msg.media.url, '_blank'); },
                 style: { cursor: 'pointer' }
               })
@@ -2135,16 +2147,16 @@
         })
       ),
       React.createElement('form', { className: 'chat-input-box', onSubmit: handleSend },
-        React.createElement('button', { 
-          className: 'btn-ghost', 
-          type: 'button', 
+        React.createElement('button', {
+          className: 'btn-ghost',
+          type: 'button',
           onClick: () => mediaInputRef.current.click(),
           disabled: isUploading,
           style: { padding: '10px' }
         }, isUploading ? '⏳' : '📷'),
-        React.createElement('input', { 
-          placeholder: t('typeMessage'), 
-          value: newMessage, 
+        React.createElement('input', {
+          placeholder: t('typeMessage'),
+          value: newMessage,
           onInput: e => setNewMessage(e.target.value),
           style: { background: 'var(--bg)' },
           disabled: isUploading
@@ -2154,11 +2166,80 @@
     );
   }
 
-  function SettingsPage({ t, lang, setLang, theme, setTheme, currentUser }) {
+  // **** ADDED THIS ENTIRE NEW COMPONENT ****
+  function BlockedListModal({ t, currentUser, onClose }) {
+    const [blockedUsers, setBlockedUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      (async () => {
+        setLoading(true);
+        const blocksQuery = query(collection(db, 'blocks'), where('by', '==', currentUser.uid));
+        const blocksSnap = await getDocs(blocksQuery);
+        const blocksData = blocksSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        const profiles = await Promise.all(
+          blocksData.map(block => getUserProfile(block.for))
+        );
+
+        const usersWithBlockId = profiles.map((profile, index) => ({
+          ...profile,
+          blockId: blocksData[index].id
+        })).filter(Boolean);
+
+        setBlockedUsers(usersWithBlockId);
+        setLoading(false);
+      })();
+    }, [currentUser.uid]);
+
+    async function handleUnblock(targetUser) {
+      try {
+        await unblockUser(currentUser.uid, targetUser.id); // Use the new function
+        setBlockedUsers(currentList => currentList.filter(u => u.id !== targetUser.id));
+        alert(`✅ ${targetUser.displayName} unblocked.`);
+      } catch (err) {
+        console.error('Unblock failed:', err);
+        alert('❌ Unblock failed.');
+      }
+    }
+
+    return React.createElement('div', { className: 'modal', onClick: onClose },
+      React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
+        React.createElement('h3', { style: { marginBottom: 20 }}, t('blockedUsers')),
+        loading && React.createElement('div', { className: 'small' }, t('loading')),
+        !loading && blockedUsers.length === 0 && React.createElement('div', { className: 'empty-state', style: { padding: '20px 0'} },
+           React.createElement('div', { className: 'empty-icon' }, '🚫'),
+           React.createElement('div', null, t('noBlockedUsers'))
+        ),
+        !loading && blockedUsers.map(user =>
+          React.createElement('div', { key: user.id, className: 'friend-card' },
+            React.createElement('div', { className: 'row' },
+              React.createElement('img', { src: user.avatarUrl || 'https://via.placeholder.com/40', className: 'avatar' }),
+              React.createElement('div', { style: { fontWeight: 600 }}, user.displayName)
+            ),
+            React.createElement('button', {
+              className: 'btn-ghost',
+              style: { color: '#fa3e3e'},
+              onClick: () => handleUnblock(user)
+            }, t('unblock'))
+          )
+        ),
+        React.createElement('button', {
+          className: 'btn-secondary',
+          onClick: onClose,
+          style: { marginTop: 20, width: '100%'}
+        }, t('close'))
+      )
+    );
+  }
+
+
+  // **** MODIFIED SettingsPage FUNCTION SIGNATURE AND CONTENT ****
+  function SettingsPage({ t, lang, setLang, theme, setTheme, currentUser, onShowBlocked }) {
     const [supportForm, setSupportForm] = useState({ email: currentUser.email || '', message: '' });
     const [supportMsg, setSupportMsg] = useState('');
     const [loading, setLoading] = useState(false);
-    
+
     async function handleSupportSubmit(e) {
       e.preventDefault();
       if (!supportForm.email || !supportForm.message) return;
@@ -2179,6 +2260,64 @@
         setLoading(false);
       }
     }
+
+    return React.createElement('div', null,
+      React.createElement('div', { className: 'card' },
+        React.createElement('h3', { style: { marginBottom:20 }}, t('settings')),
+        React.createElement('div', { className: 'col' },
+          React.createElement('label', { className: 'small' }, t('language')),
+          React.createElement('select', { value: lang, onChange: e => setLang(e.target.value) },
+            React.createElement('option', { value: 'en' }, 'English'),
+            React.createElement('option', { value: 'yo' }, 'Yoruba'),
+            React.createElement('option', { value: 'es' }, 'Español (Spanish)'),
+            React.createElement('option', { value: 'it' }, 'Italiano (Italian)'),
+            React.createElement('option', { value: 'fr' }, 'Français (French)'),
+            React.createElement('option', { value: 'de' }, 'Deutsch (German)')
+          ),
+          React.createElement('div', { className: 'row', style: { alignItems:'center', justifyContent:'space-between', marginTop:16 } },
+            React.createElement('span', null, t('darkMode')),
+            React.createElement('button', { className: 'btn-ghost', onClick: () => setTheme(theme === 'light' ? 'dark' : 'light') }, theme === 'light' ? `🌞 ${t('light')}` : `🌙 ${t('dark')}`)
+          ),
+          // Added Blocked Users button
+          React.createElement('button', {
+            className: 'btn-secondary',
+            onClick: onShowBlocked,
+            style: { marginTop: 16, width: '100%' }
+          }, t('blockedUsers')),
+
+          React.createElement('button', { className: 'btn', onClick: async () => { await signOut(auth); window.location.reload(); }, style: { marginTop:20, background:'#fa3e3e' }}, t('logout'))
+        )
+      ),
+      // Support Form card remains
+      React.createElement('div', { className: 'card' },
+        React.createElement('h4', null, t('helpSupport')),
+        React.createElement('form', { onSubmit: handleSupportSubmit, className: 'col', style: { marginTop: 12 }},
+          React.createElement('input', {
+            placeholder: t('yourEmail'),
+            type: 'email',
+            value: supportForm.email,
+            onInput: e => setSupportForm(f => ({ ...f, email: e.target.value })),
+            required: true
+          }),
+          React.createElement('textarea', {
+            placeholder: t('yourMessage'),
+            value: supportForm.message,
+            onInput: e => setSupportForm(f => ({ ...f, message: e.target.value })),
+            required: true
+          }),
+          React.createElement('button', { className: 'btn', type: 'submit', disabled: loading }, loading ? t('posting') : t('submit')),
+          supportMsg && React.createElement('div', {
+            className: 'small',
+            style: {
+              textAlign: 'center',
+              color: supportMsg.startsWith('❌') ? '#fa3e3e' : 'green',
+              marginTop: 8
+            }
+          }, supportMsg)
+        )
+      )
+    );
+  } // --- END OF SettingsPage() FUNCTION ---
     
     return React.createElement('div', null,
       React.createElement('div', { className: 'card' },
