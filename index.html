@@ -1870,6 +1870,7 @@
         chatId, 
         targetUser: selectedChat,
         onBack: () => setSelectedChat(null),
+        // NEW: Handle block event from ChatWindow
         onBlock: () => {
           setFriends(friends.filter(f => f.id !== selectedChat.uid));
           setSelectedChat(null);
@@ -1926,6 +1927,9 @@
     const messagesEndRef = useRef(null);
     const mediaInputRef = useRef(null);
     const bgInputRef = useRef(null);
+
+    // NEW: Long press timer state
+    const [pressTimer, setPressTimer] = useState(null);
 
     useEffect(() => {
       clearUnreadCount(chatId, currentUser.uid);
@@ -2024,6 +2028,20 @@
         alert('❌ ' + err.message);
       }
     }
+    
+    // NEW: Long Press Handlers
+    const handleTouchStart = (msg) => {
+      const timer = setTimeout(() => {
+        setUnsendModal(msg); // Open modal after 500ms
+      }, 500);
+      setPressTimer(timer);
+    };
+    const handleTouchEnd = () => {
+      clearTimeout(pressTimer); // Cancel timer if released early
+    };
+    const handleTouchMove = () => {
+      clearTimeout(pressTimer); // Cancel if finger moves
+    };
 
     const myBg = chatData?.[currentUser.uid + '_bg'];
 
@@ -2036,7 +2054,6 @@
       React.createElement('input', { type: 'file', ref: mediaInputRef, style: { display: 'none' }, accept: 'image/*,video/*', onChange: handleMediaUpload }),
       React.createElement('input', { type: 'file', ref: bgInputRef, style: { display: 'none' }, accept: 'image/*', onChange: handleBackgroundUpload }),
       
-      // NEW: Render Unsend Modal
       unsendModal && React.createElement(UnsendModal, { t, onCancel: () => setUnsendModal(null), onConfirm: handleUnsend }),
       
       React.createElement('div', { className: 'chat-header' },
@@ -2057,8 +2074,13 @@
           return React.createElement('div', { 
             key: msg.id, 
             className: `chat-message-item ${isSent ? 'sent' : 'received'}`,
-            // NEW: Add onClick to open unsend modal
-            onClick: () => isSent && setUnsendModal(msg)
+            // NEW: Add long press handlers (touch and mouse)
+            onTouchStart: () => isSent && handleTouchStart(msg),
+            onTouchEnd: handleTouchEnd,
+            onTouchMove: handleTouchMove,
+            onMouseDown: (e) => isSent && handleTouchStart(msg), // Mouse alternative
+            onMouseUp: handleTouchEnd, // Mouse alternative
+            onMouseLeave: handleTouchEnd // Mouse alternative
           },
             React.createElement('div', { className: 'chat-bubble' },
               msg.text,
