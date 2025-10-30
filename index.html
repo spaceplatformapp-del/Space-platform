@@ -1319,23 +1319,25 @@ page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: 
     );
   }
 
-  function BottomNav({ t, page, setPage, userProfile, isAdmin, unreadCount }) {
-    const navItems = ['home', 'friends', 'messages', 'games' 'profile', 'settings'];
-    const icons = { home: '🏠', friends: '👥', messages: '💬', games: '🎮' 
-           profile: '👤', settings: '⚙️', admin: '🛡️' };
+    function BottomNav({ t, page, setPage, userProfile, isAdmin, unreadCount }) {
+    const navItems = ['home', 'friends', 'messages', 'games', 'profile', 'settings']; // <-- ADDED COMMA after 'games'
+    const icons = { home: '🏠', friends: '👥', messages: '💬', games: '🎮', // <-- ADDED COMMA after 'games: '🎮''
+           profile: '👤', settings: '⚙️', admin: '🛡️' };
 
-    if (isAdmin) navItems.push('admin');
+    if (isAdmin) navItems.push('admin');
 
-    return React.createElement('div', { className: 'bottomnav' },
-      navItems.map(p =>
-        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
-          React.createElement('div', { className: 'nav-icon' }, icons[p]),
-          React.createElement('div', { className: 'nav-label' }, t(p)),
-          p === 'messages' && unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
-        )
-      )
-    );
-  }
+    return React.createElement('div', { className: 'bottomnav' },
+      navItems.map(p =>
+        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
+          React.createElement('div', { className: 'nav-icon' }, icons[p]),
+          React.createElement('div', { className: 'nav-label' }, t(p)),
+          p === 'messages' && unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
+        )
+      )
+    );
+  }
+
+
 
   function LoginPage({ t, onSuccess, onSwitch, onForgot }) {
     const [email, setEmail] = useState('');
