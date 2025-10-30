@@ -1167,194 +1167,191 @@ const translations = {
   }
 
  function App() {
-  const [user, setUser] = useState(null);
-  const [page, setPage] = useState('loading');
-  const [feed, setFeed] = useState([]);
-  const [stories, setStories] = useState([]);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  const [lang, setLang] = useState(localStorage.getItem('lang') || 'en');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedProfile, setSelectedProfile] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-  const [showComposer, setShowComposer] = useState(false);
-  const [showForgot, setShowForgot] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [totalUnread, setTotalUnread] = useState(0);
-  const [chatUnreadMap, setChatUnreadMap] = useState({});
+    const [user, setUser] = useState(null);
+    const [page, setPage] = useState('loading');
+    const [feed, setFeed] = useState([]);
+    const [stories, setStories] = useState([]);
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const [lang, setLang] = useState(localStorage.getItem('lang') || 'en');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [selectedProfile, setSelectedProfile] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
+    const [showComposer, setShowComposer] = useState(false);
+    const [showForgot, setShowForgot] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [totalUnread, setTotalUnread] = useState(0);
+    const [chatUnreadMap, setChatUnreadMap] = useState({});
 
-  const [installPromptEvent, setInstallPromptEvent] = useState(null);
-  const [showInstallBanner, setShowInstallBanner] = useState(false);
-  const [showBlockedList, setShowBlockedList] = useState(false); // State for modal
-  const [selectedGameId, setSelectedGameId] = useState(null);
-  
-  // --- THIS IS THE FIX ---
-  const appId = localStorage.getItem('space-app-id') || (() => { const newId = crypto.randomUUID(); localStorage.setItem('space-app-id', newId); return newId; })();
+    const [installPromptEvent, setInstallPromptEvent] = useState(null);
+    const [showInstallBanner, setShowInstallBanner] = useState(false);
+    const [showBlockedList, setShowBlockedList] = useState(false); // State for modal
+    const [selectedGameId, setSelectedGameId] = useState(null);
 
-  const t = (key, params = {}) => {
-    let text = translations[lang]?.[key] || translations['en'][key] || key;
-    Object.keys(params).forEach(p => {
-      text = text.replace(`{${p}}`, params[p]);
-    });
-    return text;
-  };
-
-  const navTo = (p) => {
-    if (p === 'profile') setSelectedProfile(null);
-    setPage(p);
-  };
-
-  const navToProfile = (uid) => {
-    setSelectedProfile(uid);
-    setPage('profile');
-  };
-
-  const handleSetLang = (newLang) => {
-    setLang(newLang);
-    localStorage.setItem('lang', newLang);
-  };
-
-  useEffect(() => {
-    const handler = (e) => {
-      e.preventDefault();
-      setInstallPromptEvent(e);
-      if (!window.matchMedia('(display-mode: standalone)').matches) {
-        setShowInstallBanner(true);
-      }
+    const t = (key, params = {}) => {
+      let text = translations[lang]?.[key] || translations['en'][key] || key;
+      Object.keys(params).forEach(p => {
+        text = text.replace(`{${p}}`, params[p]);
+      });
+      return text;
     };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
 
-  const handleInstallClick = async () => {
-    if (!installPromptEvent) return;
-    installPromptEvent.prompt();
-    const { outcome } = await installPromptEvent.userChoice;
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    }
-    setShowInstallBanner(false);
-    setInstallPromptEvent(null);
-  };
+    const navTo = (p) => {
+      if (p === 'profile') setSelectedProfile(null);
+      setPage(p);
+    };
 
-  const handleDismissClick = () => {
-    setShowInstallBanner(false);
-  };
+    const navToProfile = (uid) => {
+      setSelectedProfile(uid);
+      setPage('profile');
+    };
 
-  useEffect(() => {
-    if (!user) return;
-    const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid));
-    const unsub = onSnapshot(q, (snap) => {
-      let total = 0;
-      const unreadMap = {};
-      snap.forEach(doc => {
-        const data = doc.data();
-        const unreadKey = `unreadCount_${user.uid}`;
-        const count = data[unreadKey] || 0;
-        if (count > 0) {
-          total += count;
-          unreadMap[doc.id] = count;
+    const handleSetLang = (newLang) => {
+      setLang(newLang);
+      localStorage.setItem('lang', newLang);
+    };
+
+    useEffect(() => {
+      const handler = (e) => {
+        e.preventDefault();
+        setInstallPromptEvent(e);
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+          setShowInstallBanner(true);
+        }
+      };
+      window.addEventListener('beforeinstallprompt', handler);
+      return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    const handleInstallClick = async () => {
+      if (!installPromptEvent) return;
+      installPromptEvent.prompt();
+      const { outcome } = await installPromptEvent.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      }
+      setShowInstallBanner(false);
+      setInstallPromptEvent(null);
+    };
+
+    const handleDismissClick = () => {
+      setShowInstallBanner(false);
+    };
+
+    useEffect(() => {
+      if (!user) return;
+      const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid));
+      const unsub = onSnapshot(q, (snap) => {
+        let total = 0;
+        const unreadMap = {};
+        snap.forEach(doc => {
+          const data = doc.data();
+          const unreadKey = `unreadCount_${user.uid}`;
+          const count = data[unreadKey] || 0;
+          if (count > 0) {
+            total += count;
+            unreadMap[doc.id] = count;
+          }
+        });
+        setTotalUnread(total);
+        setChatUnreadMap(unreadMap);
+      });
+      return () => unsub();
+    }, [user]);
+
+    useEffect(()=> {
+      const splash = document.getElementById('splash');
+      onAuthStateChanged(auth, async (u) => {
+        setUser(u);
+        if (u) {
+          const prof = await getUserProfile(u.uid);
+          setUserProfile(prof);
+          setIsAdmin(prof?.email === ADMIN_EMAIL);
+          if (!prof) setPage('register');
+          else setPage('home');
+        } else {
+          setPage('login');
+          setIsAdmin(false);
         }
       });
-      setTotalUnread(total);
-      setChatUnreadMap(unreadMap);
-    });
-    return () => unsub();
-  }, [user]);
+      const unsubFeed = subscribeFeed(setFeed);
+      const unsubStories = subscribeStories(setStories);
+      setTimeout(()=> {
+        if (splash) splash.style.display = 'none';
+        document.getElementById('root').style.visibility = 'visible';
+        if (window.SPACE_APP_OK) window.SPACE_APP_OK();
+      }, 800);
+      return ()=> { unsubFeed(); unsubStories(); };
+    }, []);
 
-  useEffect(()=> {
-    const splash = document.getElementById('splash');
-    onAuthStateChanged(auth, async (u) => {
-      setUser(u);
-      if (u) {
-        const prof = await getUserProfile(u.uid);
-        setUserProfile(prof);
-        setIsAdmin(prof?.email === ADMIN_EMAIL);
-        if (!prof) setPage('register');
-        else setPage('home');
-      } else {
-        setPage('login');
-        setIsAdmin(false);
-      }
-    });
-    const unsubFeed = subscribeFeed(setFeed);
-    const unsubStories = subscribeStories(setStories);
-    setTimeout(()=> {
-      if (splash) splash.style.display = 'none';
-      document.getElementById('root').style.visibility = 'visible';
-      if (window.SPACE_APP_OK) window.SPACE_APP_OK();
-    }, 800);
-    return ()=> { unsubFeed(); unsubStories(); };
-  }, []);
+    useEffect(()=> {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      localStorage.setItem('theme', theme);
+    }, [theme]);
 
-  useEffect(()=> {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    useEffect(()=> {
+      const timeout = setTimeout(async ()=> {
+        if (searchTerm.length >= 2) {
+          const r = await searchUsers(searchTerm);
+          setSearchResults(r);
+        } else setSearchResults([]);
+      }, 300);
+      return ()=> clearTimeout(timeout);
+    }, [searchTerm]);
 
-  useEffect(()=> {
-    const timeout = setTimeout(async ()=> {
-      if (searchTerm.length >= 2) {
-        const r = await searchUsers(searchTerm);
-        setSearchResults(r);
-      } else setSearchResults([]);
-    }, 300);
-    return ()=> clearTimeout(timeout);
-  }, [searchTerm]);
+    if (!user && (page === 'login' || page === 'register')) {
+      return React.createElement('div', { className: 'container' },
+        page === 'login' && React.createElement(LoginPage, { t, onSuccess: () => setPage('home'), onSwitch: () => setPage('register'), onForgot: () => setShowForgot(true) }),
+        page === 'register' && React.createElement(RegisterPage, { t, onSuccess: () => setPage('home'), onSwitch: () => setPage('login') }),
+        showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) })
+      );
+    }
 
-  if (!user && (page === 'login' || page === 'register')) {
-    return React.createElement('div', { className: 'container' },
-      page === 'login' && React.createElement(LoginPage, { t, onSuccess: () => setPage('home'), onSwitch: () => setPage('register'), onForgot: () => setShowForgot(true) }),
-      page === 'register' && React.createElement(RegisterPage, { t, onSuccess: () => setPage('home'), onSwitch: () => setPage('login') }),
-      showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) })
-    );
-  }
-
-  if (selectedGameId) {
-    return React.createElement(TicTacToeGame, {
-      t,
-      user,
-      gameId: selectedGameId,
-      onLeaveGame: () => setSelectedGameId(null),
-      appId // --- THIS IS THE FIX ---
-    });
-  }
-
-  return React.createElement('div', null,
-    showInstallBanner && React.createElement(InstallBanner, {
-      t,
-      onInstall: handleInstallClick,
-      onDismiss: handleDismissClick
-    }),
-    React.createElement(TopBar, { t, user, userProfile, searchTerm, setSearchTerm, searchResults, page: page, onNav: navTo, onOpenProfile: navToProfile, unreadCount: totalUnread }),
-    React.createElement('div', { className: 'container' },
-      page === 'loading' && React.createElement('div', { className: 'card' }, t('loading')),
-      page === 'home' && React.createElement(HomePage, { t, user, userProfile, feed, stories, showComposer, setShowComposer, onNavToProfile: navToProfile }),
-      page === 'friends' && React.createElement(FriendsPage, { t, user, onNavToProfile: navToProfile }),
-      page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
-      page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
-      page === 'settings' && React.createElement(SettingsPage, {
-        t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
-        onShowBlocked: () => setShowBlockedList(true)
-      }),
-      
-      // --- THIS IS THE FIX ---
-      page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId, appId }),
-
-      page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
-    ),
-    user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread }),
-
-    showBlockedList && React.createElement(BlockedListModal, {
+    if (selectedGameId) {
+      return React.createElement(TicTacToeGame, {
         t,
-        currentUser: user,
-        onClose: () => setShowBlockedList(false)
-    }),
+        user,
+        gameId: selectedGameId,
+        onLeaveGame: () => setSelectedGameId(null)
+        // --- FIX: appId removed ---
+      });
+    }
 
-    showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) }),
-    showComposer && React.createElement(ComposerModal, { t, user, onClose: () => setShowComposer(false) })
-  );
- } // --- END OF App() FUNCTION ---
+    return React.createElement('div', null,
+      showInstallBanner && React.createElement(InstallBanner, {
+        t,
+        onInstall: handleInstallClick,
+        onDismiss: handleDismissClick
+      }),
+      React.createElement(TopBar, { t, user, userProfile, searchTerm, setSearchTerm, searchResults, page: page, onNav: navTo, onOpenProfile: navToProfile, unreadCount: totalUnread }),
+      React.createElement('div', { className: 'container' },
+        page === 'loading' && React.createElement('div', { className: 'card' }, t('loading')),
+        page === 'home' && React.createElement(HomePage, { t, user, userProfile, feed, stories, showComposer, setShowComposer, onNavToProfile: navToProfile }),
+        page === 'friends' && React.createElement(FriendsPage, { t, user, onNavToProfile: navToProfile }),
+        page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
+        page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
+        page === 'settings' && React.createElement(SettingsPage, {
+          t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
+          onShowBlocked: () => setShowBlockedList(true)
+        }),
+        
+        // --- FIX: appId removed ---
+        page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId }),
+
+        page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
+      ),
+      user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread }),
+
+      showBlockedList && React.createElement(BlockedListModal, {
+          t,
+          currentUser: user,
+          onClose: () => setShowBlockedList(false)
+      }),
+
+      showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) }),
+      showComposer && React.createElement(ComposerModal, { t, user, onClose: () => setShowComposer(false) })
+    );
+   } // --- END OF App() FUNCTION ---
 
   function TopBar({ t, user, userProfile, searchTerm, setSearchTerm, searchResults, page, onNav, onOpenProfile, unreadCount }) {
     return React.createElement('div', { className: 'topbar' },
@@ -2635,192 +2632,187 @@ const translations = {
   }
 
 // New Component: Game Lobby
-function GameLobby({ t, user, userProfile, onJoinGame, appId }) { // <-- appId added
-  const [openGames, setOpenGames] = useState([]);
-  const [loading, setLoading] = useState(false);
-  
-  // --- FIX: Use correct database path ---
-  const gamesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'games');
+  function GameLobby({ t, user, userProfile, onJoinGame }) { // <-- appId removed
+    const [openGames, setOpenGames] = useState([]);
+    const [loading, setLoading] = useState(false);
+    
+    // --- FIX: Use correct database path ---
+    const gamesCollection = collection(db, 'games');
 
-  useEffect(() => {
-    // --- FIX: Query the correct collection ---
-    const q = query(gamesCollection, where('status', '==', 'waiting'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setOpenGames(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsubscribe();
-  }, [gamesCollection]); // <-- Dependency updated
-
-  async function createGame() {
-    setLoading(true);
-    try {
-      const newGame = {
-        board: Array(9).fill(null),
-        players: [user.uid], // Player 'X'
-        playerNames: { [user.uid]: userProfile.displayName || 'Player 1' },
-        status: 'waiting', // 'waiting', 'playing', 'finished'
-        nextTurn: user.uid,
-        createdAt: serverTimestamp()
-      };
-      // --- FIX: Add document to the correct collection ---
-      const gameRef = await addDoc(gamesCollection, newGame);
-      onJoinGame(gameRef.id);
-    } catch (err) {
-      console.error("Error creating game:", err);
-      setLoading(false); // --- FIX: Add this line to reset button on error ---
-    }
-    // Do not set loading to false here, component will unmount
-  }
-
-  async function joinGame(gameId, existingGame) {
-    setLoading(true);
-    try {
-      // --- FIX: Get document from the correct collection ---
-      const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', gameId);
-      await updateDoc(gameRef, {
-        status: 'playing',
-        players: [existingGame.players[0], user.uid], // Player 'O'
-        playerNames: {
-          ...existingGame.playerNames,
-          [user.uid]: userProfile.displayName || 'Player 2'
-        }
+    useEffect(() => {
+      // --- FIX: Query the correct collection ---
+      const q = query(gamesCollection, where('status', '==', 'waiting'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        setOpenGames(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       });
-      onJoinGame(gameId);
-    } catch (err) {
-      console.error("Error joining game:", err);
-      setLoading(false); // --- FIX: Add this line to reset button on error ---
-    }
-  }
+      return () => unsubscribe();
+    }, [gamesCollection]); // <-- Dependency updated
 
-  // --- This is your styling, it's correct ---
-  return React.createElement('div', { className: 'card p-6' },
-    React.createElement('h2', { style: { fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '24px' } }, t('gameLobby')),
-    React.createElement('button', {
-      className: 'btn',
-      style: { width: '100%', padding: '12px 0', borderRadius: '8px', fontWeight: '600' },
-      onClick: createGame,
-      disabled: loading
-    }, loading ? t('creating') : t('createGame')),
-    React.createElement('hr', { style: { margin: '24px 0', borderTop: '1px solid var(--hover)' } }),
-    React.createElement('h3', { style: { fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' } }, t('openGames')),
-    React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
-      openGames.length === 0 && React.createElement('div', { className: 'empty-state', style: { padding: '20px 0'} }, 
-        React.createElement('div', { className: 'empty-icon' }, '🎮'),
-        React.createElement('div', null, t('noOpenGames'))
-      ),
-      openGames.map(game =>
-        React.createElement('div', {
-          key: game.id,
-          className: 'card',
-          style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderRadius: '8px' }
-        },
-          React.createElement('span', null, t('gameBy', { name: game.playerNames[game.players[0]] })),
-          // Don't show Join button for your own game
-          game.players[0] !== user.uid && React.createElement('button', {
-            className: 'btn-secondary',
-            style: { padding: '8px 16px', borderRadius: '8px', fontWeight: '600' },
-            onClick: () => joinGame(game.id, game),
-            disabled: loading
-          }, t('join'))
+    async function createGame() {
+      setLoading(true);
+      try {
+        const newGame = {
+          board: Array(9).fill(null),
+          players: [user.uid], // Player 'X'
+          playerNames: { [user.uid]: userProfile.displayName || 'Player 1' },
+          status: 'waiting', // 'waiting', 'playing', 'finished'
+          nextTurn: user.uid,
+          createdAt: serverTimestamp()
+        };
+        // --- FIX: Add document to the correct collection ---
+        const gameRef = await addDoc(gamesCollection, newGame);
+        onJoinGame(gameRef.id);
+      } catch (err) {
+        console.error("Error creating game:", err);
+        setLoading(false);
+      }
+    }
+
+    async function joinGame(gameId, existingGame) {
+      setLoading(true);
+      try {
+        // --- FIX: Get document from the correct collection ---
+        const gameRef = doc(db, 'games', gameId); // <-- Path fixed
+        await updateDoc(gameRef, {
+          status: 'playing',
+          players: [existingGame.players[0], user.uid], // Player 'O'
+          playerNames: {
+            ...existingGame.playerNames,
+            [user.uid]: userProfile.displayName || 'Player 2'
+          }
+        });
+        onJoinGame(gameId);
+      } catch (err) {
+        console.error("Error joining game:", err);
+        setLoading(false);
+      }
+    }
+
+    return React.createElement('div', { className: 'card p-6' },
+      React.createElement('h2', { style: { fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '24px' } }, t('gameLobby')),
+      React.createElement('button', {
+        className: 'btn',
+        style: { width: '100%', padding: '12px 0', borderRadius: '8px', fontWeight: '600' },
+        onClick: createGame,
+        disabled: loading
+      }, loading ? t('creating') : t('createGame')),
+      React.createElement('hr', { style: { margin: '24px 0', borderTop: '1px solid var(--hover)' } }),
+      React.createElement('h3', { style: { fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' } }, t('openGames')),
+      React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        openGames.length === 0 && React.createElement('div', { className: 'empty-state', style: { padding: '20px 0'} }, 
+          React.createElement('div', { className: 'empty-icon' }, '🎮'),
+          React.createElement('div', null, t('noOpenGames'))
+        ),
+        openGames.map(game =>
+          React.createElement('div', {
+            key: game.id,
+            className: 'card',
+            style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderRadius: '8px' }
+          },
+            React.createElement('span', null, t('gameBy', { name: game.playerNames[game.players[0]] })),
+            game.players[0] !== user.uid && React.createElement('button', {
+              className: 'btn-secondary',
+              style: { padding: '8px 16px', borderRadius: '8px', fontWeight: '600' },
+              onClick: () => joinGame(game.id, game),
+              disabled: loading
+            }, t('join'))
+          )
         )
       )
-    )
-  );
-}
-
+    );
+  }
 // New Component: Tic-Tac-Toe Game Window
-function TicTacToeGame({ t, user, gameId, onLeaveGame, appId }) { // <-- appId added
-  const [game, setGame] = useState(null);
-  const [loading, setLoading] = useState(true);
+  function TicTacToeGame({ t, user, gameId, onLeaveGame }) { // <-- appId removed
+    const [game, setGame] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  // --- FIX: Use correct database path ---
-  const gameDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', gameId);
+    // --- FIX: Use correct database path ---
+    const gameDocRef = doc(db, 'games', gameId);
 
-  useEffect(() => {
-    // --- FIX: Listen to the correct document ---
-    const unsubscribe = onSnapshot(gameDocRef, (doc) => {
-      if (doc.exists()) {
-        setGame({ id: doc.id, ...doc.data() });
-      } else {
-        onLeaveGame();
-      }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, [gameDocRef, onLeaveGame]); // <-- Dependency updated
-
-  async function makeMove(index) {
-    if (!game || game.status !== 'playing' || game.nextTurn !== user.uid || game.board[index]) {
-      return; // Not your turn, game over, or cell taken
-    }
-    
-    const newBoard = [...game.board];
-    const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
-    newBoard[index] = playerSymbol;
-
-    const winner = checkWinner(newBoard);
-    const newStatus = winner ? 'finished' : 'playing';
-    const nextTurn = game.players.find(p => p !== user.uid);
-
-    try {
-      // --- FIX: Update the correct document ---
-      await updateDoc(gameDocRef, {
-        board: newBoard,
-        status: newStatus,
-        nextTurn: newStatus === 'finished' ? null : nextTurn,
-        winner: winner
+    useEffect(() => {
+      // --- FIX: Listen to the correct document ---
+      const unsubscribe = onSnapshot(gameDocRef, (doc) => {
+        if (doc.exists()) {
+          setGame({ id: doc.id, ...doc.data() });
+        } else {
+          onLeaveGame();
+        }
+        setLoading(false);
       });
-    } catch (err) {
-      console.error("Error making move:", err);
+      return () => unsubscribe();
+    }, [gameDocRef, onLeaveGame]); // <-- Dependency updated
+
+    async function makeMove(index) {
+      if (!game || game.status !== 'playing' || game.nextTurn !== user.uid || game.board[index]) {
+        return;
+      }
+      
+      const newBoard = [...game.board];
+      const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
+      newBoard[index] = playerSymbol;
+
+      const winner = checkWinner(newBoard);
+      const newStatus = winner ? 'finished' : 'playing';
+      const nextTurn = game.players.find(p => p !== user.uid);
+
+      try {
+        // --- FIX: Update the correct document ---
+        await updateDoc(gameDocRef, {
+          board: newBoard,
+          status: newStatus,
+          nextTurn: newStatus === 'finished' ? null : nextTurn,
+          winner: winner
+        });
+      } catch (err) {
+        console.error("Error making move:", err);
+      }
     }
-  }
 
-  if (loading || !game) {
-    return React.createElement('div', { className: 'card p-6' }, t('loading'));
-  }
-
-  const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
-  const opponentId = game.players.find(p => p !== user.uid);
-  const opponentName = opponentId ? (game.playerNames[opponentId] || 'Player 2') : t('waiting');
-  const isMyTurn = game.nextTurn === user.uid && game.status === 'playing';
-
-  let statusMessage;
-  if (game.status === 'waiting') {
-    statusMessage = t('waitingForOpponent');
-  } else if (game.status === 'playing') {
-    statusMessage = isMyTurn ? t('yourTurn') : t('waitingFor', { name: opponentName });
-  } else if (game.status === 'finished') {
-    if (game.winner === 'T') {
-      statusMessage = t('gameTie');
-    } else if (game.winner === playerSymbol) {
-      statusMessage = t('youWin');
-    } else {
-      statusMessage = t('youLose');
+    if (loading || !game) {
+      return React.createElement('div', { className: 'card p-6' }, t('loading'));
     }
-  }
 
-  // --- This is your styling, it's correct ---
-  return React.createElement('div', { className: 'card', style: { padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center' } },
-    React.createElement('h2', { style: { fontSize: '24px', fontWeight: 'bold', marginBottom: '16px' } }, 'Tic-Tac-Toe'),
-    React.createElement('div', { style: { marginBottom: '16px', fontSize: '18px', fontWeight: '600' } }, statusMessage),
-    React.createElement('div', { className: 'game-board' },
-      game.board.map((cell, index) =>
-        React.createElement('div', {
-          key: index,
-          className: 'game-cell',
-          onClick: () => makeMove(index),
-          style: { cursor: isMyTurn && !cell ? 'pointer' : 'not-allowed' }
-        }, cell)
-      )
-    ),
-    (game.status === 'finished' || game.status === 'waiting') &&
-      React.createElement('button', {
-        className: 'btn-secondary',
-        style: { width: '100%', padding: '12px 0', borderRadius: '8px', fontWeight: '600', marginTop: '24px' },
-        onClick: onLeaveGame
-      }, game.status === 'waiting' ? t('cancelGame') : t('backToLobby'))
-  );
-}
+    const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
+    const opponentId = game.players.find(p => p !== user.uid);
+    const opponentName = opponentId ? (game.playerNames[opponentId] || 'Player 2') : t('waiting');
+    const isMyTurn = game.nextTurn === user.uid && game.status === 'playing';
+
+    let statusMessage;
+    if (game.status === 'waiting') {
+      statusMessage = t('waitingForOpponent');
+    } else if (game.status === 'playing') {
+      statusMessage = isMyTurn ? t('yourTurn') : t('waitingFor', { name: opponentName });
+    } else if (game.status === 'finished') {
+      if (game.winner === 'T') {
+        statusMessage = t('gameTie');
+      } else if (game.winner === playerSymbol) {
+        statusMessage = t('youWin');
+      } else {
+        statusMessage = t('youLose');
+      }
+    }
+
+    return React.createElement('div', { className: 'card', style: { padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+      React.createElement('h2', { style: { fontSize: '24px', fontWeight: 'bold', marginBottom: '16px' } }, 'Tic-Tac-Toe'),
+      React.createElement('div', { style: { marginBottom: '16px', fontSize: '18px', fontWeight: '600' } }, statusMessage),
+      React.createElement('div', { className: 'game-board' },
+        game.board.map((cell, index) =>
+          React.createElement('div', {
+            key: index,
+            className: 'game-cell',
+            onClick: () => makeMove(index),
+            style: { cursor: isMyTurn && !cell ? 'pointer' : 'not-allowed' }
+          }, cell)
+        )
+      ),
+      (game.status === 'finished' || game.status === 'waiting') &&
+        React.createElement('button', {
+          className: 'btn-secondary',
+          style: { width: '100%', padding: '12px 0', borderRadius: '8px', fontWeight: '600', marginTop: '24px' },
+          onClick: onLeaveGame
+        }, game.status === 'waiting' ? t('cancelGame') : t('backToLobby'))
+    );
+  }
   // --- END OF NEW GAME CODE ---
   const container = document.getElementById('root');
   createRoot(container).render(React.createElement(App));
