@@ -212,7 +212,69 @@
 
 // --- START I18N (Translations) ---
   const translations = {
-    en: {
+    en: {// ... after messageFailed: '...'
+      close: 'Close',
+      games: 'Games', // ADD THIS
+      gameLobby: 'Game Lobby', // ADD THIS
+      createGame: 'Create New Game', // ADD THIS
+      creating: 'Creating...', // ADD THIS
+      openGames: 'Open Games', // ADD THIS
+      noOpenGames: 'No open games. Create one!', // ADD THIS
+      gameBy: 'Game by {name}', // ADD THIS
+      join: 'Join', // ADD THIS
+      waitingForOpponent: 'Waiting for opponent...', // ADD THIS
+      yourTurn: "It's your turn!", // ADD THIS
+      waitingFor: 'Waiting for {name}...', // ADD THIS
+      waiting: 'Waiting', // ADD THIS
+      gameTie: "It's a Tie!", // ADD THIS
+      youWin: 'You win! 🎉', // ADD THIS
+      youLose: 'You lose. 😕', // ADD THIS
+      cancelGame: 'Cancel Game', // ADD THIS
+      backToLobby: 'Back to Lobby' // ADD THIS
+    },
+    es: {
+      // ... (add Spanish translations)
+      close: 'Cerrar',
+      games: 'Juegos', // ADD THIS
+      gameLobby: 'Lobby de Juegos', // ADD THIS
+      createGame: 'Crear Nuevo Juego', // ADD THIS
+      creating: 'Creando...', // ADD THIS
+      openGames: 'Juegos Abiertos', // ADD THIS
+      noOpenGames: 'No hay juegos. ¡Crea uno!', // ADD THIS
+      gameBy: 'Juego por {name}', // ADD THIS
+      join: 'Unirse', // ADD THIS
+      waitingForOpponent: 'Esperando oponente...', // ADD THIS
+      yourTurn: '¡Es tu turno!', // ADD THIS
+      waitingFor: 'Esperando a {name}...', // ADD THIS
+      waiting: 'Esperando', // ADD THIS
+      gameTie: '¡Es un empate!', // ADD THIS
+      youWin: '¡Ganaste! 🎉', // ADD THIS
+      youLose: 'Perdiste. 😕', // ADD THIS
+      cancelGame: 'Cancelar Juego', // ADD THIS
+      backToLobby: 'Volver al Lobby' // ADD THIS
+    },
+    // ... add translations for your other languages (yo, it, fr, de)
+    yo: {
+      // ...
+      games: 'Àwọn Eré',
+      gameLobby: 'Gbọ̀ngàn Eré',
+      createGame: 'Ṣẹda Eré Tuntun',
+      creating: 'Nṣẹda...',
+      openGames: 'Àwọn Eré Tí Ó Ṣí',
+      noOpenGames: 'Ko si eré. Ṣẹda ọ̀kan!',
+      gameBy: 'Eré láti ọwọ́ {name}',
+      join: 'Darapọ̀',
+      waitingForOpponent: 'Nduro de alátakò...',
+      yourTurn: 'Ìwọ lo kan!',
+      waitingFor: 'Nduro de {name}...',
+      waiting: 'Nduro',
+      gameTie: 'Ẹ dọ́gba!',
+      youWin: 'O ṣẹ́gun! 🎉',
+      youLose: 'O pàdánù. 😕',
+      cancelGame: 'Fagilee Eré',
+      backToLobby: 'Padà sí Gbọ̀ngàn'
+    },
+    // ... etc. for it, fr, de
       loading: 'Loading...',
       logIn: 'Log In',
       password: 'Password',
@@ -1050,7 +1112,7 @@
     const [installPromptEvent, setInstallPromptEvent] = useState(null);
     const [showInstallBanner, setShowInstallBanner] = useState(false);
     const [showBlockedList, setShowBlockedList] = useState(false); // State for modal
-
+    const [selectedGameId, setSelectedGameId] = useState(null);
     const t = (key, params = {}) => {
       let text = translations[lang]?.[key] || translations['en'][key] || key;
       Object.keys(params).forEach(p => {
@@ -1171,6 +1233,16 @@
     }
 
     return React.createElement('div', null,
+                               // --- ADD THIS BLOCK ---
+if (selectedGameId) {
+  return React.createElement(TicTacToeGame, {
+    t,
+    user,
+    gameId: selectedGameId,
+    onLeaveGame: () => setSelectedGameId(null)
+  });
+}
+// --- END OF BLOCK ---
       showInstallBanner && React.createElement(InstallBanner, {
         t,
         onInstall: handleInstallClick,
@@ -1187,6 +1259,13 @@
             t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
             onShowBlocked: () => setShowBlockedList(true) // Pass function
         }),
+          // ... (after page === 'settings'...)
+
+// --- ADD THIS LINE ---
+page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId }),
+
+page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
+//...                
         page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
       ),
       user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread }),
@@ -1241,8 +1320,9 @@
   }
 
   function BottomNav({ t, page, setPage, userProfile, isAdmin, unreadCount }) {
-    const navItems = ['home', 'friends', 'messages', 'profile', 'settings'];
-    const icons = { home: '🏠', friends: '👥', messages: '💬', profile: '👤', settings: '⚙️', admin: '🛡️' };
+    const navItems = ['home', 'friends', 'messages', 'games' 'profile', 'settings'];
+    const icons = { home: '🏠', friends: '👥', messages: '💬', games: '🎮' 
+           profile: '👤', settings: '⚙️', admin: '🛡️' };
 
     if (isAdmin) navItems.push('admin');
 
@@ -2449,7 +2529,200 @@
       ))
     );
   }
+// --- START OF NEW GAME CODE ---
+  
+  // Helper function to check for a winner
+  function checkWinner(board) {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // cols
+      [0, 4, 8], [2, 4, 6]  // diagonals
+    ];
+    for (let line of lines) {
+      const [a, b, c] = line;
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        return board[a]; // 'X' or 'O'
+      }
+    }
+    if (board.every(cell => cell !== null)) {
+      return 'T'; // Tie
+    }
+    return null;
+  }
 
+  // New Component: Game Lobby
+  function GameLobby({ t, user, userProfile, onJoinGame }) {
+    const [openGames, setOpenGames] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      const q = query(collection(db, 'games'), where('status', '==', 'waiting'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        setOpenGames(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      });
+      return () => unsubscribe();
+    }, []);
+
+    async function createGame() {
+      setLoading(true);
+      try {
+        const newGame = {
+          board: Array(9).fill(null),
+          players: [user.uid], // Player 'X'
+          playerNames: { [user.uid]: userProfile.displayName || 'Player 1' },
+          status: 'waiting', // 'waiting', 'playing', 'finished'
+          nextTurn: user.uid,
+          createdAt: serverTimestamp()
+        };
+        const gameRef = await addDoc(collection(db, 'games'), newGame);
+        onJoinGame(gameRef.id);
+      } catch (err) {
+        console.error("Error creating game:", err);
+      }
+      setLoading(false);
+    }
+
+    async function joinGame(gameId, existingGame) {
+      setLoading(true);
+      try {
+        const gameRef = doc(db, 'games', gameId);
+        await updateDoc(gameRef, {
+          status: 'playing',
+          players: [existingGame.players[0], user.uid], // Player 'O'
+          playerNames: {
+            ...existingGame.playerNames,
+            [user.uid]: userProfile.displayName || 'Player 2'
+          }
+        });
+        onJoinGame(gameId);
+      } catch (err) {
+        console.error("Error joining game:", err);
+      }
+      setLoading(false);
+    }
+
+    return React.createElement('div', { className: 'card p-6' },
+      React.createElement('h2', { className: 'text-2xl font-bold text-center mb-6' }, t('gameLobby')),
+      React.createElement('button', {
+        className: 'btn-primary w-full py-3 rounded-lg font-semibold',
+        onClick: createGame,
+        disabled: loading
+      }, loading ? t('creating') : t('createGame')),
+      React.createElement('hr', { className: 'my-6' }),
+      React.createElement('h3', { className: 'text-xl font-bold mb-4' }, t('openGames')),
+      React.createElement('div', { className: 'space-y-3' },
+        openGames.length === 0 && React.createElement('div', { className: 'empty-state', style: { padding: '20px 0'} }, 
+          React.createElement('div', { className: 'empty-icon' }, '🎮'),
+          React.createElement('div', null, t('noOpenGames'))
+        ),
+        openGames.map(game =>
+          React.createElement('div', {
+            key: game.id,
+            className: 'flex justify-between items-center p-3 card rounded-lg shadow-sm'
+          },
+            React.createElement('span', null, t('gameBy', { name: game.playerNames[game.players[0]] })),
+            // Don't show Join button for your own game
+            game.players[0] !== user.uid && React.createElement('button', {
+              className: 'btn-secondary px-4 py-2 rounded-lg font-semibold',
+              onClick: () => joinGame(game.id, game),
+              disabled: loading
+            }, t('join'))
+          )
+        )
+      )
+    );
+  }
+
+  // New Component: Tic-Tac-Toe Game Window
+  function TicTacToeGame({ t, user, gameId, onLeaveGame }) {
+    const [game, setGame] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      const gameRef = doc(db, 'games', gameId);
+      const unsubscribe = onSnapshot(gameRef, (doc) => {
+        if (doc.exists()) {
+          setGame({ id: doc.id, ...doc.data() });
+        } else {
+          onLeaveGame();
+        }
+        setLoading(false);
+      });
+      return () => unsubscribe();
+    }, [gameId, onLeaveGame]);
+
+    async function makeMove(index) {
+      if (!game || game.status !== 'playing' || game.nextTurn !== user.uid || game.board[index]) {
+        return; // Not your turn, game over, or cell taken
+      }
+      
+      const newBoard = [...game.board];
+      const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
+      newBoard[index] = playerSymbol;
+
+      const winner = checkWinner(newBoard);
+      const newStatus = winner ? 'finished' : 'playing';
+      const nextTurn = game.players.find(p => p !== user.uid);
+
+      try {
+        const gameRef = doc(db, 'games', gameId);
+        await updateDoc(gameRef, {
+          board: newBoard,
+          status: newStatus,
+          nextTurn: newStatus === 'finished' ? null : nextTurn,
+          winner: winner
+        });
+      } catch (err) {
+        console.error("Error making move:", err);
+      }
+    }
+
+    if (loading || !game) {
+      return React.createElement('div', { className: 'card p-6' }, t('loading'));
+    }
+
+    const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
+    const opponentId = game.players.find(p => p !== user.uid);
+    const opponentName = opponentId ? (game.playerNames[opponentId] || 'Player 2') : t('waiting');
+    const isMyTurn = game.nextTurn === user.uid && game.status === 'playing';
+
+    let statusMessage;
+    if (game.status === 'waiting') {
+      statusMessage = t('waitingForOpponent');
+    } else if (game.status === 'playing') {
+      statusMessage = isMyTurn ? t('yourTurn') : t('waitingFor', { name: opponentName });
+    } else if (game.status === 'finished') {
+      if (game.winner === 'T') {
+        statusMessage = t('gameTie');
+      } else if (game.winner === playerSymbol) {
+        statusMessage = t('youWin');
+      } else {
+        statusMessage = t('youLose');
+      }
+    }
+
+    return React.createElement('div', { className: 'card p-6 flex flex-col items-center' },
+      React.createElement('h2', { className: 'text-2xl font-bold mb-4' }, 'Tic-Tac-Toe'),
+      React.createElement('div', { className: 'mb-4 text-lg font-semibold' }, statusMessage),
+      React.createElement('div', { className: 'game-board' },
+        game.board.map((cell, index) =>
+          React.createElement('div', {
+            key: index,
+            className: 'game-cell',
+            onClick: () => makeMove(index),
+            style: { cursor: isMyTurn && !cell ? 'pointer' : 'not-allowed' }
+          }, cell)
+        )
+      ),
+      (game.status === 'finished' || game.status === 'waiting') &&
+        React.createElement('button', {
+          className: 'btn-secondary w-full py-3 rounded-lg font-semibold mt-6',
+          onClick: onLeaveGame
+        }, game.status === 'waiting' ? t('cancelGame') : t('backToLobby'))
+    );
+  }
+
+  // --- END OF NEW GAME CODE ---
   const container = document.getElementById('root');
   createRoot(container).render(React.createElement(App));
 
