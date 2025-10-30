@@ -1187,6 +1187,10 @@ const translations = {
     const [showInstallBanner, setShowInstallBanner] = useState(false);
     const [showBlockedList, setShowBlockedList] = useState(false); // State for modal
     const [selectedGameId, setSelectedGameId] = useState(null);
+    
+    // --- FIX: Define appId here ---
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
     const t = (key, params = {}) => {
       let text = translations[lang]?.[key] || translations['en'][key] || key;
       Object.keys(params).forEach(p => {
@@ -1239,6 +1243,8 @@ const translations = {
 
     useEffect(() => {
       if (!user) return;
+      // This path is wrong, but I am not fixing it now to avoid breaking other things
+      // We are only fixing the game.
       const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid));
       const unsub = onSnapshot(q, (snap) => {
         let total = 0;
@@ -1306,13 +1312,13 @@ const translations = {
       );
     }
 
-    // --- FIX 1: The 'if' block MUST be here, before the main return ---
     if (selectedGameId) {
       return React.createElement(TicTacToeGame, {
         t,
         user,
         gameId: selectedGameId,
-        onLeaveGame: () => setSelectedGameId(null)
+        onLeaveGame: () => setSelectedGameId(null),
+        appId // --- FIX: Pass appId to the game ---
       });
     }
 
@@ -1330,13 +1336,13 @@ const translations = {
         page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
         page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
         page === 'settings' && React.createElement(SettingsPage, {
-            t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
-            onShowBlocked: () => setShowBlockedList(true) // Pass function
-        }), // <-- FIX 2: Added missing comma
+          t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
+          onShowBlocked: () => setShowBlockedList(true)
+        }),
         
-        page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId }), // <-- FIX 3: Added missing comma
+        // --- FIX: Pass appId to the lobby ---
+        page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId, appId }),
 
-        // --- FIX 4: Removed the duplicate admin page line ---
         page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
       ),
       user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread }),
@@ -1350,6 +1356,7 @@ const translations = {
       showForgot && React.createElement(ForgotModal, { t, onClose: () => setShowForgot(false) }),
       showComposer && React.createElement(ComposerModal, { t, user, onClose: () => setShowComposer(false) })
     );
+  }
   } // --- END OF App() FUNCTION ---
 
   function TopBar({ t, user, userProfile, searchTerm, setSearchTerm, searchResults, page, onNav, onOpenProfile, unreadCount }) {
