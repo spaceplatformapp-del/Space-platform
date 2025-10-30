@@ -1232,17 +1232,18 @@
       );
     }
 
+    // --- FIX 1: The 'if' block MUST be here, before the main return ---
+    if (selectedGameId) {
+      return React.createElement(TicTacToeGame, {
+        t,
+        user,
+        gameId: selectedGameId,
+        onLeaveGame: () => setSelectedGameId(null)
+      });
+    }
+
     return React.createElement('div', null,
-                               // --- ADD THIS BLOCK ---
-if (selectedGameId) {
-  return React.createElement(TicTacToeGame, {
-    t,
-    user,
-    gameId: selectedGameId,
-    onLeaveGame: () => setSelectedGameId(null)
-  });
-}
-// --- END OF BLOCK ---
+      // The 'if' block has been removed from here
       showInstallBanner && React.createElement(InstallBanner, {
         t,
         onInstall: handleInstallClick,
@@ -1256,16 +1257,13 @@ if (selectedGameId) {
         page === 'profile' && React.createElement(ProfilePage, { t, uid: selectedProfile, currentUser: user, userProfile: userProfile, onNavToProfile: navToProfile }),
         page === 'messages' && React.createElement(MessagesPage, { t, currentUser: user, onNavToProfile: navToProfile, unreadMap: chatUnreadMap }),
         page === 'settings' && React.createElement(SettingsPage, {
-            t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
-            onShowBlocked: () => setShowBlockedList(true) // Pass function
-        }),
-          // ... (after page === 'settings'...)
+          t, lang, setLang: handleSetLang, theme, setTheme, currentUser: user,
+          onShowBlocked: () => setShowBlockedList(true) // Pass function
+        }), // <-- FIX 2: Added missing comma
+        
+        page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId }), // <-- FIX 3: Added missing comma
 
-// --- ADD THIS LINE ---
-page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId }),
-
-page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
-//...                
+        // --- FIX 4: Removed the duplicate admin page line ---
         page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
       ),
       user && React.createElement(BottomNav, { t, page, setPage: navTo, userProfile, isAdmin, unreadCount: totalUnread }),
@@ -1320,22 +1318,29 @@ page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: 
   }
 
     function BottomNav({ t, page, setPage, userProfile, isAdmin, unreadCount }) {
-    const navItems = ['home', 'friends', 'messages', 'games', 'profile', 'settings']; // <-- ADDED COMMA after 'games'
-    const icons = { home: '🏠', friends: '👥', messages: '💬', games: '🎮', // <-- ADDED COMMA after 'games: '🎮''
-           profile: '👤', settings: '⚙️', admin: '🛡️' };
+    const navItems = ['home', 'friends', 'messages', 'games', 'profile', 'settings'];
+    const icons = { 
+        home: '🏠', 
+        friends: '👥', 
+        messages: '💬', 
+        games: '🎮',
+        profile: '👤', 
+        settings: '⚙️', 
+        admin: '🛡️' 
+    };
 
-    if (isAdmin) navItems.push('admin');
+    if (isAdmin) navItems.push('admin');
 
-    return React.createElement('div', { className: 'bottomnav' },
-      navItems.map(p =>
-        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
-          React.createElement('div', { className: 'nav-icon' }, icons[p]),
-          React.createElement('div', { className: 'nav-label' }, t(p)),
-          p === 'messages' && unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
-        )
-      )
-    );
-  }
+    return React.createElement('div', { className: 'bottomnav' },
+      navItems.map(p =>
+        React.createElement('div', { key: p, className: `nav-item ${page === p ? 'active' : ''}`, onClick: () => setPage(p) },
+          React.createElement('div', { className: 'nav-icon' }, icons[p]),
+          React.createElement('div', { className: 'nav-label' }, t(p)),
+          p === 'messages' && unreadCount > 0 && React.createElement('div', { className: 'notif-badge' }, unreadCount)
+        )
+      )
+    );
+  }
 
 
 
@@ -1959,7 +1964,7 @@ page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: 
                   __html: '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1D9BF0" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 12.5c0-.9-.3-1.7-.8-2.4.3-.8.4-1.6.2-2.4-.2-.8-.7-1.5-1.3-2-.6-.5-1.4-.8-2.2-.9-.3-.7-.8-1.4-1.5-1.9-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7-.5-1.5-.8-2.4-.8s-1.7.3-2.4.8c-.7.5-1.2 1.2-1.5 1.9-.8.1-1.6.4-2.2.9-.6.5-1.1 1.2-1.3 2-.2.8-.1 1.6.2 2.4-.5.7-.8 1.5-.8 2.4s.3 1.7.8 2.4c-.3.8-.4 1.6-.2 2.4.2.8.7 1.5 1.3 2 .6.5 1.4.8 2.2.9.3.7.8 1.4 1.5 1.9.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7.5 1.5.8 2.4.8s-1.7-.3 2.4-.8c.7-.5 1.2-1.2 1.5-1.9.8-.1 1.6-.4-2.2-.9.6-.5 1.1 1.2-1.3 2 .2-.8.1-1.6-.2-2.4.5-.7.8-1.5.8-2.4z"/><path fill="#fff" d="M10.8 14.9l-2.8-2.8 1.2-1.2 1.6 1.6 3.7-4 1.2 1.1z"/></svg>'
                 }
               }),
-              profile.followerCount && React.createElement('span', { className: 'followers-badge' }, profile.followerCount)
+              profile.followerCount && React.createElement('span', { className: 'followers-badge' }, `${profile.followerCount} followers`)
             ),
             profile.status && React.createElement('div', { style: { marginTop:12, padding:12, background:'var(--hover)', borderRadius:8, fontStyle:'italic' }}, profile.status)
           )
