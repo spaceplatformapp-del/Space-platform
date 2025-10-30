@@ -1189,7 +1189,7 @@ const translations = {
   const [selectedGameId, setSelectedGameId] = useState(null);
   
   // --- THIS IS THE FIX ---
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+  const appId = localStorage.getItem('space-app-id') || (() => { const newId = crypto.randomUUID(); localStorage.setItem('space-app-id', newId); return newId; })();
 
   const t = (key, params = {}) => {
     let text = translations[lang]?.[key] || translations['en'][key] || key;
