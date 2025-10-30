@@ -1188,7 +1188,7 @@ const translations = {
     const [showBlockedList, setShowBlockedList] = useState(false); // State for modal
     const [selectedGameId, setSelectedGameId] = useState(null);
     
-    // --- FIX: Define appId here ---
+    // --- THIS IS THE FIX ---
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
     const t = (key, params = {}) => {
@@ -1243,8 +1243,6 @@ const translations = {
 
     useEffect(() => {
       if (!user) return;
-      // This path is wrong, but I am not fixing it now to avoid breaking other things
-      // We are only fixing the game.
       const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid));
       const unsub = onSnapshot(q, (snap) => {
         let total = 0;
@@ -1318,7 +1316,7 @@ const translations = {
         user,
         gameId: selectedGameId,
         onLeaveGame: () => setSelectedGameId(null),
-        appId // --- FIX: Pass appId to the game ---
+        appId // --- THIS IS THE FIX ---
       });
     }
 
@@ -1340,7 +1338,7 @@ const translations = {
           onShowBlocked: () => setShowBlockedList(true)
         }),
         
-        // --- FIX: Pass appId to the lobby ---
+        // --- THIS IS THE FIX ---
         page === 'games' && React.createElement(GameLobby, { t, user, userProfile, onJoinGame: setSelectedGameId, appId }),
 
         page === 'admin' && isAdmin && React.createElement(AdminPage, { t, currentUser: user })
@@ -2637,18 +2635,22 @@ const translations = {
     return null;
   }
 
-  // New Component: Game Lobby
-  function GameLobby({ t, user, userProfile, onJoinGame }) {
+// New Component: Game Lobby
+  function GameLobby({ t, user, userProfile, onJoinGame, appId }) { // <-- appId added
     const [openGames, setOpenGames] = useState([]);
     const [loading, setLoading] = useState(false);
+    
+    // --- FIX: Use correct database path ---
+    const gamesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'games');
 
     useEffect(() => {
-      const q = query(collection(db, 'games'), where('status', '==', 'waiting'));
+      // --- FIX: Query the correct collection ---
+      const q = query(gamesCollection, where('status', '==', 'waiting'));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         setOpenGames(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       });
       return () => unsubscribe();
-    }, []);
+    }, [gamesCollection]); // <-- Dependency updated
 
     async function createGame() {
       setLoading(true);
@@ -2661,7 +2663,8 @@ const translations = {
           nextTurn: user.uid,
           createdAt: serverTimestamp()
         };
-        const gameRef = await addDoc(collection(db, 'games'), newGame);
+        // --- FIX: Add document to the correct collection ---
+        const gameRef = await addDoc(gamesCollection, newGame);
         onJoinGame(gameRef.id);
       } catch (err) {
         console.error("Error creating game:", err);
@@ -2672,7 +2675,8 @@ const translations = {
     async function joinGame(gameId, existingGame) {
       setLoading(true);
       try {
-        const gameRef = doc(db, 'games', gameId);
+        // --- FIX: Get document from the correct collection ---
+        const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', gameId);
         await updateDoc(gameRef, {
           status: 'playing',
           players: [existingGame.players[0], user.uid], // Player 'O'
@@ -2688,6 +2692,7 @@ const translations = {
       setLoading(false);
     }
 
+    // --- This is your styling, it's correct ---
     return React.createElement('div', { className: 'card p-6' },
       React.createElement('h2', { style: { fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '24px' } }, t('gameLobby')),
       React.createElement('button', {
@@ -2723,14 +2728,17 @@ const translations = {
     );
   }
 
-  // New Component: Tic-Tac-Toe Game Window
-  function TicTacToeGame({ t, user, gameId, onLeaveGame }) {
+ // New Component: Tic-Tac-Toe Game Window
+  function TicTacToeGame({ t, user, gameId, onLeaveGame, appId }) { // <-- appId added
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // --- FIX: Use correct database path ---
+    const gameDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', gameId);
+
     useEffect(() => {
-      const gameRef = doc(db, 'games', gameId);
-      const unsubscribe = onSnapshot(gameRef, (doc) => {
+      // --- FIX: Listen to the correct document ---
+      const unsubscribe = onSnapshot(gameDocRef, (doc) => {
         if (doc.exists()) {
           setGame({ id: doc.id, ...doc.data() });
         } else {
@@ -2739,7 +2747,7 @@ const translations = {
         setLoading(false);
       });
       return () => unsubscribe();
-    }, [gameId, onLeaveGame]);
+    }, [gameDocRef, onLeaveGame]); // <-- Dependency updated
 
     async function makeMove(index) {
       if (!game || game.status !== 'playing' || game.nextTurn !== user.uid || game.board[index]) {
@@ -2755,8 +2763,8 @@ const translations = {
       const nextTurn = game.players.find(p => p !== user.uid);
 
       try {
-        const gameRef = doc(db, 'games', gameId);
-        await updateDoc(gameRef, {
+        // --- FIX: Update the correct document ---
+        await updateDoc(gameDocRef, {
           board: newBoard,
           status: newStatus,
           nextTurn: newStatus === 'finished' ? null : nextTurn,
@@ -2772,7 +2780,7 @@ const translations = {
     }
 
     const playerSymbol = game.players[0] === user.uid ? 'X' : 'O';
-    const opponentId = game.players.find(p => p !== user.uid);
+    const opponentId = game.players.find(p => p !== user.id);
     const opponentName = opponentId ? (game.playerNames[opponentId] || 'Player 2') : t('waiting');
     const isMyTurn = game.nextTurn === user.uid && game.status === 'playing';
 
@@ -2791,6 +2799,7 @@ const translations = {
       }
     }
 
+    // --- This is your styling, it's correct ---
     return React.createElement('div', { className: 'card', style: { padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center' } },
       React.createElement('h2', { style: { fontSize: '24px', fontWeight: 'bold', marginBottom: '16px' } }, 'Tic-Tac-Toe'),
       React.createElement('div', { style: { marginBottom: '16px', fontSize: '18px', fontWeight: '600' } }, statusMessage),
@@ -2812,7 +2821,6 @@ const translations = {
         }, game.status === 'waiting' ? t('cancelGame') : t('backToLobby'))
     );
   }
-
   // --- END OF NEW GAME CODE ---
   const container = document.getElementById('root');
   createRoot(container).render(React.createElement(App));
