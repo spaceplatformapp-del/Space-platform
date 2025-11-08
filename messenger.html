@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Space Messenger</title>
+  
+  <!-- This app will connect to your existing Space database -->
+  <script>
+    window.SPACE_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyCa4goO5GkfV3P2xlxCGcBpbsbKf43zCrE",
+        authDomain: "space-platform-app.firebaseapp.com",
+        projectId: "space-platform-app",
+        storageBucket: "space-platform-app.firebasestorage.app",
+        messagingSenderId: "43015155483",
+        appId: "43015155483:web:5a14764017a03001f3edbe"
+      },
+      cloudinary: {
+        cloudName: "drfvrs2yi",
+        uploadPreset: "Spaceuploads"
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --text: #050505;
+      --muted: #65676b;
+      --primary: #1b74e4; /* Blue */
+      --hover: #f2f3f5;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .dark {
+      --bg: #18191a;
+      --card: #242526;
+      --text: #e4e6eb;
+      --muted: #b0b3b8;
+      --primary: #2d88ff;
+      --hover: #3a3b3c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+    }
+    
+    /* Full-height app layout */
+    html, body, #root {
+      height: 100%;
+      width: 100%;
+      overflow: hidden; /* Prevents bouncing on mobile */
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app-container {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .page {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Splash Screen */
+    .splash {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      flex-direction: column;
+    }
+    .splash .logo {
+      font-size: 72px;
+      font-weight: 900;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .splash .title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 12px;
+      color: var(--text);
+    }
+    .splash .small {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* Login Page */
+    .login-page {
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .login-title {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .login-input {
+      padding: 14px;
+      border: 1px solid #ccd0d5;
+      border-radius: 8px;
+      width: 100%;
+      background: var(--hover);
+      color: var(--text);
+      font-size: 16px;
+    }
+    .login-btn {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .login-error {
+      color: #fa3e3e;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Shared Elements */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .avatar-lg {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid var(--primary);
+    }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      font-size: 20px;
+      border: none;
+      color: var(--text);
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      gap: 12px;
+      background: var(--card);
+      border-bottom: 1px solid var(--hover);
+      flex-shrink: 0;
+    }
+    .top-bar-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-right: auto;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #fa3e3e;
+      color: #fff;
+      border-radius: 50%;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      border: 2px solid var(--card);
+    }
+
+    /* Lobby Page */
+    .friend-list-container {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      background: var(--card);
+      border-bottom: 1px solid var(--hover);
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      /* Hide scrollbar */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+    .friend-list-container::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
+    .friend-list-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 60px;
+      cursor: pointer;
+    }
+    .friend-list-item span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+    }
+    .search-bar {
+      padding: 8px 16px;
+      background: var(--card);
+      flex-shrink: 0;
+    }
+    .search-input {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 20px;
+      background: var(--hover);
+      border: none;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .chat-list {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+    .chat-list-item {
+      display: flex;
+      padding: 12px 16px;
+      gap: 12px;
+      align-items: center;
+      cursor: pointer;
+    }
+    .chat-list-item:hover {
+      background: var(--hover);
+    }
+    .chat-list-details {
+      flex-grow: 1;
+      overflow: hidden;
+    }
+    .chat-list-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .chat-list-preview {
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chat-list-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 12px;
+      color: var(--muted);
+      flex-shrink: 0;
+      gap: 4px;
+    }
+    .unread-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--primary);
+      border-radius: 50%;
+      margin-top: 4px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Chat Window Page */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      gap: 10px;
+      background: var(--card);
+      border-bottom: 1px solid var(--hover);
+      flex-shrink: 0;
+    }
+    .chat-header-title {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .message-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column-reverse; /* Shows latest messages at the bottom */
+      background: var(--bg);
+    }
+    .message-bubble-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .message-bubble-row.sent {
+      justify-content: flex-end;
+    }
+    .message-bubble-row.received {
+      justify-content: flex-start;
+    }
+    .message-bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 75%;
+      font-size: 15px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .message-bubble.sent {
+      background: var(--primary);
+      color: white;
+    }
+    .message-bubble.received {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--hover);
+    }
+    .message-bubble img {
+      max-width: 200px;
+      border-radius: 12px;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    .chat-input-container {
+      flex-shrink: 0;
+      display: flex;
+      padding: 8px 12px;
+      gap: 8px;
+      align-items: center;
+      background: var(--card);
+      border-top: 1px solid var(--hover);
+    }
+    .chat-input {
+      flex-grow: 1;
+      border: none;
+      background: var(--hover);
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .chat-input:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <!-- Splash Screen -->
+    <div class="splash">
+      <div class="logo">S</div>
+      <div class="title">Space Messenger</div>
+      <div class="small">Loading...</div>
+    </div>
+  </div>
+
+  <!-- React and Firebase Libraries -->
+  <script type="module">
+    import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
+    import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { 
+      getFirestore, collection, doc, setDoc, getDoc, addDoc, query, 
+      where, getDocs, orderBy, onSnapshot, updateDoc, deleteDoc, 
+      serverTimestamp, arrayUnion, arrayRemove, increment, limit 
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    // --- Config ---
+    const CONFIG = window.SPACE_CONFIG || {};
+    const app = initializeApp(CONFIG.firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const CLOUDINARY_CLOUD = CONFIG.cloudinary?.cloudName || "";
+    const CLOUDINARY_UPLOAD_PRESET = CONFIG.cloudinary?.uploadPreset || "";
+
+    // --- Translations (Simplified for Messenger) ---
+    const translations = {
+      en: {
+        loading: 'Loading...',
+        logIn: 'Log In',
+        password: 'Password',
+        chats: 'Chats',
+        search: 'Search',
+        typeMessage: 'Type a message...',
+        send: 'Send',
+        noFriends: 'No friends yet',
+        noMessages: 'No messages. Start a conversation!',
+        seen: 'Seen'
+      }
+    };
+
+    // --- Firebase Helper Functions (Copied from Space App) ---
+    async function getUserProfile(uid) {
+      if (!uid) return null;
+      const d = await getDoc(doc(db, 'users', uid));
+      return d.exists() ? { id: d.id, ...d.data() } : null;
+    }
+
+    async function getFriends(uid) {
+      const q1 = query(collection(db, 'friends'), where('status', '==', 'accepted'), where('requester', '==', uid));
+      const q2 = query(collection(db, 'friends'), where('status', '==', 'accepted'), where('target', '==', uid));
+      const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+      const friendsData = [
+        ...snap1.docs.map(d => d.data()),
+        ...snap2.docs.map(d => d.data())
+      ];
+      const friendIds = friendsData.map(f => f.requester === uid ? f.target : f.requester);
+      
+      // Get profiles for these friends
+      const friendProfiles = await Promise.all(friendIds.map(id => getUserProfile(id)));
+      return friendProfiles.filter(Boolean); // Filter out any null profiles
+    }
+
+    const getChatId = (uid1, uid2) => [uid1, uid2].sort().join('_');
+
+    async function uploadToCloudinary(file) {
+      if (!CLOUDINARY_CLOUD || !CLOUDINARY_UPLOAD_PRESET) throw new Error('Cloudinary not configured');
+      const typeSegment = file.type.startsWith('video') ? 'video' : 'image';
+      const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${typeSegment}/upload`;
+      const form = new FormData();
+      form.append('file', file);
+      form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      const res = await fetch(url, { method: 'POST', body: form });
+      return res.json();
+    }
+    
+    async function sendMessage(chatId, from, to, { text, media }) {
+      if (!text && !media) return;
+
+      const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
+      const targetUnreadKey = `unreadCount_${to}`;
+      const fromUnreadKey = `unreadCount_${from}`;
+
+      const chatRef = doc(db, 'chats', chatId);
+      const chatSnap = await getDoc(chatRef);
+
+      if (!chatSnap.exists()) {
+        await setDoc(chatRef, {
+          participants: chatId.split('_'),
+          lastMessage: lastMessage,
+          updatedAt: serverTimestamp(),
+          [targetUnreadKey]: 1,
+          [fromUnreadKey]: 0,
+          [`seenBy_${from}`]: true, // You've seen it
+          [`seenBy_${to}`]: false   // They haven't
+        });
+      } else {
+        await updateDoc(chatRef, {
+          lastMessage: lastMessage,
+          updatedAt: serverTimestamp(),
+          [targetUnreadKey]: increment(1),
+          [`seenBy_${from}`]: true,
+          [`seenBy_${to}`]: false
+        });
+      }
+
+      await addDoc(collection(db, `chats/${chatId}/messages`), {
+        from,
+        text: text || null,
+        media: media || null,
+        createdAt: serverTimestamp()
+      });
+    }
+
+    async function clearUnreadCount(chatId, uid) {
+      try {
+        const chatRef = doc(db, 'chats', chatId);
+        const chatSnap = await getDoc(chatRef);
+        if (chatSnap.exists()) {
+          const key = `unreadCount_${uid}`;
+          const seenKey = `seenBy_${uid}`;
+          await updateDoc(chatRef, { [key]: 0, [seenKey]: true });
+        }
+      } catch (err) { console.error('Clear unread failed:', err); }
+    }
+
+    function subscribeMessages(chatId, cb) {
+      const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc'), limit(50));
+      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() }))));
+    }
+    
+    function subscribeChatList(uid, cb) {
+      const q = query(collection(db, 'chats'), where('participants', 'array-contains', uid), orderBy('updatedAt', 'desc'));
+      return onSnapshot(q, snap => {
+        cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      });
+    }
+
+    function fmtDate(ts) {
+      if (!ts) return '';
+      try {
+        const date = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
+        const now = new Date();
+        const diff = Math.floor((now - date) / 1000);
+        
+        if (diff < 60) return 'Just now';
+        if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+        if (diff < 604800) return date.toLocaleDateString(undefined, { weekday: 'short' });
+        
+        return date.toLocaleDateString();
+      } catch { return ''; }
+    }
+
+    // --- Main App Component ---
+    function App() {
+      const [user, setUser] = useState(null);
+      const [userProfile, setUserProfile] = useState(null);
+      const [page, setPage] = useState('loading'); // 'loading', 'login', 'lobby', 'chatWindow'
+      const [selectedChatTarget, setSelectedChatTarget] = useState(null); // The user object of the friend you're chatting with
+      const [friends, setFriends] = useState([]);
+      const [chatList, setChatList] = useState([]);
+      const [unreadCount, setUnreadCount] = useState(0);
+      
+      // Use 'en' for now
+      const t = (key) => translations['en'][key] || key;
+      
+      // Handle Auth and initial data loading
+      useEffect(() => {
+        const splash = document.getElementById('splash');
+        
+        const unsubAuth = onAuthStateChanged(auth, async (u) => {
+          if (u) {
+            setUser(u);
+            const prof = await getUserProfile(u.uid);
+            setUserProfile(prof);
+            
+            const friendProfiles = await getFriends(u.uid);
+            setFriends(friendProfiles);
+            
+            setPage('lobby');
+          } else {
+            setUser(null);
+            setUserProfile(null);
+            setPage('login');
+          }
+          
+          // Hide splash screen
+          setTimeout(() => {
+            if (splash) splash.style.display = 'none';
+          }, 500);
+        });
+        
+        return () => unsubAuth();
+      }, []);
+      
+      // Subscribe to chat list and unread count
+      useEffect(() => {
+        if (!user) return;
+        
+        const unsubChatList = subscribeChatList(user.uid, (chats) => {
+          setChatList(chats);
+          
+          // Calculate total unread count
+          let total = 0;
+          const unreadKey = `unreadCount_${user.uid}`;
+          chats.forEach(chat => {
+            total += (chat[unreadKey] || 0);
+          });
+          setUnreadCount(total);
+        });
+        
+        return () => unsubChatList();
+      }, [user]);
+      
+      // Handlers
+      const handleSelectChat = (friend) => {
+        setSelectedChatTarget(friend);
+        setPage('chatWindow');
+      };
+      
+      const handleBackToLobby = () => {
+        setSelectedChatTarget(null);
+        setPage('lobby');
+      };
+
+      // --- Render Logic ---
+      if (page === 'loading') {
+        return null; // Splash screen is showing
+      }
+      
+      if (!user || page === 'login') {
+        return React.createElement(LoginPage, { t });
+      }
+      
+      return React.createElement('div', { className: 'app-container' },
+        page === 'lobby' && React.createElement(LobbyPage, {
+          t,
+          user,
+          friends,
+          chatList,
+          unreadCount,
+          onSelectChat: handleSelectChat
+        }),
+        page === 'chatWindow' && React.createElement(ChatWindowPage, {
+          t,
+          user,
+          targetUser: selectedChatTarget,
+          onBack: handleBackToLobby
+        })
+      );
+    }
+    
+    // --- Login Page Component ---
+    function LoginPage({ t }) {
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+      const [error, setError] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const handleLogin = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          // onAuthStateChanged in App will handle navigation
+        } catch (err) {
+          setError(err.message.replace('Firebase: ', ''));
+        }
+        setLoading(false);
+      };
+
+      return React.createElement('div', { className: 'page login-page' },
+        React.createElement('div', { className: 'login-form' },
+          React.createElement('div', { className: 'login-title' }, 'Space Messenger'),
+          React.createElement('input', {
+            className: 'login-input',
+            type: 'email',
+            placeholder: 'Email',
+            value: email,
+            onInput: (e) => setEmail(e.target.value)
+          }),
+          React.createElement('input', {
+            className: 'login-input',
+            type: 'password',
+            placeholder: t('password'),
+            value: password,
+            onInput: (e) => setPassword(e.target.value)
+          }),
+          error && React.createElement('div', { className: 'login-error' }, error),
+          React.createElement('button', {
+            className: 'login-btn',
+            onClick: handleLogin,
+            disabled: loading
+          }, loading ? t('loading') : t('logIn'))
+        )
+      );
+    }
+    
+    // --- Lobby Page Component (Main Chat List) ---
+    function LobbyPage({ t, user, friends, chatList, unreadCount, onSelectChat }) {
+      const [profiles, setProfiles] = useState({});
+      
+      // Get profiles for chat list
+      useEffect(() => {
+        const getChatProfiles = async () => {
+          const newProfiles = {...profiles};
+          let profileChanged = false;
+          
+          for (const chat of chatList) {
+            const friendId = chat.participants.find(p => p !== user.uid);
+            if (friendId && !newProfiles[friendId]) {
+              newProfiles[friendId] = await getUserProfile(friendId);
+              profileChanged = true;
+            }
+          }
+          if (profileChanged) {
+            setProfiles(newProfiles);
+          }
+        };
+        getChatProfiles();
+      }, [chatList, user.uid]);
+
+      return React.createElement('div', { className: 'page' },
+        // Top Bar
+        React.createElement('div', { className: 'top-bar' },
+          React.createElement('div', { className: 'top-bar-title' }, t('chats')),
+          React.createElement('button', { className: 'icon-btn' },
+            '🔔',
+            unreadCount > 0 && React.createElement('div', { className: 'notification-badge' }, unreadCount)
+          )
+        ),
+        
+        // Horizontal Friend List
+        friends.length > 0 && React.createElement('div', { className: 'friend-list-container' },
+          friends.map(friend => 
+            React.createElement('div', { 
+              className: 'friend-list-item', 
+              key: friend.id, 
+              onClick: () => onSelectChat(friend) 
+            },
+              React.createElement('img', { 
+                src: friend.avatarUrl || 'https://placehold.co/56x56/eeeeee/aaaaaa?text=S', 
+                className: 'avatar-lg' 
+              }),
+              React.createElement('span', null, friend.displayName)
+            )
+          )
+        ),
+        
+        // Search Bar
+        React.createElement('div', { className: 'search-bar' },
+          React.createElement('input', { className: 'search-input', placeholder: t('search') })
+        ),
+        
+        // Main Chat List
+        React.createElement('div', { className: 'chat-list' },
+          chatList.length === 0 && React.createElement('div', { className: 'empty-state' },
+            React.createElement('div', { className: 'empty-icon' }, '💬'),
+            React.createElement('div', null, t('noMessages'))
+          ),
+          chatList.map(chat => {
+            const friendId = chat.participants.find(p => p !== user.uid);
+            const friendProfile = profiles[friendId];
+            if (!friendProfile) return null; // Still loading profile
+            
+            const unreadKey = `unreadCount_${user.uid}`;
+            const hasUnread = (chat[unreadKey] || 0) > 0;
+            
+            return React.createElement('div', { 
+              className: 'chat-list-item', 
+              key: chat.id, 
+              onClick: () => onSelectChat(friendProfile) 
+            },
+              React.createElement('img', { 
+                src: friendProfile.avatarUrl || 'https://placehold.co/40x40/eeeeee/aaaaaa?text=S', 
+                className: 'avatar' 
+              }),
+              React.createElement('div', { className: 'chat-list-details' },
+                React.createElement('div', { className: 'chat-list-name' }, friendProfile.displayName),
+                React.createElement('div', { className: 'chat-list-preview', style: { fontWeight: hasUnread ? 'bold' : 'normal' } }, 
+                  chat.lastMessage
+                )
+              ),
+              React.createElement('div', { className: 'chat-list-meta' },
+                React.createElement('span', null, fmtDate(chat.updatedAt)),
+                hasUnread && React.createElement('div', { className: 'unread-dot' })
+              )
+            );
+          })
+        )
+      );
+    }
+    
+    // --- Chat Window Page Component ---
+    function ChatWindowPage({ t, user, targetUser, onBack }) {
+      const [messages, setMessages] = useState([]);
+      const [newMessage, setNewMessage] = useState('');
+      const [isUploading, setIsUploading] = useState(false);
+      const chatId = getChatId(user.uid, targetUser.id);
+      const fileInputRef = useRef(null);
+      
+      // Subscribe to messages
+      useEffect(() => {
+        if (!chatId) return;
+        
+        // Clear unread count when opening window
+        clearUnreadCount(chatId, user.uid);
+        
+        const unsub = subscribeMessages(chatId, (newMessages) => {
+          setMessages(newMessages);
+          // Mark as seen
+          clearUnreadCount(chatId, user.uid);
+        });
+        
+        return () => unsub();
+      }, [chatId, user.uid]);
+
+      const handleSend = async (e) => {
+        e.preventDefault();
+        if (!newMessage.trim()) return;
+        
+        const msg = newMessage;
+        setNewMessage('');
+        
+        try {
+          await sendMessage(chatId, user.uid, targetUser.id, { text: msg, media: null });
+        } catch (err) {
+          console.error(err);
+          setNewMessage(msg); // Put it back if send fails
+        }
+      };
+      
+      const handleMediaUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        
+        setIsUploading(true);
+        try {
+          const res = await uploadToCloudinary(file);
+          await sendMessage(chatId, user.uid, targetUser.id, {
+            text: null,
+            media: { url: res.secure_url, type: res.resource_type }
+          });
+        } catch (err) {
+          console.error('Media upload failed:', err);
+          alert('❌ Image send failed.');
+        } finally {
+          setIsUploading(false);
+          if (e.target) e.target.value = null; // Reset file input
+        }
+      };
+
+      return React.createElement('div', { className: 'page chat-window' },
+        // Hidden file input
+        React.createElement('input', {
+          type: 'file',
+          ref: fileInputRef,
+          style: { display: 'none' },
+          accept: 'image/*',
+          onChange: handleMediaUpload
+        }),
+        
+        // Chat Header
+        React.createElement('div', { className: 'chat-header' },
+          React.createElement('button', { className: 'icon-btn', onClick: onBack }, '⬅️'),
+          React.createElement('img', { 
+            src: targetUser.avatarUrl || 'https://placehold.co/40x40/eeeeee/aaaaaa?text=S', 
+            className: 'avatar' 
+          }),
+          React.createElement('div', { className: 'chat-header-title' }, targetUser.displayName)
+        ),
+        
+        // Message List
+        React.createElement('div', { className: 'message-list' },
+          messages.map(msg => {
+            const isSent = msg.from === user.uid;
+            return React.createElement('div', { 
+              className: `message-bubble-row ${isSent ? 'sent' : 'received'}`, 
+              key: msg.id 
+            },
+              React.createElement('div', { className: `message-bubble ${isSent ? 'sent' : 'received'}` },
+                msg.text,
+                msg.media && React.createElement('img', { 
+                  src: msg.media.url, 
+                  onClick: () => window.open(msg.media.url, '_blank') 
+                })
+              )
+            );
+          })
+        ),
+        
+        // Chat Input
+        React.createElement('form', { className: 'chat-input-container', onSubmit: handleSend },
+          React.createElement('button', { 
+            className: 'icon-btn', 
+            type: 'button', 
+            onClick: () => fileInputRef.current.click(),
+            disabled: isUploading
+          }, isUploading ? '⏳' : '📷'),
+          React.createElement('input', {
+            className: 'chat-input',
+            placeholder: t('typeMessage'),
+            value: newMessage,
+            onInput: (e) => setNewMessage(e.target.value),
+            disabled: isUploading
+          }),
+          React.createElement('button', { className: 'icon-btn', type: 'submit', style: { background: 'transparent', color: 'var(--primary)', fontWeight: 'bold' } }, '➤')
+        )
+      );
+    }
+    
+    // --- Mount App ---
+    const container = document.getElementById('root');
+    createRoot(container).render(React.createElement(App));
+    
+  </script>
+</body>
+</html>
