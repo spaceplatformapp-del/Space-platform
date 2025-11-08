@@ -76,7 +76,6 @@
       background: var(--bg);
     }
     
-    /* --- NEW: Diagnostic Box --- */
     #space-diagnostics{
       position:fixed;
       left:8px;
@@ -92,7 +91,6 @@
       color: #664d03;
     }
     
-    /* Splash Screen */
     .splash {
       position: fixed;
       inset: 0;
@@ -122,7 +120,6 @@
       margin-top: 8px;
     }
 
-    /* Login Page */
     .login-page {
       justify-content: center;
       align-items: center;
@@ -175,7 +172,6 @@
       text-align: center;
     }
 
-    /* Shared Elements */
     .avatar {
       width: 40px;
       height: 40px;
@@ -237,7 +233,6 @@
       border: 2px solid var(--card);
     }
 
-    /* Story Row */
     .story-row-container {
       flex-shrink: 0;
       padding: 12px 16px;
@@ -299,7 +294,6 @@
       border: 2px dashed var(--primary);
     }
 
-    /* Lobby Page */
     .friend-list-container {
       flex-shrink: 0;
       padding: 12px 16px;
@@ -403,7 +397,6 @@
       opacity: 0.5;
     }
 
-    /* Chat Window Page */
     .chat-window {
       background-size: cover;
       background-position: center;
@@ -457,8 +450,7 @@
       overflow-y: auto;
       padding: 12px;
       display: flex;
-      flex-direction: column-reverse; /* Shows latest messages at the bottom */
-      /* Background is set by inline style */
+      flex-direction: column-reverse;
     }
     .message-bubble-row {
       display: flex;
@@ -515,7 +507,6 @@
       outline: none;
     }
     
-    /* Settings Modal */
     .modal {
       position: fixed;
       inset: 0;
@@ -550,7 +541,6 @@
       font-size: 16px;
       color: var(--text);
     }
-    /* Toggle Switch */
     .toggle-switch {
       position: relative;
       display: inline-block;
@@ -590,17 +580,101 @@
     input:checked + .slider:before {
       transform: translateX(22px);
     }
+    
+    /* --- NEW: Story Viewer Modal --- */
+    .story-viewer-modal {
+      background: #111;
+      padding: 0;
+    }
+    .story-viewer-content {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      padding: 0;
+      background: #111;
+      border-radius: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .story-viewer-header {
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+    }
+    .story-viewer-header .avatar {
+      width: 32px;
+      height: 32px;
+    }
+    .story-viewer-header .name {
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .story-viewer-header .close {
+      margin-left: auto;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .story-viewer-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .story-nav {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      cursor: pointer;
+      z-index: 5;
+    }
+    .story-nav.prev {
+      left: 0;
+    }
+    .story-nav.next {
+      right: 0;
+    }
+    .story-progress {
+      position: absolute;
+      top: 5px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      gap: 4px;
+      z-index: 9;
+    }
+    .story-progress-bar {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .story-progress-fill {
+      height: 100%;
+      width: 0;
+      background: white;
+    }
+    
   </style>
 </head>
 <body>
-  <!-- --- NEW: Diagnostic Box --- -->
   <div id="space-diagnostics">
     <b>⚠️ Space Messenger Diagnostic</b>
     <div id="space-diagnostics-msg" style="margin-top:8px;font-size:13px"></div>
     <button id="space-diagnostics-clear" style="margin-top:8px;padding:6px 12px;border:none;background:#1b74e4;color:white;border-radius:6px;cursor:pointer">Hide</button>
   </div>
   
-  <!-- --- NEW: Diagnostic JS --- -->
   <script>
     (function(){
       const box = document.getElementById('space-diagnostics');
@@ -620,7 +694,6 @@
   </script>
 
   <div id="root">
-    <!-- Splash Screen -->
     <div class="splash">
       <div class="logo">S</div>
       <div class="title">Space Messenger</div>
@@ -628,12 +701,10 @@
     </div>
   </div>
 
-  <!-- React and Firebase Libraries -->
   <script type="module">
     import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
     import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    // --- NEW: Added signOut ---
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
     import { 
       getFirestore, collection, doc, setDoc, getDoc, addDoc, query, 
@@ -649,7 +720,7 @@
     const CLOUDINARY_CLOUD = CONFIG.cloudinary?.cloudName || "";
     const CLOUDINARY_UPLOAD_PRESET = CONFIG.cloudinary?.uploadPreset || "";
 
-    // --- Translations (Expanded for new features) ---
+    // --- Translations ---
     const translations = {
       en: {
         loading: 'Loading...',
@@ -673,15 +744,20 @@
         blockUserConfirm: 'Are you sure you want to block this user? They will be unfriended and you will no longer be able to message each other.',
         cancel: 'Cancel',
         block: 'Block',
-        logout: 'Logout' // --- NEW: Logout translation ---
+        logout: 'Logout'
       }
     };
 
     // --- Firebase Helper Functions ---
     async function getUserProfile(uid) {
       if (!uid) return null;
+      if (!window.userProfileCache) window.userProfileCache = {};
+      if (window.userProfileCache[uid]) return window.userProfileCache[uid];
+      
       const d = await getDoc(doc(db, 'users', uid));
-      return d.exists() ? { id: d.id, ...d.data() } : null;
+      const profile = d.exists() ? { id: d.id, ...d.data() } : null;
+      if (profile) window.userProfileCache[uid] = profile;
+      return profile;
     }
 
     async function getFriends(uid) {
@@ -825,7 +901,7 @@
 
     function subscribeMessages(chatId, cb) {
       const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc'), limit(50));
-      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })).reverse())); // .reverse() to show old -> new
+      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })).reverse()));
     }
     
     function subscribeChatList(uid, cb) {
@@ -864,15 +940,16 @@
     function App() {
       const [user, setUser] = useState(null);
       const [userProfile, setUserProfile] = useState(null);
-      const [page, setPage] = useState('loading'); // 'loading', 'login', 'lobby', 'chatWindow'
+      const [page, setPage] = useState('loading');
       const [selectedChatTarget, setSelectedChatTarget] = useState(null);
       const [friends, setFriends] = useState([]);
       const [chatList, setChatList] = useState([]);
       const [unreadCount, setUnreadCount] = useState(0);
       const [stories, setStories] = useState({});
-      
       const [showSettings, setShowSettings] = useState(false);
       const [theme, setTheme] = useState(localStorage.getItem('messenger-theme') || 'light');
+      
+      const [viewingStories, setViewingStories] = useState(null); // { user, stories }
       
       const storyInputRef = useRef(null);
       const [isUploadingStory, setIsUploadingStory] = useState(false);
@@ -907,7 +984,6 @@
           
           setTimeout(() => {
             if (splash) splash.style.display = 'none';
-            // --- NEW: Signal app load ---
             if (window.SPACE_APP_OK) window.SPACE_APP_OK();
           }, 500);
         });
@@ -978,7 +1054,7 @@
           type: 'file',
           ref: storyInputRef,
           style: { display: 'none' },
-          accept: 'image/*',
+          accept: 'image/*,video/*',
           onChange: handleStoryUpload
         }),
         
@@ -987,7 +1063,13 @@
           onClose: () => setShowSettings(false),
           theme,
           setTheme,
-          auth // --- NEW: Pass auth for logout ---
+          auth
+        }),
+        
+        viewingStories && React.createElement(StoryViewer, {
+          user: viewingStories.user,
+          stories: viewingStories.stories,
+          onClose: () => setViewingStories(null)
         }),
       
         page === 'lobby' && React.createElement(LobbyPage, {
@@ -999,7 +1081,8 @@
           unreadCount,
           onSelectChat: handleSelectChat,
           onShowSettings: () => setShowSettings(true),
-          onAddStory: () => storyInputRef.current.click()
+          onAddStory: () => storyInputRef.current.click(),
+          onViewStory: (user, stories) => setViewingStories({ user, stories })
         }),
         page === 'chatWindow' && React.createElement(ChatWindowPage, {
           t,
@@ -1056,13 +1139,13 @@
       );
     }
     
-    // --- NEW: Settings Modal Component ---
+    // --- Settings Modal Component ---
     function SettingsModal({ t, onClose, theme, setTheme, auth }) {
       
       const handleLogout = async () => {
-        if (confirm('Are you sure you want to logout?')) {
+        // Use a simple confirm dialog
+        if (window.confirm('Are you sure you want to logout?')) {
           await signOut(auth);
-          // onAuthStateChanged in App will handle navigation to login
           onClose();
         }
       };
@@ -1081,7 +1164,6 @@
               React.createElement('span', { className: 'slider' })
             )
           ),
-          // --- NEW: Logout Button ---
           React.createElement('button', {
             className: 'login-btn',
             style: { width: '100%', marginTop: '16px', background: '#fa3e3e' },
@@ -1092,11 +1174,11 @@
     }
     
     // --- Lobby Page Component (Main Chat List) ---
-    function LobbyPage({ t, user, friends, chatList, stories, unreadCount, onSelectChat, onShowSettings, onAddStory }) {
+    function LobbyPage({ t, user, friends, chatList, stories, unreadCount, onSelectChat, onShowSettings, onAddStory, onViewStory }) {
       const [profiles, setProfiles] = useState({});
       const [storyProfiles, setStoryProfiles] = useState({});
+      const [searchTerm, setSearchTerm] = useState('');
       
-      // Get profiles for chat list
       useEffect(() => {
         const getChatProfiles = async () => {
           const newProfiles = {...profiles};
@@ -1114,9 +1196,8 @@
           }
         };
         getChatProfiles();
-      }, [chatList, user.uid, profiles]); // Added profiles to dependency
+      }, [chatList, user.uid, profiles]);
       
-      // --- NEW: Get profiles for stories ---
       useEffect(() => {
         const getStoryProfiles = async () => {
           const newProfiles = {...storyProfiles};
@@ -1134,20 +1215,26 @@
           }
         };
         getStoryProfiles();
-      }, [stories, storyProfiles]); // Added storyProfiles to dependency
+      }, [stories, storyProfiles]);
+
+      // --- FIX: Filtered Chat List ---
+      const filteredChatList = chatList.filter(chat => {
+        const friendId = chat.participants.find(p => p !== user.uid);
+        const profile = profiles[friendId];
+        if (!profile) return false; // Don't show if profile hasn't loaded
+        return profile.displayName.toLowerCase().includes(searchTerm.toLowerCase());
+      });
 
       return React.createElement('div', { className: 'page' },
-        // Top Bar
         React.createElement('div', { className: 'top-bar' },
           React.createElement('div', { className: 'top-bar-title' }, t('chats')),
-          React.createElement('button', { className: 'icon-btn', onClick: onShowSettings }, '⚙️'), // Settings Button
+          React.createElement('button', { className: 'icon-btn', onClick: onShowSettings }, '⚙️'),
           React.createElement('button', { className: 'icon-btn' },
             '🔔',
             unreadCount > 0 && React.createElement('div', { className: 'notification-badge' }, unreadCount)
           )
         ),
         
-        // --- NEW: Stories Row ---
         React.createElement('div', { className: 'story-row-container' },
           React.createElement('div', { className: 'story-circle', onClick: onAddStory },
             React.createElement('div', { className: 'story-add-btn' }, '+'),
@@ -1156,7 +1243,11 @@
           Object.keys(storyProfiles).map(uid => {
             const profile = storyProfiles[uid];
             if (!profile) return null;
-            return React.createElement('div', { className: 'story-circle', key: uid, onClick: () => alert('View stories not built yet') },
+            return React.createElement('div', { 
+              className: 'story-circle', 
+              key: uid, 
+              onClick: () => onViewStory(profile, stories[uid]) 
+            },
               React.createElement('div', { className: 'story-avatar' },
                 React.createElement('img', {
                   src: profile.avatarUrl || 'https://placehold.co/56x56/eeeeee/aaaaaa?text=S',
@@ -1168,7 +1259,6 @@
           })
         ),
         
-        // Horizontal Friend List
         friends.length > 0 && React.createElement('div', { className: 'friend-list-container' },
           friends.map(friend => 
             React.createElement('div', { 
@@ -1185,18 +1275,21 @@
           )
         ),
         
-        // Search Bar
         React.createElement('div', { className: 'search-bar' },
-          React.createElement('input', { className: 'search-input', placeholder: t('search') })
+          React.createElement('input', { 
+            className: 'search-input', 
+            placeholder: t('search'),
+            value: searchTerm,
+            onInput: (e) => setSearchTerm(e.target.value)
+          })
         ),
         
-        // Main Chat List
         React.createElement('div', { className: 'chat-list' },
-          chatList.length === 0 && React.createElement('div', { className: 'empty-state' },
+          filteredChatList.length === 0 && React.createElement('div', { className: 'empty-state' },
             React.createElement('div', { className: 'empty-icon' }, '💬'),
             React.createElement('div', null, t('noMessages'))
           ),
-          chatList.map(chat => {
+          filteredChatList.map(chat => {
             const friendId = chat.participants.find(p => p !== user.uid);
             const friendProfile = profiles[friendId];
             if (!friendProfile) return null;
@@ -1225,6 +1318,74 @@
               )
             );
           })
+        )
+      );
+    }
+    
+    // --- NEW: Story Viewer Component ---
+    function StoryViewer({ user, stories, onClose }) {
+      const [currentIndex, setCurrentIndex] = useState(0);
+      const [progress, setProgress] = useState(0);
+      
+      const currentStory = stories[currentIndex];
+      
+      useEffect(() => {
+        setProgress(0);
+        
+        const timer = setInterval(() => {
+          setProgress(p => {
+            if (p >= 100) {
+              if (currentIndex < stories.length - 1) {
+                setCurrentIndex(i => i + 1);
+              } else {
+                onClose();
+              }
+              return 0;
+            }
+            return p + 2; // ~5 second duration
+          });
+        }, 100);
+        
+        return () => clearInterval(timer);
+      }, [currentIndex, stories.length, onClose]);
+      
+      const goPrev = (e) => {
+        e.stopPropagation();
+        if (currentIndex > 0) setCurrentIndex(i => i - 1);
+      };
+      
+      const goNext = (e) => {
+        e.stopPropagation();
+        if (currentIndex < stories.length - 1) setCurrentIndex(i => i + 1);
+        else onClose();
+      };
+      
+      return React.createElement('div', { className: 'modal story-viewer-modal', onClick: onClose },
+        React.createElement('div', { className: 'modal-content story-viewer-content' },
+          React.createElement('div', { className: 'story-progress' },
+            stories.map((story, index) => 
+              React.createElement('div', { className: 'story-progress-bar', key: story.id },
+                React.createElement('div', { 
+                  className: 'story-progress-fill',
+                  style: { width: `${index === currentIndex ? progress : (index < currentIndex ? 100 : 0)}%` }
+                })
+              )
+            )
+          ),
+          React.createElement('div', { className: 'story-viewer-header' },
+            React.createElement('img', { 
+              src: user.avatarUrl || 'https://placehold.co/40x40/eeeeee/aaaaaa?text=S', 
+              className: 'avatar'
+            }),
+            React.createElement('div', { className: 'name' }, user.displayName),
+            React.createElement('div', { className: 'close', onClick: onClose }, '×')
+          ),
+          React.createElement('img', { 
+            src: currentStory.mediaUrl, 
+            className: 'story-viewer-image'
+          }),
+          React.createElement('div', { className: 'story-nav prev', onClick: goPrev }),
+          React.createElement('div', { className: 'story-nav next', onClick: goNext })
         )
       );
     }
@@ -1367,6 +1528,7 @@
         ),
         
         React.createElement('div', { className: 'message-list' },
+          React.createElement('div', { style: { flexGrow: 1 } }), // Spacer to push messages to bottom
           messages.map(msg => {
             const isSent = msg.from === user.uid;
             return React.createElement('div', { 
