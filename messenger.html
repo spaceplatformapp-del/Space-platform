@@ -76,6 +76,22 @@
       background: var(--bg);
     }
     
+    /* --- NEW: Diagnostic Box --- */
+    #space-diagnostics{
+      position:fixed;
+      left:8px;
+      right:8px;
+      top:8px;
+      padding:12px;
+      background:#fff3cd;
+      border:2px solid #ffc107;
+      border-radius:8px;
+      z-index:99999;
+      display:none;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+      color: #664d03;
+    }
+    
     /* Splash Screen */
     .splash {
       position: fixed;
@@ -577,6 +593,32 @@
   </style>
 </head>
 <body>
+  <!-- --- NEW: Diagnostic Box --- -->
+  <div id="space-diagnostics">
+    <b>⚠️ Space Messenger Diagnostic</b>
+    <div id="space-diagnostics-msg" style="margin-top:8px;font-size:13px"></div>
+    <button id="space-diagnostics-clear" style="margin-top:8px;padding:6px 12px;border:none;background:#1b74e4;color:white;border-radius:6px;cursor:pointer">Hide</button>
+  </div>
+  
+  <!-- --- NEW: Diagnostic JS --- -->
+  <script>
+    (function(){
+      const box = document.getElementById('space-diagnostics');
+      const msg = document.getElementById('space-diagnostics-msg');
+      const btn = document.getElementById('space-diagnostics-clear');
+      btn.onclick = ()=> box.style.display='none';
+      function showError(e){
+        box.style.display = 'block';
+        const text = (typeof e === 'string') ? e : (e && (e.message || e.stack)) || 'Unknown error';
+        msg.innerText = text;
+        console.error('Space diagnostic:', e);
+      }
+      window.addEventListener('error', (ev)=> { showError(ev.error || ev.message); });
+      window.addEventListener('unhandledrejection', (ev)=> { showError('Promise rejection: ' + (ev.reason?.message || ev.reason)); });
+      window.SPACE_APP_OK = ()=> { box.style.display='block'; msg.innerText='✅ App loaded!'; setTimeout(()=> box.style.display='none', 2000); };
+    })();
+  </script>
+
   <div id="root">
     <!-- Splash Screen -->
     <div class="splash">
@@ -586,15 +628,12 @@
     </div>
   </div>
 
-  <!-- 
-    ============================================================
-    || PASTE PART 2 BELOW THIS LINE ||
-    ============================================================
-  --><!-- React and Firebase Libraries -->
+  <!-- React and Firebase Libraries -->
   <script type="module">
     import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
     import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    // --- NEW: Added signOut ---
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
     import { 
       getFirestore, collection, doc, setDoc, getDoc, addDoc, query, 
@@ -633,11 +672,12 @@
         changeBackground: 'Change Background',
         blockUserConfirm: 'Are you sure you want to block this user? They will be unfriended and you will no longer be able to message each other.',
         cancel: 'Cancel',
-        block: 'Block'
+        block: 'Block',
+        logout: 'Logout' // --- NEW: Logout translation ---
       }
     };
 
-    // --- Firebase Helper Functions (Copied from Space App) ---
+    // --- Firebase Helper Functions ---
     async function getUserProfile(uid) {
       if (!uid) return null;
       const d = await getDoc(doc(db, 'users', uid));
@@ -674,7 +714,6 @@
     async function sendMessage(chatId, from, to, { text, media }) {
       if (!text && !media) return;
       
-      // Check for block
       const blockId1 = `${from}_${to}`;
       const blockId2 = `${to}_${from}`;
       const [block1Snap, block2Snap] = await Promise.all([
@@ -682,8 +721,7 @@
         getDoc(doc(db, 'blocks', blockId2))
       ]);
       if (block1Snap.exists() || block2Snap.exists()) {
-        alert("Cannot send message. This user is blocked or has blocked you.");
-        return;
+        throw new Error("Cannot send message. This user is blocked or has blocked you.");
       }
 
       const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
@@ -728,18 +766,18 @@
         if (chatSnap.exists()) {
           const key = `unreadCount_${uid}`;
           const seenKey = `seenBy_${uid}`;
-          await updateDoc(chatRef, { [key]: 0, [seenKey]: true });
+          if (chatSnap.data()[key] > 0 || !chatSnap.data()[seenKey]) {
+             await updateDoc(chatRef, { [key]: 0, [seenKey]: true });
+          }
         }
       } catch (err) { console.error('Clear unread failed:', err); }
     }
     
-    // --- NEW: Function to set shared background ---
     async function setChatBackground(chatId, imageUrl) {
       const chatRef = doc(db, 'chats', chatId);
       await updateDoc(chatRef, { backgroundUrl: imageUrl });
     }
     
-    // --- NEW: Function to block user ---
     async function blockUser(currentUid, targetUid) {
       const blockId = `${currentUid}_${targetUid}`;
       await setDoc(doc(db, 'blocks', blockId), {
@@ -748,14 +786,12 @@
         createdAt: serverTimestamp()
       });
 
-      // Also unfriend them
       const friendId1 = `${currentUid}_${targetUid}`;
       const friendId2 = `${targetUid}_${currentUid}`;
       await deleteDoc(doc(db, 'friends', friendId1));
       await deleteDoc(doc(db, 'friends', friendId2));
     }
 
-    // --- NEW: Function to create a story ---
     async function createStory(uid, mediaUrl, mediaType) {
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
       return addDoc(collection(db, 'stories'), { 
@@ -767,7 +803,6 @@
       });
     }
 
-    // --- NEW: Function to subscribe to stories ---
     function subscribeStories(cb) {
       const q = query(collection(db, 'stories'), orderBy('createdAt','desc'));
       return onSnapshot(q, snap => {
@@ -777,7 +812,6 @@
           return new Date(s.expiresAt) > now;
         });
         
-        // Group stories by user
         const storiesByUser = {};
         active.forEach(story => {
           if (!storiesByUser[story.uid]) {
@@ -801,7 +835,6 @@
       });
     }
     
-    // --- NEW: Subscribe to a single chat's data (for background) ---
     function subscribeChatData(chatId, cb) {
       const chatRef = doc(db, 'chats', chatId);
       return onSnapshot(chatRef, (doc) => {
@@ -828,28 +861,22 @@
     }
 
     // --- Main App Component ---
-  <!-- 
-    ============================================================
-    || PASTE PART 3 BELOW THIS LINE ||
-    ============================================================
-  -->function App() {
+    function App() {
       const [user, setUser] = useState(null);
       const [userProfile, setUserProfile] = useState(null);
       const [page, setPage] = useState('loading'); // 'loading', 'login', 'lobby', 'chatWindow'
-      const [selectedChatTarget, setSelectedChatTarget] = useState(null); // The user object of the friend you're chatting with
+      const [selectedChatTarget, setSelectedChatTarget] = useState(null);
       const [friends, setFriends] = useState([]);
       const [chatList, setChatList] = useState([]);
       const [unreadCount, setUnreadCount] = useState(0);
-      const [stories, setStories] = useState({}); // Stories object
+      const [stories, setStories] = useState({});
       
-      // --- NEW: State for settings modal and theme ---
       const [showSettings, setShowSettings] = useState(false);
       const [theme, setTheme] = useState(localStorage.getItem('messenger-theme') || 'light');
       
       const storyInputRef = useRef(null);
       const [isUploadingStory, setIsUploadingStory] = useState(false);
       
-      // Use 'en' for now
       const t = (key, params = {}) => {
         let text = translations['en'][key] || key;
         Object.keys(params).forEach(p => {
@@ -858,13 +885,11 @@
         return text;
       };
       
-      // --- NEW: Handle Dark/Light Mode ---
       useEffect(() => {
         document.documentElement.classList.toggle('dark', theme === 'dark');
         localStorage.setItem('messenger-theme', theme);
       }, [theme]);
       
-      // Handle Auth and initial data loading
       useEffect(() => {
         const splash = document.getElementById('splash');
         
@@ -882,20 +907,19 @@
           
           setTimeout(() => {
             if (splash) splash.style.display = 'none';
+            // --- NEW: Signal app load ---
+            if (window.SPACE_APP_OK) window.SPACE_APP_OK();
           }, 500);
         });
         
         return () => unsubAuth();
       }, []);
       
-      // Subscribe to chat list, friends, and stories when user logs in
       useEffect(() => {
         if (!user) return;
         
-        // Subscribe to friends
         getFriends(user.uid).then(setFriends);
         
-        // Subscribe to chat list
         const unsubChatList = subscribeChatList(user.uid, (chats) => {
           setChatList(chats);
           let total = 0;
@@ -906,7 +930,6 @@
           setUnreadCount(total);
         });
         
-        // Subscribe to stories
         const unsubStories = subscribeStories(setStories);
         
         return () => {
@@ -915,7 +938,6 @@
         };
       }, [user]);
       
-      // Handlers
       const handleSelectChat = (friend) => {
         setSelectedChatTarget(friend);
         setPage('chatWindow');
@@ -923,11 +945,9 @@
       
       const handleBackToLobby = () => {
         setSelectedChatTarget(null);
-        setPage('chatWindow'); // Bug fix: should be 'lobby'
         setPage('lobby');
       };
 
-      // --- NEW: Handler for story upload ---
       const handleStoryUpload = async (e) => {
         const file = e.target.files?.[0];
         if (!file || !user) return;
@@ -941,13 +961,12 @@
           alert('❌ Story upload failed.');
         } finally {
           setIsUploadingStory(false);
-          if (e.target) e.target.value = null; // Reset file input
+          if (e.target) e.target.value = null;
         }
       };
       
-      // --- Render Logic ---
       if (page === 'loading') {
-        return null; // Splash screen is showing
+        return null;
       }
       
       if (!user || page === 'login') {
@@ -955,7 +974,6 @@
       }
       
       return React.createElement('div', { className: 'app-container' },
-        // --- NEW: Hidden file input for stories ---
         React.createElement('input', {
           type: 'file',
           ref: storyInputRef,
@@ -964,12 +982,12 @@
           onChange: handleStoryUpload
         }),
         
-        // --- NEW: Settings Modal ---
         showSettings && React.createElement(SettingsModal, {
           t,
           onClose: () => setShowSettings(false),
           theme,
-          setTheme
+          setTheme,
+          auth // --- NEW: Pass auth for logout ---
         }),
       
         page === 'lobby' && React.createElement(LobbyPage, {
@@ -980,8 +998,8 @@
           stories,
           unreadCount,
           onSelectChat: handleSelectChat,
-          onShowSettings: () => setShowSettings(true), // Pass handler
-          onAddStory: () => storyInputRef.current.click() // Pass handler
+          onShowSettings: () => setShowSettings(true),
+          onAddStory: () => storyInputRef.current.click()
         }),
         page === 'chatWindow' && React.createElement(ChatWindowPage, {
           t,
@@ -1005,7 +1023,6 @@
         setLoading(true);
         try {
           await signInWithEmailAndPassword(auth, email, password);
-          // onAuthStateChanged in App will handle navigation
         } catch (err) {
           setError(err.message.replace('Firebase: ', ''));
         }
@@ -1040,7 +1057,16 @@
     }
     
     // --- NEW: Settings Modal Component ---
-    function SettingsModal({ t, onClose, theme, setTheme }) {
+    function SettingsModal({ t, onClose, theme, setTheme, auth }) {
+      
+      const handleLogout = async () => {
+        if (confirm('Are you sure you want to logout?')) {
+          await signOut(auth);
+          // onAuthStateChanged in App will handle navigation to login
+          onClose();
+        }
+      };
+      
       return React.createElement('div', { className: 'modal', onClick: onClose },
         React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
           React.createElement('div', { className: 'modal-title' }, t('settings')),
@@ -1054,16 +1080,18 @@
               }),
               React.createElement('span', { className: 'slider' })
             )
-          )
+          ),
+          // --- NEW: Logout Button ---
+          React.createElement('button', {
+            className: 'login-btn',
+            style: { width: '100%', marginTop: '16px', background: '#fa3e3e' },
+            onClick: handleLogout
+          }, t('logout'))
         )
       );
     }
     
-  <!-- 
-    ============================================================
-    || PASTE PART 4 BELOW THIS LINE ||
-    ============================================================
-  -->// --- Lobby Page Component (Main Chat List) ---
+    // --- Lobby Page Component (Main Chat List) ---
     function LobbyPage({ t, user, friends, chatList, stories, unreadCount, onSelectChat, onShowSettings, onAddStory }) {
       const [profiles, setProfiles] = useState({});
       const [storyProfiles, setStoryProfiles] = useState({});
@@ -1086,7 +1114,7 @@
           }
         };
         getChatProfiles();
-      }, [chatList, user.uid]);
+      }, [chatList, user.uid, profiles]); // Added profiles to dependency
       
       // --- NEW: Get profiles for stories ---
       useEffect(() => {
@@ -1106,7 +1134,7 @@
           }
         };
         getStoryProfiles();
-      }, [stories]);
+      }, [stories, storyProfiles]); // Added storyProfiles to dependency
 
       return React.createElement('div', { className: 'page' },
         // Top Bar
@@ -1128,7 +1156,7 @@
           Object.keys(storyProfiles).map(uid => {
             const profile = storyProfiles[uid];
             if (!profile) return null;
-            return React.createElement('div', { className: 'story-circle', key: uid },
+            return React.createElement('div', { className: 'story-circle', key: uid, onClick: () => alert('View stories not built yet') },
               React.createElement('div', { className: 'story-avatar' },
                 React.createElement('img', {
                   src: profile.avatarUrl || 'https://placehold.co/56x56/eeeeee/aaaaaa?text=S',
@@ -1171,7 +1199,7 @@
           chatList.map(chat => {
             const friendId = chat.participants.find(p => p !== user.uid);
             const friendProfile = profiles[friendId];
-            if (!friendProfile) return null; // Still loading profile
+            if (!friendProfile) return null;
             
             const unreadKey = `unreadCount_${user.uid}`;
             const hasUnread = (chat[unreadKey] || 0) > 0;
@@ -1206,13 +1234,12 @@
       const [messages, setMessages] = useState([]);
       const [newMessage, setNewMessage] = useState('');
       const [isUploading, setIsUploading] = useState(false);
-      const [chatData, setChatData] = useState({}); // --- NEW: For background
-      const [showMenu, setShowMenu] = useState(false); // --- NEW: For menu
+      const [chatData, setChatData] = useState({});
+      const [showMenu, setShowMenu] = useState(false);
       const chatId = getChatId(user.uid, targetUser.id);
       const fileInputRef = useRef(null);
-      const bgInputRef = useRef(null); // --- NEW: For background input
+      const bgInputRef = useRef(null);
       
-      // Subscribe to messages and chat data
       useEffect(() => {
         if (!chatId) return;
         
@@ -1223,7 +1250,6 @@
           clearUnreadCount(chatId, user.uid);
         });
         
-        // --- NEW: Subscribe to chat data for background ---
         const unsubChat = subscribeChatData(chatId, (data) => {
           if (data) setChatData(data);
         });
@@ -1245,7 +1271,7 @@
           await sendMessage(chatId, user.uid, targetUser.id, { text: msg, media: null });
         } catch (err) {
           console.error(err);
-          alert(err.message); // Show block error
+          alert(err.message);
           setNewMessage(msg);
         }
       };
@@ -1270,7 +1296,6 @@
         }
       };
       
-      // --- NEW: Handle Background Upload ---
       const handleBackgroundUpload = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -1289,14 +1314,13 @@
         }
       };
       
-      // --- NEW: Handle Block User ---
       const handleBlock = async () => {
         setShowMenu(false);
         if (confirm(t('blockUserConfirm'))) {
           try {
             await blockUser(user.uid, targetUser.id);
             alert(`${targetUser.displayName} has been blocked.`);
-            onBack(); // Go back to lobby
+            onBack();
           } catch (err) {
             console.error('Block failed:', err);
             alert('❌ Block failed.');
@@ -1306,7 +1330,6 @@
 
       return React.createElement('div', { 
         className: 'page chat-window',
-        // --- NEW: Set shared background ---
         style: { backgroundImage: chatData.backgroundUrl ? `url(${chatData.backgroundUrl})` : 'none' }
       },
         React.createElement('input', {
@@ -1316,7 +1339,6 @@
           accept: 'image/*',
           onChange: handleMediaUpload
         }),
-        // --- NEW: Background file input ---
         React.createElement('input', {
           type: 'file',
           ref: bgInputRef,
@@ -1325,7 +1347,6 @@
           onChange: handleBackgroundUpload
         }),
         
-        // Chat Header
         React.createElement('div', { className: 'chat-header' },
           React.createElement('button', { className: 'icon-btn', onClick: onBack }, '⬅️'),
           React.createElement('img', { 
@@ -1333,11 +1354,9 @@
             className: 'avatar' 
           }),
           React.createElement('div', { className: 'chat-header-title' }, targetUser.displayName),
-          // --- NEW: Chat Menu Button ---
           React.createElement('button', { className: 'icon-btn', onClick: () => setShowMenu(!showMenu) }, '...')
         ),
         
-        // --- NEW: Chat Menu ---
         showMenu && React.createElement('div', { className: 'chat-menu' },
           React.createElement('div', { className: 'chat-menu-item', onClick: () => bgInputRef.current.click() },
             '🖼️', React.createElement('span', null, t('changeBackground'))
@@ -1347,7 +1366,6 @@
           )
         ),
         
-        // Message List
         React.createElement('div', { className: 'message-list' },
           messages.map(msg => {
             const isSent = msg.from === user.uid;
@@ -1366,7 +1384,6 @@
           })
         ),
         
-        // Chat Input
         React.createElement('form', { className: 'chat-input-container', onSubmit: handleSend },
           React.createElement('button', { 
             className: 'icon-btn', 
