@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Space Messenger</title>
   
+  <!-- --- THIS IS THE FIX --- -->
+  <!-- Link to the new manifest file -->
+  <link rel="manifest" href="manifest-messenger.json">
+  
+  <!-- Apple full-screen tags -->
+  <link rel="apple-touch-icon" href="icons/icon-512.png">
+  <meta name="theme-color" content="#18191a"> <!-- Dark theme for messenger -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Space Messenger">
+  <!-- --- END OF FIX --- -->
+
   <!-- This app will connect to your existing Space database -->
   <script>
     window.SPACE_CONFIG = {
@@ -22,6 +34,10 @@
       }
     };
   </script>
+
+  <style>
+    :root {
+      --bg: #ffffff; /* Default to light mode */p
 
   <style>
     :root {
