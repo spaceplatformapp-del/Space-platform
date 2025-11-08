@@ -25,12 +25,13 @@
 
   <style>
     :root {
-      --bg: #f0f2f5;
+      --bg: #ffffff; /* Default to light mode */
       --card: #ffffff;
       --text: #050505;
       --muted: #65676b;
       --primary: #1b74e4; /* Blue */
-      --hover: #f2f3f5;
+      --hover: #f0f2f5;
+      --border: #f0f2f5;
       --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
@@ -41,6 +42,7 @@
       --muted: #b0b3b8;
       --primary: #2d88ff;
       --hover: #3a3b3c;
+      --border: #3a3b3c;
     }
 
     * {
@@ -50,13 +52,13 @@
       font-family: var(--font-family);
     }
     
-    /* Full-height app layout */
     html, body, #root {
       height: 100%;
       width: 100%;
-      overflow: hidden; /* Prevents bouncing on mobile */
+      overflow: hidden;
       background: var(--bg);
       color: var(--text);
+      transition: background 0.2s, color 0.2s;
     }
 
     .app-container {
@@ -71,6 +73,7 @@
       width: 100%;
       display: flex;
       flex-direction: column;
+      background: var(--bg);
     }
     
     /* Splash Screen */
@@ -129,7 +132,7 @@
     }
     .login-input {
       padding: 14px;
-      border: 1px solid #ccd0d5;
+      border: 1px solid var(--border);
       border-radius: 8px;
       width: 100%;
       background: var(--hover);
@@ -145,6 +148,10 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 16px;
+    }
+    .login-btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
     }
     .login-error {
       color: #fa3e3e;
@@ -188,7 +195,7 @@
       padding: 8px 16px;
       gap: 12px;
       background: var(--card);
-      border-bottom: 1px solid var(--hover);
+      border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
     .top-bar-title {
@@ -214,21 +221,82 @@
       border: 2px solid var(--card);
     }
 
+    /* Story Row */
+    .story-row-container {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .story-row-container::-webkit-scrollbar {
+      display: none;
+    }
+    .story-circle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 60px;
+      cursor: pointer;
+    }
+    .story-circle span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+    }
+    .story-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      padding: 2px;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    }
+    .story-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--card);
+    }
+    .story-add-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary);
+      border: 2px dashed var(--primary);
+    }
+
     /* Lobby Page */
     .friend-list-container {
       flex-shrink: 0;
       padding: 12px 16px;
       background: var(--card);
-      border-bottom: 1px solid var(--hover);
+      border-bottom: 1px solid var(--border);
       display: flex;
       gap: 16px;
       overflow-x: auto;
-      /* Hide scrollbar */
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     .friend-list-container::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      display: none;
     }
     .friend-list-item {
       display: flex;
@@ -320,26 +388,61 @@
     }
 
     /* Chat Window Page */
+    .chat-window {
+      background-size: cover;
+      background-position: center;
+    }
     .chat-header {
       display: flex;
       align-items: center;
       padding: 8px 10px;
       gap: 10px;
       background: var(--card);
-      border-bottom: 1px solid var(--hover);
+      border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
     .chat-header-title {
       font-size: 17px;
       font-weight: 600;
+      margin-right: auto;
     }
+    .chat-menu {
+      position: absolute;
+      top: 55px;
+      right: 10px;
+      background: var(--card);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 8px;
+      z-index: 10;
+      width: 200px;
+    }
+    .chat-menu-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chat-menu-item:hover {
+      background: var(--hover);
+    }
+    .chat-menu-item.danger {
+      color: #fa3e3e;
+    }
+    .chat-menu-item.danger:hover {
+      background: rgba(250, 62, 62, 0.1);
+    }
+
     .message-list {
       flex-grow: 1;
       overflow-y: auto;
       padding: 12px;
       display: flex;
       flex-direction: column-reverse; /* Shows latest messages at the bottom */
-      background: var(--bg);
+      /* Background is set by inline style */
     }
     .message-bubble-row {
       display: flex;
@@ -366,7 +469,7 @@
     .message-bubble.received {
       background: var(--card);
       color: var(--text);
-      border: 1px solid var(--hover);
+      box-shadow: 0 1px 1px var(--border);
     }
     .message-bubble img {
       max-width: 200px;
@@ -381,7 +484,7 @@
       gap: 8px;
       align-items: center;
       background: var(--card);
-      border-top: 1px solid var(--hover);
+      border-top: 1px solid var(--border);
     }
     .chat-input {
       flex-grow: 1;
@@ -395,6 +498,82 @@
     .chat-input:focus {
       outline: none;
     }
+    
+    /* Settings Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    .modal-content {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+    .modal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-label {
+      font-size: 16px;
+      color: var(--text);
+    }
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 28px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
   </style>
 </head>
 <body>
@@ -407,7 +586,11 @@
     </div>
   </div>
 
-  <!-- React and Firebase Libraries -->
+  <!-- 
+    ============================================================
+    || PASTE PART 2 BELOW THIS LINE ||
+    ============================================================
+  --><!-- React and Firebase Libraries -->
   <script type="module">
     import React, { useEffect, useState, useRef } from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
     import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
@@ -427,7 +610,7 @@
     const CLOUDINARY_CLOUD = CONFIG.cloudinary?.cloudName || "";
     const CLOUDINARY_UPLOAD_PRESET = CONFIG.cloudinary?.uploadPreset || "";
 
-    // --- Translations (Simplified for Messenger) ---
+    // --- Translations (Expanded for new features) ---
     const translations = {
       en: {
         loading: 'Loading...',
@@ -439,7 +622,18 @@
         send: 'Send',
         noFriends: 'No friends yet',
         noMessages: 'No messages. Start a conversation!',
-        seen: 'Seen'
+        seen: 'Seen',
+        stories: 'Stories',
+        addStory: 'Add Story',
+        settings: 'Settings',
+        darkMode: 'Dark Mode',
+        light: 'Light',
+        dark: 'Dark',
+        blockUser: 'Block User',
+        changeBackground: 'Change Background',
+        blockUserConfirm: 'Are you sure you want to block this user? They will be unfriended and you will no longer be able to message each other.',
+        cancel: 'Cancel',
+        block: 'Block'
       }
     };
 
@@ -460,9 +654,8 @@
       ];
       const friendIds = friendsData.map(f => f.requester === uid ? f.target : f.requester);
       
-      // Get profiles for these friends
       const friendProfiles = await Promise.all(friendIds.map(id => getUserProfile(id)));
-      return friendProfiles.filter(Boolean); // Filter out any null profiles
+      return friendProfiles.filter(Boolean);
     }
 
     const getChatId = (uid1, uid2) => [uid1, uid2].sort().join('_');
@@ -480,6 +673,18 @@
     
     async function sendMessage(chatId, from, to, { text, media }) {
       if (!text && !media) return;
+      
+      // Check for block
+      const blockId1 = `${from}_${to}`;
+      const blockId2 = `${to}_${from}`;
+      const [block1Snap, block2Snap] = await Promise.all([
+        getDoc(doc(db, 'blocks', blockId1)),
+        getDoc(doc(db, 'blocks', blockId2))
+      ]);
+      if (block1Snap.exists() || block2Snap.exists()) {
+        alert("Cannot send message. This user is blocked or has blocked you.");
+        return;
+      }
 
       const lastMessage = text ? text : (media.type === 'video' ? '🎥 Video' : '📷 Photo');
       const targetUnreadKey = `unreadCount_${to}`;
@@ -495,8 +700,8 @@
           updatedAt: serverTimestamp(),
           [targetUnreadKey]: 1,
           [fromUnreadKey]: 0,
-          [`seenBy_${from}`]: true, // You've seen it
-          [`seenBy_${to}`]: false   // They haven't
+          [`seenBy_${from}`]: true,
+          [`seenBy_${to}`]: false
         });
       } else {
         await updateDoc(chatRef, {
@@ -527,16 +732,82 @@
         }
       } catch (err) { console.error('Clear unread failed:', err); }
     }
+    
+    // --- NEW: Function to set shared background ---
+    async function setChatBackground(chatId, imageUrl) {
+      const chatRef = doc(db, 'chats', chatId);
+      await updateDoc(chatRef, { backgroundUrl: imageUrl });
+    }
+    
+    // --- NEW: Function to block user ---
+    async function blockUser(currentUid, targetUid) {
+      const blockId = `${currentUid}_${targetUid}`;
+      await setDoc(doc(db, 'blocks', blockId), {
+        by: currentUid,
+        for: targetUid,
+        createdAt: serverTimestamp()
+      });
+
+      // Also unfriend them
+      const friendId1 = `${currentUid}_${targetUid}`;
+      const friendId2 = `${targetUid}_${currentUid}`;
+      await deleteDoc(doc(db, 'friends', friendId1));
+      await deleteDoc(doc(db, 'friends', friendId2));
+    }
+
+    // --- NEW: Function to create a story ---
+    async function createStory(uid, mediaUrl, mediaType) {
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      return addDoc(collection(db, 'stories'), { 
+        uid, 
+        mediaUrl, 
+        mediaType, 
+        createdAt: serverTimestamp(), 
+        expiresAt: expiresAt.toISOString() 
+      });
+    }
+
+    // --- NEW: Function to subscribe to stories ---
+    function subscribeStories(cb) {
+      const q = query(collection(db, 'stories'), orderBy('createdAt','desc'));
+      return onSnapshot(q, snap => {
+        const now = new Date();
+        const active = snap.docs.map(d=>({ id: d.id, ...d.data() })).filter(s => {
+          if (!s.expiresAt) return true;
+          return new Date(s.expiresAt) > now;
+        });
+        
+        // Group stories by user
+        const storiesByUser = {};
+        active.forEach(story => {
+          if (!storiesByUser[story.uid]) {
+            storiesByUser[story.uid] = [];
+          }
+          storiesByUser[story.uid].push(story);
+        });
+        cb(storiesByUser);
+      });
+    }
 
     function subscribeMessages(chatId, cb) {
       const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc'), limit(50));
-      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() }))));
+      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })).reverse())); // .reverse() to show old -> new
     }
     
     function subscribeChatList(uid, cb) {
       const q = query(collection(db, 'chats'), where('participants', 'array-contains', uid), orderBy('updatedAt', 'desc'));
       return onSnapshot(q, snap => {
         cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      });
+    }
+    
+    // --- NEW: Subscribe to a single chat's data (for background) ---
+    function subscribeChatData(chatId, cb) {
+      const chatRef = doc(db, 'chats', chatId);
+      return onSnapshot(chatRef, (doc) => {
+        if (doc.exists()) {
+          cb(doc.data());
+        }
       });
     }
 
@@ -557,7 +828,11 @@
     }
 
     // --- Main App Component ---
-    function App() {
+  <!-- 
+    ============================================================
+    || PASTE PART 3 BELOW THIS LINE ||
+    ============================================================
+  -->function App() {
       const [user, setUser] = useState(null);
       const [userProfile, setUserProfile] = useState(null);
       const [page, setPage] = useState('loading'); // 'loading', 'login', 'lobby', 'chatWindow'
@@ -565,9 +840,29 @@
       const [friends, setFriends] = useState([]);
       const [chatList, setChatList] = useState([]);
       const [unreadCount, setUnreadCount] = useState(0);
+      const [stories, setStories] = useState({}); // Stories object
+      
+      // --- NEW: State for settings modal and theme ---
+      const [showSettings, setShowSettings] = useState(false);
+      const [theme, setTheme] = useState(localStorage.getItem('messenger-theme') || 'light');
+      
+      const storyInputRef = useRef(null);
+      const [isUploadingStory, setIsUploadingStory] = useState(false);
       
       // Use 'en' for now
-      const t = (key) => translations['en'][key] || key;
+      const t = (key, params = {}) => {
+        let text = translations['en'][key] || key;
+        Object.keys(params).forEach(p => {
+          text = text.replace(`{${p}}`, params[p]);
+        });
+        return text;
+      };
+      
+      // --- NEW: Handle Dark/Light Mode ---
+      useEffect(() => {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        localStorage.setItem('messenger-theme', theme);
+      }, [theme]);
       
       // Handle Auth and initial data loading
       useEffect(() => {
@@ -578,10 +873,6 @@
             setUser(u);
             const prof = await getUserProfile(u.uid);
             setUserProfile(prof);
-            
-            const friendProfiles = await getFriends(u.uid);
-            setFriends(friendProfiles);
-            
             setPage('lobby');
           } else {
             setUser(null);
@@ -589,7 +880,6 @@
             setPage('login');
           }
           
-          // Hide splash screen
           setTimeout(() => {
             if (splash) splash.style.display = 'none';
           }, 500);
@@ -598,14 +888,16 @@
         return () => unsubAuth();
       }, []);
       
-      // Subscribe to chat list and unread count
+      // Subscribe to chat list, friends, and stories when user logs in
       useEffect(() => {
         if (!user) return;
         
+        // Subscribe to friends
+        getFriends(user.uid).then(setFriends);
+        
+        // Subscribe to chat list
         const unsubChatList = subscribeChatList(user.uid, (chats) => {
           setChatList(chats);
-          
-          // Calculate total unread count
           let total = 0;
           const unreadKey = `unreadCount_${user.uid}`;
           chats.forEach(chat => {
@@ -614,7 +906,13 @@
           setUnreadCount(total);
         });
         
-        return () => unsubChatList();
+        // Subscribe to stories
+        const unsubStories = subscribeStories(setStories);
+        
+        return () => {
+          unsubChatList();
+          unsubStories();
+        };
       }, [user]);
       
       // Handlers
@@ -625,9 +923,28 @@
       
       const handleBackToLobby = () => {
         setSelectedChatTarget(null);
+        setPage('chatWindow'); // Bug fix: should be 'lobby'
         setPage('lobby');
       };
 
+      // --- NEW: Handler for story upload ---
+      const handleStoryUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file || !user) return;
+        
+        setIsUploadingStory(true);
+        try {
+          const res = await uploadToCloudinary(file);
+          await createStory(user.uid, res.secure_url, res.resource_type || 'image');
+        } catch (err) {
+          console.error('Story upload failed:', err);
+          alert('❌ Story upload failed.');
+        } finally {
+          setIsUploadingStory(false);
+          if (e.target) e.target.value = null; // Reset file input
+        }
+      };
+      
       // --- Render Logic ---
       if (page === 'loading') {
         return null; // Splash screen is showing
@@ -638,13 +955,33 @@
       }
       
       return React.createElement('div', { className: 'app-container' },
+        // --- NEW: Hidden file input for stories ---
+        React.createElement('input', {
+          type: 'file',
+          ref: storyInputRef,
+          style: { display: 'none' },
+          accept: 'image/*',
+          onChange: handleStoryUpload
+        }),
+        
+        // --- NEW: Settings Modal ---
+        showSettings && React.createElement(SettingsModal, {
+          t,
+          onClose: () => setShowSettings(false),
+          theme,
+          setTheme
+        }),
+      
         page === 'lobby' && React.createElement(LobbyPage, {
           t,
           user,
           friends,
           chatList,
+          stories,
           unreadCount,
-          onSelectChat: handleSelectChat
+          onSelectChat: handleSelectChat,
+          onShowSettings: () => setShowSettings(true), // Pass handler
+          onAddStory: () => storyInputRef.current.click() // Pass handler
         }),
         page === 'chatWindow' && React.createElement(ChatWindowPage, {
           t,
@@ -702,9 +1039,34 @@
       );
     }
     
-    // --- Lobby Page Component (Main Chat List) ---
-    function LobbyPage({ t, user, friends, chatList, unreadCount, onSelectChat }) {
+    // --- NEW: Settings Modal Component ---
+    function SettingsModal({ t, onClose, theme, setTheme }) {
+      return React.createElement('div', { className: 'modal', onClick: onClose },
+        React.createElement('div', { className: 'modal-content', onClick: e => e.stopPropagation() },
+          React.createElement('div', { className: 'modal-title' }, t('settings')),
+          React.createElement('div', { className: 'modal-row' },
+            React.createElement('span', { className: 'modal-label' }, t('darkMode')),
+            React.createElement('label', { className: 'toggle-switch' },
+              React.createElement('input', {
+                type: 'checkbox',
+                checked: theme === 'dark',
+                onChange: (e) => setTheme(e.target.checked ? 'dark' : 'light')
+              }),
+              React.createElement('span', { className: 'slider' })
+            )
+          )
+        )
+      );
+    }
+    
+  <!-- 
+    ============================================================
+    || PASTE PART 4 BELOW THIS LINE ||
+    ============================================================
+  -->// --- Lobby Page Component (Main Chat List) ---
+    function LobbyPage({ t, user, friends, chatList, stories, unreadCount, onSelectChat, onShowSettings, onAddStory }) {
       const [profiles, setProfiles] = useState({});
+      const [storyProfiles, setStoryProfiles] = useState({});
       
       // Get profiles for chat list
       useEffect(() => {
@@ -725,15 +1087,57 @@
         };
         getChatProfiles();
       }, [chatList, user.uid]);
+      
+      // --- NEW: Get profiles for stories ---
+      useEffect(() => {
+        const getStoryProfiles = async () => {
+          const newProfiles = {...storyProfiles};
+          let profileChanged = false;
+          const userIds = Object.keys(stories);
+          
+          for (const uid of userIds) {
+            if (uid && !newProfiles[uid]) {
+              newProfiles[uid] = await getUserProfile(uid);
+              profileChanged = true;
+            }
+          }
+          if (profileChanged) {
+            setStoryProfiles(newProfiles);
+          }
+        };
+        getStoryProfiles();
+      }, [stories]);
 
       return React.createElement('div', { className: 'page' },
         // Top Bar
         React.createElement('div', { className: 'top-bar' },
           React.createElement('div', { className: 'top-bar-title' }, t('chats')),
+          React.createElement('button', { className: 'icon-btn', onClick: onShowSettings }, '⚙️'), // Settings Button
           React.createElement('button', { className: 'icon-btn' },
             '🔔',
             unreadCount > 0 && React.createElement('div', { className: 'notification-badge' }, unreadCount)
           )
+        ),
+        
+        // --- NEW: Stories Row ---
+        React.createElement('div', { className: 'story-row-container' },
+          React.createElement('div', { className: 'story-circle', onClick: onAddStory },
+            React.createElement('div', { className: 'story-add-btn' }, '+'),
+            React.createElement('span', null, t('addStory'))
+          ),
+          Object.keys(storyProfiles).map(uid => {
+            const profile = storyProfiles[uid];
+            if (!profile) return null;
+            return React.createElement('div', { className: 'story-circle', key: uid },
+              React.createElement('div', { className: 'story-avatar' },
+                React.createElement('img', {
+                  src: profile.avatarUrl || 'https://placehold.co/56x56/eeeeee/aaaaaa?text=S',
+                  className: 'story-avatar-inner'
+                })
+              ),
+              React.createElement('span', null, profile.displayName)
+            );
+          })
         ),
         
         // Horizontal Friend List
@@ -797,28 +1201,37 @@
       );
     }
     
-    // --- Chat Window Page Component ---
+    // --- Chat Window Page Component (All new features) ---
     function ChatWindowPage({ t, user, targetUser, onBack }) {
       const [messages, setMessages] = useState([]);
       const [newMessage, setNewMessage] = useState('');
       const [isUploading, setIsUploading] = useState(false);
+      const [chatData, setChatData] = useState({}); // --- NEW: For background
+      const [showMenu, setShowMenu] = useState(false); // --- NEW: For menu
       const chatId = getChatId(user.uid, targetUser.id);
       const fileInputRef = useRef(null);
+      const bgInputRef = useRef(null); // --- NEW: For background input
       
-      // Subscribe to messages
+      // Subscribe to messages and chat data
       useEffect(() => {
         if (!chatId) return;
         
-        // Clear unread count when opening window
         clearUnreadCount(chatId, user.uid);
         
-        const unsub = subscribeMessages(chatId, (newMessages) => {
+        const unsubMsg = subscribeMessages(chatId, (newMessages) => {
           setMessages(newMessages);
-          // Mark as seen
           clearUnreadCount(chatId, user.uid);
         });
         
-        return () => unsub();
+        // --- NEW: Subscribe to chat data for background ---
+        const unsubChat = subscribeChatData(chatId, (data) => {
+          if (data) setChatData(data);
+        });
+        
+        return () => {
+          unsubMsg();
+          unsubChat();
+        };
       }, [chatId, user.uid]);
 
       const handleSend = async (e) => {
@@ -832,7 +1245,8 @@
           await sendMessage(chatId, user.uid, targetUser.id, { text: msg, media: null });
         } catch (err) {
           console.error(err);
-          setNewMessage(msg); // Put it back if send fails
+          alert(err.message); // Show block error
+          setNewMessage(msg);
         }
       };
       
@@ -852,18 +1266,63 @@
           alert('❌ Image send failed.');
         } finally {
           setIsUploading(false);
-          if (e.target) e.target.value = null; // Reset file input
+          if (e.target) e.target.value = null;
+        }
+      };
+      
+      // --- NEW: Handle Background Upload ---
+      const handleBackgroundUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        
+        setIsUploading(true);
+        setShowMenu(false);
+        try {
+          const res = await uploadToCloudinary(file);
+          await setChatBackground(chatId, res.secure_url);
+        } catch (err) {
+          console.error('BG upload failed:', err);
+          alert('❌ Background change failed.');
+        } finally {
+          setIsUploading(false);
+          if (e.target) e.target.value = null;
+        }
+      };
+      
+      // --- NEW: Handle Block User ---
+      const handleBlock = async () => {
+        setShowMenu(false);
+        if (confirm(t('blockUserConfirm'))) {
+          try {
+            await blockUser(user.uid, targetUser.id);
+            alert(`${targetUser.displayName} has been blocked.`);
+            onBack(); // Go back to lobby
+          } catch (err) {
+            console.error('Block failed:', err);
+            alert('❌ Block failed.');
+          }
         }
       };
 
-      return React.createElement('div', { className: 'page chat-window' },
-        // Hidden file input
+      return React.createElement('div', { 
+        className: 'page chat-window',
+        // --- NEW: Set shared background ---
+        style: { backgroundImage: chatData.backgroundUrl ? `url(${chatData.backgroundUrl})` : 'none' }
+      },
         React.createElement('input', {
           type: 'file',
           ref: fileInputRef,
           style: { display: 'none' },
           accept: 'image/*',
           onChange: handleMediaUpload
+        }),
+        // --- NEW: Background file input ---
+        React.createElement('input', {
+          type: 'file',
+          ref: bgInputRef,
+          style: { display: 'none' },
+          accept: 'image/*',
+          onChange: handleBackgroundUpload
         }),
         
         // Chat Header
@@ -873,7 +1332,19 @@
             src: targetUser.avatarUrl || 'https://placehold.co/40x40/eeeeee/aaaaaa?text=S', 
             className: 'avatar' 
           }),
-          React.createElement('div', { className: 'chat-header-title' }, targetUser.displayName)
+          React.createElement('div', { className: 'chat-header-title' }, targetUser.displayName),
+          // --- NEW: Chat Menu Button ---
+          React.createElement('button', { className: 'icon-btn', onClick: () => setShowMenu(!showMenu) }, '...')
+        ),
+        
+        // --- NEW: Chat Menu ---
+        showMenu && React.createElement('div', { className: 'chat-menu' },
+          React.createElement('div', { className: 'chat-menu-item', onClick: () => bgInputRef.current.click() },
+            '🖼️', React.createElement('span', null, t('changeBackground'))
+          ),
+          React.createElement('div', { className: 'chat-menu-item danger', onClick: handleBlock },
+            '🚫', React.createElement('span', null, t('blockUser'))
+          )
         ),
         
         // Message List
