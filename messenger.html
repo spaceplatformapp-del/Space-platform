@@ -450,7 +450,7 @@
       overflow-y: auto;
       padding: 12px;
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column-reverse; /* This is correct */
     }
     .message-bubble-row {
       display: flex;
@@ -581,7 +581,6 @@
       transform: translateX(22px);
     }
     
-    /* --- NEW: Story Viewer Modal --- */
     .story-viewer-modal {
       background: #111;
       padding: 0;
@@ -901,7 +900,8 @@
 
     function subscribeMessages(chatId, cb) {
       const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt','desc'), limit(50));
-      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() })).reverse()));
+      // --- FIX 1 (Message Order): REMOVED .reverse() ---
+      return onSnapshot(q, snap => cb(snap.docs.map(d=>({ id: d.id, ...d.data() }))));
     }
     
     function subscribeChatList(uid, cb) {
@@ -1142,11 +1142,15 @@
     // --- Settings Modal Component ---
     function SettingsModal({ t, onClose, theme, setTheme, auth }) {
       
+      // --- FIX 2 (Logout): Removed broken window.confirm ---
       const handleLogout = async () => {
-        // Use a simple confirm dialog
-        if (window.confirm('Are you sure you want to logout?')) {
+        try {
           await signOut(auth);
           onClose();
+          // onAuthStateChanged will handle the rest
+        } catch (err) {
+          console.error("Logout failed:", err);
+          alert("Logout failed.");
         }
       };
       
@@ -1217,11 +1221,10 @@
         getStoryProfiles();
       }, [stories, storyProfiles]);
 
-      // --- FIX: Filtered Chat List ---
       const filteredChatList = chatList.filter(chat => {
         const friendId = chat.participants.find(p => p !== user.uid);
         const profile = profiles[friendId];
-        if (!profile) return false; // Don't show if profile hasn't loaded
+        if (!profile) return false;
         return profile.displayName.toLowerCase().includes(searchTerm.toLowerCase());
       });
 
@@ -1322,7 +1325,7 @@
       );
     }
     
-    // --- NEW: Story Viewer Component ---
+    // --- Story Viewer Component ---
     function StoryViewer({ user, stories, onClose }) {
       const [currentIndex, setCurrentIndex] = useState(0);
       const [progress, setProgress] = useState(0);
@@ -1477,15 +1480,14 @@
       
       const handleBlock = async () => {
         setShowMenu(false);
-        if (confirm(t('blockUserConfirm'))) {
-          try {
-            await blockUser(user.uid, targetUser.id);
-            alert(`${targetUser.displayName} has been blocked.`);
-            onBack();
-          } catch (err) {
-            console.error('Block failed:', err);
-            alert('❌ Block failed.');
-          }
+        // --- FIX: Removed broken window.confirm ---
+        try {
+          await blockUser(user.uid, targetUser.id);
+          alert(`${targetUser.displayName} has been blocked.`);
+          onBack();
+        } catch (err) {
+          console.error('Block failed:', err);
+          alert('❌ Block failed.');
         }
       };
 
@@ -1528,7 +1530,7 @@
         ),
         
         React.createElement('div', { className: 'message-list' },
-          React.createElement('div', { style: { flexGrow: 1 } }), // Spacer to push messages to bottom
+          React.createElement('div', { style: { flexGrow: 1 } }), // Spacer
           messages.map(msg => {
             const isSent = msg.from === user.uid;
             return React.createElement('div', { 
